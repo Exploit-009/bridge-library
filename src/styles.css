@@ -2744,3 +2744,7 @@ html.sp-large-text { font-size: 112.5%; }
   .hc-search { padding-left: 10px; } .hc-search input { padding: 10px; }
   .hc-q { font-size: .98rem; } .hc-faq li button { gap: 12px; padding: 6px 10px; } .hc-faq li p { padding-left: 54px; }
 }
+.hc-action .hc-act-btn, .hc-action .hc-act-btn:hover { color: #fff; }
+.hc-action h3, .hc-help-head h2, .hc-tips h2 { font-weight: 700; }
+.sp-banner-slogan { top: auto; bottom: 40px; right: 30px; font-size: 1.25rem; }
+.sp-banner-text { left: 40%; }

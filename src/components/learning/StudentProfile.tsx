@@ -79,7 +79,7 @@ export function StudentProfilePage() {
   const signedOut = authChecked && !user;
   const side = (
     <aside className="sp-side" aria-label="Profile menu">
-      <div className="sp-side-user"><span className="sp-side-photo"><Avatar src={photo} size={96} /><i aria-hidden /></span><div><strong>{profile?.full_name || 'Student'}</strong><span>Student</span>{user && <em className="sp-online">Online</em>}</div></div>
+      <div className="sp-side-user"><span className="sp-side-photo"><Avatar src={photo} size={96} />{user && <i aria-hidden />}</span><div><strong>{profile?.full_name || 'Student'}</strong><span>Student</span>{user && <em className="sp-online">Online</em>}</div></div>
       <nav>
         <Link to="/profile" className="is-active"><User size={20} />My Profile</Link>
         <Link to="/my-courses"><BookOpen size={20} />My Courses</Link>
