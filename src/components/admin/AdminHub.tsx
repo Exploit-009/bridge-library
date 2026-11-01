@@ -28,7 +28,7 @@ export function AdminHubPage() {
     <SiteLayout>
       <section className="bl-container bl-section ah-wrap">
         <header className="ah-head"><span><LayoutDashboard size={26} /></span><div><h1>Admin Dashboard</h1><p className="bl-muted">Manage courses, quizzes, certificates and students from one place.</p></div></header>
-        {q.isPending ? <p>Loading dashboard…</p> : q.error ? <EmptyState title="Administrator access required" text={q.error instanceof Error ? q.error.message : "Please sign in."} action={<a href="/?auth=login" className="bl-btn bl-btn-primary">Sign in as admin</a>} /> : <>
+        {q.isPending ? <p>Loading dashboard…</p> : q.error ? <EmptyState title="Administrator access required" text={q.error instanceof Error ? q.error.message : "Please sign in."} action={<a href="/admin-login" className="bl-btn bl-btn-primary">Sign in as admin</a>} /> : <>
           <div className="ah-stats">
             {([[Users, "Accounts", s?.users], [BookOpen, "Published courses", s?.publishedCourses], [ClipboardList, "Quiz attempts", s?.attempts], [Award, "Certificates", s?.certificates], [GraduationCap, "Avg. recent score", s?.averageScore == null ? null : `${s.averageScore}%`]] as const).map(([I, l, v]) =>
               <div key={l}><I size={20} /><b>{typeof v === "string" ? v : show(v as number | null)}</b><small>{l}</small></div>)}

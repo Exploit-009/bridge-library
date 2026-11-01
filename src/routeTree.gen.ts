@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AdminDashboardRouteImport } from './routes/admin-dashboard'
+import { Route as AdminLoginRouteImport } from './routes/admin-login'
 import { Route as BookmarksRouteImport } from './routes/bookmarks'
 import { Route as BridgelibAiRouteImport } from './routes/bridgelib-ai'
 import { Route as CertificatesRouteImport } from './routes/certificates'
@@ -35,6 +36,7 @@ import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SiteContentRouteImport } from './routes/site-content'
+import { Route as StudentPortalRouteImport } from './routes/student-portal'
 import { Route as StudyGuideRouteImport } from './routes/study-guide'
 import { Route as StudyToolsRouteImport } from './routes/study-tools'
 import { Route as TeacherRouteImport } from './routes/teacher'
@@ -77,6 +79,11 @@ const AdminRoute = AdminRouteImport.update({
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/admin-dashboard',
   path: '/admin-dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin-login',
+  path: '/admin-login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BookmarksRoute = BookmarksRouteImport.update({
@@ -187,6 +194,11 @@ const SignupRoute = SignupRouteImport.update({
 const SiteContentRoute = SiteContentRouteImport.update({
   id: '/site-content',
   path: '/site-content',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudentPortalRoute = StudentPortalRouteImport.update({
+  id: '/student-portal',
+  path: '/student-portal',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudyGuideRoute = StudyGuideRouteImport.update({
@@ -313,6 +325,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/admin-dashboard': typeof AdminDashboardRoute
+  '/admin-login': typeof AdminLoginRoute
   '/bookmarks': typeof BookmarksRoute
   '/bridgelib-ai': typeof BridgelibAiRoute
   '/certificates': typeof CertificatesRoute
@@ -335,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
+  '/student-portal': typeof StudentPortalRoute
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
@@ -364,6 +378,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/admin-dashboard': typeof AdminDashboardRoute
+  '/admin-login': typeof AdminLoginRoute
   '/bookmarks': typeof BookmarksRoute
   '/bridgelib-ai': typeof BridgelibAiRoute
   '/certificates': typeof CertificatesRoute
@@ -386,6 +401,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
+  '/student-portal': typeof StudentPortalRoute
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
@@ -416,6 +432,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/admin-dashboard': typeof AdminDashboardRoute
+  '/admin-login': typeof AdminLoginRoute
   '/bookmarks': typeof BookmarksRoute
   '/bridgelib-ai': typeof BridgelibAiRoute
   '/certificates': typeof CertificatesRoute
@@ -438,6 +455,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
+  '/student-portal': typeof StudentPortalRoute
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
@@ -469,6 +487,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/admin-dashboard'
+    | '/admin-login'
     | '/bookmarks'
     | '/bridgelib-ai'
     | '/certificates'
@@ -491,6 +510,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/site-content'
+    | '/student-portal'
     | '/study-guide'
     | '/study-tools'
     | '/teacher'
@@ -520,6 +540,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/admin-dashboard'
+    | '/admin-login'
     | '/bookmarks'
     | '/bridgelib-ai'
     | '/certificates'
@@ -542,6 +563,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/site-content'
+    | '/student-portal'
     | '/study-guide'
     | '/study-tools'
     | '/teacher'
@@ -571,6 +593,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/admin-dashboard'
+    | '/admin-login'
     | '/bookmarks'
     | '/bridgelib-ai'
     | '/certificates'
@@ -593,6 +616,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/site-content'
+    | '/student-portal'
     | '/study-guide'
     | '/study-tools'
     | '/teacher'
@@ -623,6 +647,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   BookmarksRoute: typeof BookmarksRoute
   BridgelibAiRoute: typeof BridgelibAiRoute
   CertificatesRoute: typeof CertificatesRoute
@@ -645,6 +670,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   SiteContentRoute: typeof SiteContentRoute
+  StudentPortalRoute: typeof StudentPortalRoute
   StudyGuideRoute: typeof StudyGuideRoute
   StudyToolsRoute: typeof StudyToolsRoute
   TeacherRoute: typeof TeacherRoute
@@ -698,6 +724,13 @@ declare module '@tanstack/react-router' {
       path: '/admin-dashboard'
       fullPath: '/admin-dashboard'
       preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-login': {
+      id: '/admin-login'
+      path: '/admin-login'
+      fullPath: '/admin-login'
+      preLoaderRoute: typeof AdminLoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/bookmarks': {
@@ -852,6 +885,13 @@ declare module '@tanstack/react-router' {
       path: '/site-content'
       fullPath: '/site-content'
       preLoaderRoute: typeof SiteContentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/student-portal': {
+      id: '/student-portal'
+      path: '/student-portal'
+      fullPath: '/student-portal'
+      preLoaderRoute: typeof StudentPortalRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/study-guide': {
@@ -1023,6 +1063,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminLoginRoute: AdminLoginRoute,
   BookmarksRoute: BookmarksRoute,
   BridgelibAiRoute: BridgelibAiRoute,
   CertificatesRoute: CertificatesRoute,
@@ -1045,6 +1086,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   SiteContentRoute: SiteContentRoute,
+  StudentPortalRoute: StudentPortalRoute,
   StudyGuideRoute: StudyGuideRoute,
   StudyToolsRoute: StudyToolsRoute,
   TeacherRoute: TeacherRoute,

@@ -8,7 +8,7 @@ export async function syncTeacherRequest(user: User) {
   const p = await supabase.from("profiles").select("preferences").eq("id", user.id).maybeSingle();
   if (p.error || !p.data) return;
   const prefs = (p.data.preferences ?? {}) as Record<string, unknown>;
-  if (prefs["teacher_request"]) return;
+  if (prefs["teacher_request"] || prefs["teacher_request_rejected"]) return;
   await supabase.from("profiles").update({
     preferences: { ...prefs, teacher_request: { subject: m["subject_taught"] ?? "", level: m["teaching_level"] ?? "", requested_at: new Date().toISOString() } },
   } as never).eq("id", user.id);
