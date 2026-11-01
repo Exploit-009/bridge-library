@@ -6,7 +6,7 @@
 - [x] Check desktop and mobile layouts, navigation and existing tests (64 tests passed; no broken photos, runtime errors or mobile overflow).
 - [ ] Verify signed-in Profile save and teacher views — external Supabase provides no managed test session; authenticated checks remain unverified.
 # Reference pages (Nov 2026)
-- [ ] Student Profile & Account Settings page matching reference
-- [ ] Help Center & FAQ page matching reference
+- [x] Student Profile & Account Settings page matching reference (signed-in saving unverified: no test session for external backend)
+- [x] Help Center & FAQ page matching reference
 - [ ] Sign Up flow matching reference (desktop + mobile steps)
 - [ ] Student Dashboard with BridgeLIB AI matching reference
