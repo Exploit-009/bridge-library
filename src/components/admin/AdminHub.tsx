@@ -15,12 +15,12 @@ export function AdminHubPage() {
   const s = d?.stats;
 
   const sections = [
-    { Icon: BookOpen, title: "Courses & Lessons", text: `${show(s?.courses)} courses · ${show(s?.lessons)} lessons`, to: "/admin" as const, cta: "Manage courses" },
-    { Icon: FileQuestion, title: "Quizzes & Questions", text: `${show(s?.publishedQuestions)} of ${show(s?.questions)} questions published`, to: "/admin" as const, cta: "Manage quizzes" },
-    { Icon: Award, title: "Certificates", text: `${show(s?.certificates)} certificates issued`, to: "/management" as const, cta: "View records" },
-    { Icon: Users, title: "Students & Roles", text: `${show(s?.users)} accounts · ${show(s?.enrollments)} enrollments`, to: "/management" as const, cta: "Manage students" },
+    { Icon: BookOpen, title: "Courses & Lessons", text: `${show(s?.courses)} courses · ${show(s?.lessons)} lessons`, to: "/admin-dashboard/courses" as const, cta: "Manage courses" },
+    { Icon: FileQuestion, title: "Quizzes & Questions", text: `${show(s?.publishedQuestions)} of ${show(s?.questions)} questions published`, to: "/admin-dashboard/quizzes" as const, cta: "Manage quizzes" },
+    { Icon: Award, title: "Certificates", text: `${show(s?.certificates)} certificates issued`, to: "/admin-dashboard/certificates" as const, cta: "View certificates" },
+    { Icon: Users, title: "Students & Roles", text: `${show(s?.users)} accounts · ${show(s?.enrollments)} enrollments`, to: "/admin-dashboard/students" as const, cta: "Manage students" },
     { Icon: UserCheck, title: "Teacher Approvals", text: `${show(s?.teachers)} approved teachers`, to: "/teacher-approvals" as const, cta: "Review requests" },
-    { Icon: School, title: "Schools & Papers", text: "Schools, past papers and scholarships", to: "/management" as const, cta: "Open management" },
+    { Icon: School, title: "Schools & Papers", text: "Schools, past papers and scholarships", to: "/admin-dashboard/schools" as const, cta: "Manage schools" },
     { Icon: Globe, title: "Website Content", text: "News, events, contacts, FAQs, policies", to: "/site-content" as const, cta: "Edit content" },
   ];
 
@@ -38,7 +38,7 @@ export function AdminHubPage() {
           <div className="ah-lists">
             <section><h2>Newest Students</h2>
               {d?.recentStudents.length ? <table className="bl-table"><thead><tr><th>Name</th><th>School</th><th>Joined</th></tr></thead><tbody>{d.recentStudents.map((r) => <tr key={r.id}><td>{r.name}</td><td>{r.school}{r.county && ` · ${r.county}`}</td><td>{day(r.joined)}</td></tr>)}</tbody></table> : <p className="bl-muted">No students yet.</p>}
-              <Link to="/management" className="bl-link">All students →</Link></section>
+              <Link to="/admin-dashboard/students" className="bl-link">All students →</Link></section>
             <section><h2>Recent Certificates</h2>
               {d?.recentCertificates == null ? <p className="bl-muted">Certificate records aren't readable for admins yet.</p> : d.recentCertificates.length ? <ul className="ah-certs">{d.recentCertificates.map((c) => <li key={c.id}><Award size={16} /><div><b>{c.learner_name}</b><small>{c.subject_name} · {day(c.issued_at)}</small></div></li>)}</ul> : <p className="bl-muted">No certificates issued yet.</p>}</section>
           </div>
