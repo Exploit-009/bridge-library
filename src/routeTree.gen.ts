@@ -36,6 +36,7 @@ import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SiteContentRouteImport } from './routes/site-content'
+import { Route as StudentPortalRouteImport } from './routes/student-portal'
 import { Route as StudyGuideRouteImport } from './routes/study-guide'
 import { Route as StudyToolsRouteImport } from './routes/study-tools'
 import { Route as TeacherRouteImport } from './routes/teacher'
@@ -195,6 +196,11 @@ const SiteContentRoute = SiteContentRouteImport.update({
   path: '/site-content',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudentPortalRoute = StudentPortalRouteImport.update({
+  id: '/student-portal',
+  path: '/student-portal',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudyGuideRoute = StudyGuideRouteImport.update({
   id: '/study-guide',
   path: '/study-guide',
@@ -342,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
+  '/student-portal': typeof StudentPortalRoute
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
@@ -394,6 +401,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
+  '/student-portal': typeof StudentPortalRoute
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
@@ -447,6 +455,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
+  '/student-portal': typeof StudentPortalRoute
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
@@ -501,6 +510,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/site-content'
+    | '/student-portal'
     | '/study-guide'
     | '/study-tools'
     | '/teacher'
@@ -553,6 +563,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/site-content'
+    | '/student-portal'
     | '/study-guide'
     | '/study-tools'
     | '/teacher'
@@ -605,6 +616,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/signup'
     | '/site-content'
+    | '/student-portal'
     | '/study-guide'
     | '/study-tools'
     | '/teacher'
@@ -658,6 +670,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   SiteContentRoute: typeof SiteContentRoute
+  StudentPortalRoute: typeof StudentPortalRoute
   StudyGuideRoute: typeof StudyGuideRoute
   StudyToolsRoute: typeof StudyToolsRoute
   TeacherRoute: typeof TeacherRoute
@@ -874,6 +887,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SiteContentRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/student-portal': {
+      id: '/student-portal'
+      path: '/student-portal'
+      fullPath: '/student-portal'
+      preLoaderRoute: typeof StudentPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/study-guide': {
       id: '/study-guide'
       path: '/study-guide'
@@ -1066,6 +1086,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   SiteContentRoute: SiteContentRoute,
+  StudentPortalRoute: StudentPortalRoute,
   StudyGuideRoute: StudyGuideRoute,
   StudyToolsRoute: StudyToolsRoute,
   TeacherRoute: TeacherRoute,

@@ -24,3 +24,4 @@
 - [x] Dashboard totals: add published courses (courses with a published lesson)
 - [x] Admin sign-in page for /admin-dashboard
 - [x] Student portal page (courses, quiz scores, certificates)
+- [ ] AI chat test as test student (needs email confirmed)
