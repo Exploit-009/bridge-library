@@ -652,6 +652,7 @@ export default function AdminDashboard({ onNavigateHome, onSignOut }: Props) {
   return (
     <div className="bl-dash bl-admin">
       <aside className="bl-sidebar" aria-label="Content management sections">
+        <Link to="/admin-dashboard" className="bl-side-link">Admin dashboard</Link>
         <Link to="/management" className="bl-side-link">Platform management</Link>
         <Link to="/site-content" className="bl-side-link">Website content</Link>
         <Link to="/teacher-approvals" className="bl-side-link">Teacher approvals</Link>

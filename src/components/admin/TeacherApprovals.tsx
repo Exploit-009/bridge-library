@@ -27,7 +27,7 @@ export function TeacherApprovalsPage() {
   return (
     <SiteLayout>
       <section className="bl-container bl-section ta-wrap">
-        <Link to="/management" className="bl-link">← Platform management</Link>
+        <Link to="/admin-dashboard" className="bl-link">← Admin dashboard</Link>
         <h1 className="bl-page-title bl-mt">Teacher Approvals</h1>
         <p className="bl-muted">Teachers who signed up at /signup/teacher appear here. Approving unlocks their teacher dashboard.</p>
         {msg && <p role="status" className="bl-mt">{msg}</p>}
