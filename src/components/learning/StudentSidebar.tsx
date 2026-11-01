@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
-import { Bookmark, BookOpen, BarChart3, ClipboardCheck, Download, GraduationCap, House, LogOut, Settings, User, MessageSquare, Newspaper, CalendarDays } from 'lucide-react';
+import { Bookmark, BookOpen, BarChart3, ClipboardCheck, Download, GraduationCap, House, LogOut, Settings, User, MessageSquare, Newspaper, CalendarDays, Sparkles } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { LiberiaFlag } from '@/components/site/SiteChrome';
