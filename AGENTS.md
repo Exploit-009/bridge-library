@@ -16,3 +16,4 @@
 ## Page presentation
 
 - Use shared semantic BridgeLIB tokens and existing page shells for reference styling so visual changes preserve live learning logic and access controls.
+- The AI dashboard uses an opt-in reference variant of the learner shell and shared chrome; scope its styles to that variant so other pages retain their navigation and behavior.

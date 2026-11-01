@@ -1,5 +1,7 @@
 # BridgeLIB design update
 
+- [ ] Reproduce the uploaded BridgeLIB AI dashboard reference within the existing page; verify desktop/mobile interactions and preserve existing integrations.
+
 - [x] Apply the uploaded navy, blue, white and red visual direction across all pages.
 - [x] Match the Home, About, Courses, WASSCE, student, teacher, practice, profile and account designs using existing live features.
 - [x] Include News and Events views shown in the references without inventing published announcements.
