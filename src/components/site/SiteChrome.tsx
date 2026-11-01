@@ -42,9 +42,6 @@ const socials = [
 
 // Shown until an admin saves real values in Site Content.
 const CONTACT_DEFAULTS: SiteContent = {
-  contact_address: "Monrovia, Liberia",
-  contact_phone: "+231 770 123 456",
-  contact_email: "support@bridgelib.org",
   facebook: "https://www.facebook.com/bridgelib",
   x: "https://x.com/bridgelib",
   youtube: "https://www.youtube.com/@bridgelib",
