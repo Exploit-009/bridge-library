@@ -18,4 +18,4 @@
 - [ ] Signup e2e: blocked on email confirmation (external backend)
 - [x] Teacher four-step signup (teacher access needs admin approval)
 - [x] Admin teacher approval page
-- [ ] News & Events pages with real content
+- [x] News & Events pages with real content
