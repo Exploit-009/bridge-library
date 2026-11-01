@@ -19,6 +19,6 @@
 - [x] Teacher four-step signup (teacher access needs admin approval)
 - [x] Admin teacher approval page
 - [x] News & Events pages with real content
-- [ ] Admin sub-pages: courses, quizzes, certificates, students, schools
+- [x] Admin sub-pages: courses, quizzes, certificates, students, schools
 - [ ] Signed-in AI chat test (test account unconfirmed)
-- [ ] Dashboard totals: add published courses (courses with a published lesson)
+- [x] Dashboard totals: add published courses (courses with a published lesson)
