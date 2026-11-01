@@ -23,3 +23,4 @@
 - [ ] Signed-in AI chat test (test account unconfirmed)
 - [x] Dashboard totals: add published courses (courses with a published lesson)
 - [x] Admin sign-in page for /admin-dashboard
+- [ ] Student portal page (courses, quiz scores, certificates)
