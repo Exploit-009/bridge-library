@@ -33,6 +33,7 @@ import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SiteContentRouteImport } from './routes/site-content'
 import { Route as StudyGuideRouteImport } from './routes/study-guide'
+import { Route as StudyToolsRouteImport } from './routes/study-tools'
 import { Route as TeacherRouteImport } from './routes/teacher'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WassceRouteImport } from './routes/wassce'
@@ -167,6 +168,11 @@ const StudyGuideRoute = StudyGuideRouteImport.update({
   path: '/study-guide',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudyToolsRoute = StudyToolsRouteImport.update({
+  id: '/study-tools',
+  path: '/study-tools',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeacherRoute = TeacherRouteImport.update({
   id: '/teacher',
   path: '/teacher',
@@ -260,6 +266,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/site-content': typeof SiteContentRoute
   '/study-guide': typeof StudyGuideRoute
+  '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
@@ -299,6 +306,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/site-content': typeof SiteContentRoute
   '/study-guide': typeof StudyGuideRoute
+  '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
@@ -339,6 +347,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/site-content': typeof SiteContentRoute
   '/study-guide': typeof StudyGuideRoute
+  '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
@@ -380,6 +389,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/site-content'
     | '/study-guide'
+    | '/study-tools'
     | '/teacher'
     | '/terms'
     | '/wassce'
@@ -419,6 +429,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/site-content'
     | '/study-guide'
+    | '/study-tools'
     | '/teacher'
     | '/terms'
     | '/wassce'
@@ -458,6 +469,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/site-content'
     | '/study-guide'
+    | '/study-tools'
     | '/teacher'
     | '/terms'
     | '/wassce'
@@ -498,6 +510,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   SiteContentRoute: typeof SiteContentRoute
   StudyGuideRoute: typeof StudyGuideRoute
+  StudyToolsRoute: typeof StudyToolsRoute
   TeacherRoute: typeof TeacherRoute
   TermsRoute: typeof TermsRoute
   WassceRoute: typeof WassceRoute
@@ -683,6 +696,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudyGuideRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/study-tools': {
+      id: '/study-tools'
+      path: '/study-tools'
+      fullPath: '/study-tools'
+      preLoaderRoute: typeof StudyToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/teacher': {
       id: '/teacher'
       path: '/teacher'
@@ -802,6 +822,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   SiteContentRoute: SiteContentRoute,
   StudyGuideRoute: StudyGuideRoute,
+  StudyToolsRoute: StudyToolsRoute,
   TeacherRoute: TeacherRoute,
   TermsRoute: TermsRoute,
   WassceRoute: WassceRoute,
