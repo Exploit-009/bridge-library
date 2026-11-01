@@ -15,7 +15,7 @@ export function AdminHubPage() {
   const s = d?.stats;
 
   const sections = [
-    { Icon: BookOpen, title: "Courses & Lessons", text: `${show(s?.courses)} courses · ${show(s?.lessons)} lessons`, to: "/admin-dashboard/courses" as const, cta: "Manage courses" },
+    { Icon: BookOpen, title: "Courses & Lessons", text: `${show(s?.publishedCourses)} of ${show(s?.courses)} courses live · ${show(s?.lessons)} lessons`, to: "/admin-dashboard/courses" as const, cta: "Manage courses" },
     { Icon: FileQuestion, title: "Quizzes & Questions", text: `${show(s?.publishedQuestions)} of ${show(s?.questions)} questions published`, to: "/admin-dashboard/quizzes" as const, cta: "Manage quizzes" },
     { Icon: Award, title: "Certificates", text: `${show(s?.certificates)} certificates issued`, to: "/admin-dashboard/certificates" as const, cta: "View certificates" },
     { Icon: Users, title: "Students & Roles", text: `${show(s?.users)} accounts · ${show(s?.enrollments)} enrollments`, to: "/admin-dashboard/students" as const, cta: "Manage students" },
@@ -30,7 +30,7 @@ export function AdminHubPage() {
         <header className="ah-head"><span><LayoutDashboard size={26} /></span><div><h1>Admin Dashboard</h1><p className="bl-muted">Manage courses, quizzes, certificates and students from one place.</p></div></header>
         {q.isPending ? <p>Loading dashboard…</p> : q.error ? <EmptyState title="Administrator access required" text={q.error instanceof Error ? q.error.message : "Please sign in."} action={<a href="/?auth=login" className="bl-btn bl-btn-primary">Sign in as admin</a>} /> : <>
           <div className="ah-stats">
-            {([[Users, "Accounts", s?.users], [BookOpen, "Courses", s?.courses], [ClipboardList, "Quiz attempts", s?.attempts], [Award, "Certificates", s?.certificates], [GraduationCap, "Avg. recent score", s?.averageScore == null ? null : `${s.averageScore}%`]] as const).map(([I, l, v]) =>
+            {([[Users, "Accounts", s?.users], [BookOpen, "Published courses", s?.publishedCourses], [ClipboardList, "Quiz attempts", s?.attempts], [Award, "Certificates", s?.certificates], [GraduationCap, "Avg. recent score", s?.averageScore == null ? null : `${s.averageScore}%`]] as const).map(([I, l, v]) =>
               <div key={l}><I size={20} /><b>{typeof v === "string" ? v : show(v as number | null)}</b><small>{l}</small></div>)}
           </div>
           <div className="ah-cards">{sections.map(({ Icon, title, text, to, cta }) =>

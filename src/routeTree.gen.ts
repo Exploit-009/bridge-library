@@ -42,6 +42,11 @@ import { Route as TeacherApprovalsRouteImport } from './routes/teacher-approvals
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WassceRouteImport } from './routes/wassce'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as AdminDashboardCertificatesRouteImport } from './routes/admin-dashboard_.certificates'
+import { Route as AdminDashboardCoursesRouteImport } from './routes/admin-dashboard_.courses'
+import { Route as AdminDashboardQuizzesRouteImport } from './routes/admin-dashboard_.quizzes'
+import { Route as AdminDashboardSchoolsRouteImport } from './routes/admin-dashboard_.schools'
+import { Route as AdminDashboardStudentsRouteImport } from './routes/admin-dashboard_.students'
 import { Route as ApiAiChatRouteImport } from './routes/api/ai-chat'
 import { Route as ApiStudyChatRouteImport } from './routes/api/study-chat'
 import { Route as ApiStudyToolsRouteImport } from './routes/api/study-tools'
@@ -220,6 +225,32 @@ const Char91DotwellKnownChar93OauthProtectedResourceRoute =
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AdminDashboardCertificatesRoute =
+  AdminDashboardCertificatesRouteImport.update({
+    id: '/admin-dashboard_/certificates',
+    path: '/admin-dashboard/certificates',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AdminDashboardCoursesRoute = AdminDashboardCoursesRouteImport.update({
+  id: '/admin-dashboard_/courses',
+  path: '/admin-dashboard/courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardQuizzesRoute = AdminDashboardQuizzesRouteImport.update({
+  id: '/admin-dashboard_/quizzes',
+  path: '/admin-dashboard/quizzes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardSchoolsRoute = AdminDashboardSchoolsRouteImport.update({
+  id: '/admin-dashboard_/schools',
+  path: '/admin-dashboard/schools',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminDashboardStudentsRoute = AdminDashboardStudentsRouteImport.update({
+  id: '/admin-dashboard_/students',
+  path: '/admin-dashboard/students',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAiChatRoute = ApiAiChatRouteImport.update({
   id: '/api/ai-chat',
   path: '/api/ai-chat',
@@ -311,6 +342,11 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin-dashboard/certificates': typeof AdminDashboardCertificatesRoute
+  '/admin-dashboard/courses': typeof AdminDashboardCoursesRoute
+  '/admin-dashboard/quizzes': typeof AdminDashboardQuizzesRoute
+  '/admin-dashboard/schools': typeof AdminDashboardSchoolsRoute
+  '/admin-dashboard/students': typeof AdminDashboardStudentsRoute
   '/api/ai-chat': typeof ApiAiChatRoute
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
@@ -357,6 +393,11 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin-dashboard/certificates': typeof AdminDashboardCertificatesRoute
+  '/admin-dashboard/courses': typeof AdminDashboardCoursesRoute
+  '/admin-dashboard/quizzes': typeof AdminDashboardQuizzesRoute
+  '/admin-dashboard/schools': typeof AdminDashboardSchoolsRoute
+  '/admin-dashboard/students': typeof AdminDashboardStudentsRoute
   '/api/ai-chat': typeof ApiAiChatRoute
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
@@ -404,6 +445,11 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/admin-dashboard_/certificates': typeof AdminDashboardCertificatesRoute
+  '/admin-dashboard_/courses': typeof AdminDashboardCoursesRoute
+  '/admin-dashboard_/quizzes': typeof AdminDashboardQuizzesRoute
+  '/admin-dashboard_/schools': typeof AdminDashboardSchoolsRoute
+  '/admin-dashboard_/students': typeof AdminDashboardStudentsRoute
   '/api/ai-chat': typeof ApiAiChatRoute
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
@@ -452,6 +498,11 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
+    | '/admin-dashboard/certificates'
+    | '/admin-dashboard/courses'
+    | '/admin-dashboard/quizzes'
+    | '/admin-dashboard/schools'
+    | '/admin-dashboard/students'
     | '/api/ai-chat'
     | '/api/study-chat'
     | '/api/study-tools'
@@ -498,6 +549,11 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
+    | '/admin-dashboard/certificates'
+    | '/admin-dashboard/courses'
+    | '/admin-dashboard/quizzes'
+    | '/admin-dashboard/schools'
+    | '/admin-dashboard/students'
     | '/api/ai-chat'
     | '/api/study-chat'
     | '/api/study-tools'
@@ -544,6 +600,11 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
+    | '/admin-dashboard_/certificates'
+    | '/admin-dashboard_/courses'
+    | '/admin-dashboard_/quizzes'
+    | '/admin-dashboard_/schools'
+    | '/admin-dashboard_/students'
     | '/api/ai-chat'
     | '/api/study-chat'
     | '/api/study-tools'
@@ -591,6 +652,11 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   WassceRoute: typeof WassceRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  AdminDashboardCertificatesRoute: typeof AdminDashboardCertificatesRoute
+  AdminDashboardCoursesRoute: typeof AdminDashboardCoursesRoute
+  AdminDashboardQuizzesRoute: typeof AdminDashboardQuizzesRoute
+  AdminDashboardSchoolsRoute: typeof AdminDashboardSchoolsRoute
+  AdminDashboardStudentsRoute: typeof AdminDashboardStudentsRoute
   ApiAiChatRoute: typeof ApiAiChatRoute
   ApiStudyChatRoute: typeof ApiStudyChatRoute
   ApiStudyToolsRoute: typeof ApiStudyToolsRoute
@@ -837,6 +903,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin-dashboard_/certificates': {
+      id: '/admin-dashboard_/certificates'
+      path: '/admin-dashboard/certificates'
+      fullPath: '/admin-dashboard/certificates'
+      preLoaderRoute: typeof AdminDashboardCertificatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-dashboard_/courses': {
+      id: '/admin-dashboard_/courses'
+      path: '/admin-dashboard/courses'
+      fullPath: '/admin-dashboard/courses'
+      preLoaderRoute: typeof AdminDashboardCoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-dashboard_/quizzes': {
+      id: '/admin-dashboard_/quizzes'
+      path: '/admin-dashboard/quizzes'
+      fullPath: '/admin-dashboard/quizzes'
+      preLoaderRoute: typeof AdminDashboardQuizzesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-dashboard_/schools': {
+      id: '/admin-dashboard_/schools'
+      path: '/admin-dashboard/schools'
+      fullPath: '/admin-dashboard/schools'
+      preLoaderRoute: typeof AdminDashboardSchoolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-dashboard_/students': {
+      id: '/admin-dashboard_/students'
+      path: '/admin-dashboard/students'
+      fullPath: '/admin-dashboard/students'
+      preLoaderRoute: typeof AdminDashboardStudentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/ai-chat': {
       id: '/api/ai-chat'
       path: '/api/ai-chat'
@@ -952,6 +1053,11 @@ const rootRouteChildren: RootRouteChildren = {
   WassceRoute: WassceRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  AdminDashboardCertificatesRoute: AdminDashboardCertificatesRoute,
+  AdminDashboardCoursesRoute: AdminDashboardCoursesRoute,
+  AdminDashboardQuizzesRoute: AdminDashboardQuizzesRoute,
+  AdminDashboardSchoolsRoute: AdminDashboardSchoolsRoute,
+  AdminDashboardStudentsRoute: AdminDashboardStudentsRoute,
   ApiAiChatRoute: ApiAiChatRoute,
   ApiStudyChatRoute: ApiStudyChatRoute,
   ApiStudyToolsRoute: ApiStudyToolsRoute,

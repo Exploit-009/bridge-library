@@ -24,6 +24,7 @@ export const adminOverview = createServerFn({ method: "POST" })
       supabase.from("bridge_certificates").select("id,learner_name,subject_name,issued_at").order("issued_at", { ascending: false }).limit(6),
       supabase.from("exam_attempts").select("id,score,total_questions,submitted_at").order("submitted_at", { ascending: false }).limit(50),
     ]);
+    const pubLessons = await supabase.from("lessons").select("subject_id").eq("is_published", true).limit(5000);
     const roleRows = (roles.data ?? []) as Array<{ user_id: string; role: string }>;
     const staff = new Set(roleRows.filter((r) => r.role !== "student").map((r) => r.user_id));
     const scored = (recentAttempts.data ?? []).filter((a) => a.total_questions > 0);
@@ -33,6 +34,7 @@ export const adminOverview = createServerFn({ method: "POST" })
         users: count(profiles),
         teachers: roles.error ? null : roleRows.filter((r) => r.role === "teacher").length,
         courses: count(subjects),
+        publishedCourses: pubLessons.error ? null : new Set((pubLessons.data ?? []).map((l) => l.subject_id)).size,
         lessons: count(lessons),
         questions: count(questions),
         publishedQuestions: count(publishedQ),

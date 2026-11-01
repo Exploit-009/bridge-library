@@ -21,3 +21,4 @@
 - [x] News & Events pages with real content
 - [ ] Admin sub-pages: courses, quizzes, certificates, students, schools
 - [ ] Signed-in AI chat test (test account unconfirmed)
+- [ ] Dashboard totals: add published courses (courses with a published lesson)
