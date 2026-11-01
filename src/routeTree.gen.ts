@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BookmarksRouteImport } from './routes/bookmarks'
+import { Route as BridgelibAiRouteImport } from './routes/bridgelib-ai'
 import { Route as CertificatesRouteImport } from './routes/certificates'
 import { Route as ClassroomRouteImport } from './routes/classroom'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -68,6 +69,11 @@ const AdminRoute = AdminRouteImport.update({
 const BookmarksRoute = BookmarksRouteImport.update({
   id: '/bookmarks',
   path: '/bookmarks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BridgelibAiRoute = BridgelibAiRouteImport.update({
+  id: '/bridgelib-ai',
+  path: '/bridgelib-ai',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CertificatesRoute = CertificatesRouteImport.update({
@@ -258,6 +264,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/bookmarks': typeof BookmarksRoute
+  '/bridgelib-ai': typeof BridgelibAiRoute
   '/certificates': typeof CertificatesRoute
   '/classroom': typeof ClassroomRoute
   '/contact': typeof ContactRoute
@@ -300,6 +307,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/bookmarks': typeof BookmarksRoute
+  '/bridgelib-ai': typeof BridgelibAiRoute
   '/certificates': typeof CertificatesRoute
   '/classroom': typeof ClassroomRoute
   '/contact': typeof ContactRoute
@@ -343,6 +351,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/bookmarks': typeof BookmarksRoute
+  '/bridgelib-ai': typeof BridgelibAiRoute
   '/certificates': typeof CertificatesRoute
   '/classroom': typeof ClassroomRoute
   '/contact': typeof ContactRoute
@@ -387,6 +396,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/bookmarks'
+    | '/bridgelib-ai'
     | '/certificates'
     | '/classroom'
     | '/contact'
@@ -429,6 +439,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/bookmarks'
+    | '/bridgelib-ai'
     | '/certificates'
     | '/classroom'
     | '/contact'
@@ -471,6 +482,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/bookmarks'
+    | '/bridgelib-ai'
     | '/certificates'
     | '/classroom'
     | '/contact'
@@ -514,6 +526,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   BookmarksRoute: typeof BookmarksRoute
+  BridgelibAiRoute: typeof BridgelibAiRoute
   CertificatesRoute: typeof CertificatesRoute
   ClassroomRoute: typeof ClassroomRoute
   ContactRoute: typeof ContactRoute
@@ -580,6 +593,13 @@ declare module '@tanstack/react-router' {
       path: '/bookmarks'
       fullPath: '/bookmarks'
       preLoaderRoute: typeof BookmarksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bridgelib-ai': {
+      id: '/bridgelib-ai'
+      path: '/bridgelib-ai'
+      fullPath: '/bridgelib-ai'
+      preLoaderRoute: typeof BridgelibAiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/certificates': {
@@ -842,6 +862,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   BookmarksRoute: BookmarksRoute,
+  BridgelibAiRoute: BridgelibAiRoute,
   CertificatesRoute: CertificatesRoute,
   ClassroomRoute: ClassroomRoute,
   ContactRoute: ContactRoute,
