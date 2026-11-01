@@ -2748,3 +2748,4 @@ html.sp-large-text { font-size: 112.5%; }
 .hc-action h3, .hc-help-head h2, .hc-tips h2 { font-weight: 700; }
 .sp-banner-slogan { top: auto; bottom: 40px; right: 30px; font-size: 1.25rem; }
 .sp-banner-text { left: 40%; }
+@media (max-width: 760px) { .hc-faq { order: -1; } }
