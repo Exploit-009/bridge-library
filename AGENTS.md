@@ -8,3 +8,11 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+## Assets
+
+- Keep generated images as local imports; uploaded or cropped reference media uses this project's CDN pointers through `reference-photos` so source-project asset URLs are never reused.
+
+## Page presentation
+
+- Use shared semantic BridgeLIB tokens and existing page shells for reference styling so visual changes preserve live learning logic and access controls.
