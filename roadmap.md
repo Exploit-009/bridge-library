@@ -8,8 +8,8 @@
 # Reference pages (Nov 2026)
 - [x] Student Profile & Account Settings page matching reference (signed-in saving unverified: no test session for external backend)
 - [x] Help Center & FAQ page matching reference
-- [ ] Sign Up flow matching reference (desktop + mobile steps)
-- [ ] Student Dashboard with BridgeLIB AI matching reference
+- [x] Sign Up flow matching reference (desktop + mobile steps)
+- [x] Student Dashboard with BridgeLIB AI matching reference
 
 - [x] AI explainer / practice quiz tool (/study-tools)
 - [x] Four-step student signup flow with role selection + dashboard redirect
