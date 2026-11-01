@@ -2806,3 +2806,4 @@ html.sp-large-text { font-size: 112.5%; }
 .su-role-mobile{display:none;margin-bottom:1rem}
 @media (max-width:1024px){.su-page{grid-template-columns:1fr 1.3fr}.su-side{display:none}.su-role-mobile{display:block}}
 @media (max-width:720px){.su-page{grid-template-columns:1fr;padding:.75rem}.su-hero{min-height:260px}.su-card{padding:1.1rem}.su-progress li{font-size:.65rem}}
+.su-radios input,.su-check input{width:auto!important;height:auto;padding:0;flex:none}
