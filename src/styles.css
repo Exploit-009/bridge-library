@@ -2846,3 +2846,19 @@ html.sp-large-text { font-size: 112.5%; }
 .ne-date{flex:none;width:54px;height:58px;border-radius:.6rem;background:var(--primary);color:var(--primary-foreground);display:grid;place-content:center;text-align:center;font-size:.75rem}.ne-date b{font-size:1.3rem;line-height:1}
 .ne-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}.ne-grid .ne-event{background:var(--card);border:1px solid var(--border);border-radius:.8rem;padding:.9rem}
 .ne-past{opacity:.7}
+/* Admin hub */
+.ah-wrap{display:grid;gap:1.25rem}
+.ah-head{display:flex;gap:.8rem;align-items:center}.ah-head>span{width:52px;height:52px;border-radius:.8rem;display:grid;place-items:center;background:var(--primary);color:var(--primary-foreground)}
+.ah-head h1{font-size:1.7rem;font-weight:800;color:var(--foreground)}
+.ah-stats{display:grid;grid-template-columns:repeat(5,1fr);gap:.75rem}
+.ah-stats div{display:grid;gap:.2rem;padding:1rem;border-radius:.85rem;background:var(--card);border:1px solid var(--border);color:var(--primary)}
+.ah-stats b{font-size:1.6rem;color:var(--foreground)}.ah-stats small{color:var(--muted-foreground)}
+.ah-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:.75rem}
+.ah-cards article{display:grid;gap:.35rem;align-content:start;padding:1.1rem;border-radius:.85rem;background:var(--card);border:1px solid var(--border)}
+.ah-cards article span{width:40px;height:40px;border-radius:.6rem;display:grid;place-items:center;background:var(--muted);color:var(--primary)}
+.ah-cards h3{font-weight:700;color:var(--foreground)}.ah-cards p{color:var(--muted-foreground);font-size:.9rem}
+.ah-lists{display:grid;grid-template-columns:1.4fr 1fr;gap:1rem}
+.ah-lists section{padding:1.1rem;border-radius:.85rem;background:var(--card);border:1px solid var(--border);display:grid;gap:.6rem;align-content:start}
+.ah-lists h2{font-weight:800;color:var(--foreground)}
+.ah-certs{display:grid;gap:.6rem}.ah-certs li{display:flex;gap:.5rem;color:var(--primary)}.ah-certs div{display:grid;color:var(--foreground)}.ah-certs small{color:var(--muted-foreground)}
+@media (max-width:900px){.ah-stats{grid-template-columns:1fr 1fr}.ah-lists{grid-template-columns:1fr}}
