@@ -39,6 +39,7 @@ import { Route as TeacherRouteImport } from './routes/teacher'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WassceRouteImport } from './routes/wassce'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as ApiAiChatRouteImport } from './routes/api/ai-chat'
 import { Route as ApiStudyChatRouteImport } from './routes/api/study-chat'
 import { Route as ApiStudyToolsRouteImport } from './routes/api/study-tools'
 import { Route as CoursesSubjectIdRouteImport } from './routes/courses_.$subjectId'
@@ -200,6 +201,11 @@ const Char91DotwellKnownChar93OauthProtectedResourceRoute =
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiAiChatRoute = ApiAiChatRouteImport.update({
+  id: '/api/ai-chat',
+  path: '/api/ai-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiStudyChatRoute = ApiStudyChatRouteImport.update({
   id: '/api/study-chat',
   path: '/api/study-chat',
@@ -278,6 +284,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/api/ai-chat': typeof ApiAiChatRoute
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
   '/courses/$subjectId': typeof CoursesSubjectIdRoute
@@ -319,6 +326,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/api/ai-chat': typeof ApiAiChatRoute
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
   '/courses/$subjectId': typeof CoursesSubjectIdRoute
@@ -361,6 +369,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/api/ai-chat': typeof ApiAiChatRoute
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
   '/courses_/$subjectId': typeof CoursesSubjectIdRoute
@@ -404,6 +413,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
+    | '/api/ai-chat'
     | '/api/study-chat'
     | '/api/study-tools'
     | '/courses/$subjectId'
@@ -445,6 +455,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
+    | '/api/ai-chat'
     | '/api/study-chat'
     | '/api/study-tools'
     | '/courses/$subjectId'
@@ -486,6 +497,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
+    | '/api/ai-chat'
     | '/api/study-chat'
     | '/api/study-tools'
     | '/courses_/$subjectId'
@@ -528,6 +540,7 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   WassceRoute: typeof WassceRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  ApiAiChatRoute: typeof ApiAiChatRoute
   ApiStudyChatRoute: typeof ApiStudyChatRoute
   ApiStudyToolsRoute: typeof ApiStudyToolsRoute
   CoursesSubjectIdRoute: typeof CoursesSubjectIdRoute
@@ -751,6 +764,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ai-chat': {
+      id: '/api/ai-chat'
+      path: '/api/ai-chat'
+      fullPath: '/api/ai-chat'
+      preLoaderRoute: typeof ApiAiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/study-chat': {
       id: '/api/study-chat'
       path: '/api/study-chat'
@@ -849,6 +869,7 @@ const rootRouteChildren: RootRouteChildren = {
   WassceRoute: WassceRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  ApiAiChatRoute: ApiAiChatRoute,
   ApiStudyChatRoute: ApiStudyChatRoute,
   ApiStudyToolsRoute: ApiStudyToolsRoute,
   CoursesSubjectIdRoute: CoursesSubjectIdRoute,
