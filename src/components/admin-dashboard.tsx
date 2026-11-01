@@ -654,6 +654,7 @@ export default function AdminDashboard({ onNavigateHome, onSignOut }: Props) {
       <aside className="bl-sidebar" aria-label="Content management sections">
         <Link to="/management" className="bl-side-link">Platform management</Link>
         <Link to="/site-content" className="bl-side-link">Website content</Link>
+        <Link to="/teacher-approvals" className="bl-side-link">Teacher approvals</Link>
         {tabs.map(([value, label, Icon]) => (
           <button
             type="button"

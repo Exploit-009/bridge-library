@@ -15,6 +15,8 @@ export const siteFields = [
   { key: "youtube", label: "YouTube channel link", type: "url" },
   { key: "instagram", label: "Instagram link", type: "url" },
   { key: "linkedin", label: "LinkedIn link", type: "url" },
+  { key: "news", label: "News & Updates (blank line between items; first line = headline, then the story)", type: "long" },
+  { key: "events", label: "Events (blank line between items; first line = Title | YYYY-MM-DD | Place, then details)", type: "long" },
   { key: "faq", label: "FAQs", type: "long" },
   { key: "terms", label: "Terms of Service", type: "long" },
   { key: "privacy", label: "Privacy Policy", type: "long" },
@@ -82,4 +84,16 @@ export async function saveSiteContent(values: SiteContent) {
   }));
   const { error } = await supabase.from("feature_settings").upsert(rows, { onConflict: "key" });
   if (error) throw new Error(error.message);
+}
+
+export type SiteEvent = { title: string; date: string | null; place: string; details: string };
+/** Parses event blocks: "Title | 2026-12-05 | Monrovia" then details. Sorted soonest first. */
+export function parseEvents(text: string | undefined): SiteEvent[] {
+  return parseBlocks(text)
+    .map(([head, details]) => {
+      const [title = "", date = "", place = ""] = head.split("|").map((x) => x.trim());
+      return { title, date: /^\d{4}-\d{2}-\d{2}$/.test(date) ? date : null, place, details };
+    })
+    .filter((e) => e.title)
+    .sort((a, b) => (a.date ?? "9999").localeCompare(b.date ?? "9999"));
 }

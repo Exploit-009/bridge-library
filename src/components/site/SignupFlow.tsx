@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Check, CheckCircle2, Eye, EyeOff, GraduationCap, Phone, School, ShieldCheck, Sparkles, Trophy, Users, BookOpen } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { syncTeacherRequest } from "@/lib/teacher-request";
 import { SiteLayout, LiberiaFlag } from "./SiteChrome";
 import { referencePhotos } from "@/lib/reference-photos";
 import { LIBERIA_COUNTIES } from "@/lib/profile-summary";
@@ -57,6 +58,7 @@ export function SignupFlowPage({ initialRole = "student" }: { initialRole?: Role
       if (error) throw error;
       if (data.session && data.user) {
         await supabase.from("profiles").update({ full_name: f.fullName.trim(), learner_path: learnerPath, education_level: educationLevel, grade_level: f.grade, school_name: f.school.trim(), county: f.county, onboarding_completed: true, updated_at: new Date().toISOString() }).eq("id", data.user.id);
+        await syncTeacherRequest(data.user);
       } else setNeedsConfirm(true);
       setStep(3);
     } catch (e) { setMsg(e instanceof Error ? e.message : "Could not create your account."); }

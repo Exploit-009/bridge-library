@@ -8,8 +8,8 @@
 # Reference pages (Nov 2026)
 - [x] Student Profile & Account Settings page matching reference (signed-in saving unverified: no test session for external backend)
 - [x] Help Center & FAQ page matching reference
-- [ ] Sign Up flow matching reference (desktop + mobile steps)
-- [ ] Student Dashboard with BridgeLIB AI matching reference
+- [x] Sign Up flow matching reference (desktop + mobile steps)
+- [x] Student Dashboard with BridgeLIB AI matching reference
 
 - [x] AI explainer / practice quiz tool (/study-tools)
 - [x] Four-step student signup flow with role selection + dashboard redirect
@@ -17,3 +17,5 @@
 - [x] Footer Help/Contact/social links real
 - [ ] Signup e2e: blocked on email confirmation (external backend)
 - [x] Teacher four-step signup (teacher access needs admin approval)
+- [x] Admin teacher approval page
+- [x] News & Events pages with real content

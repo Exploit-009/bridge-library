@@ -1,7 +1,3 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { CalendarDays, ArrowRight } from 'lucide-react';
-import { LearnerShell } from '@/components/learning/LearnerPages';
-import { EmptyState } from '@/components/site/SiteChrome';
-import { referencePhotos } from '@/lib/reference-photos';
-
-export const Route=createFileRoute('/events')({head:()=>({meta:[{title:'Education Events — BridgeLIB'},{name:'description',content:'Confirmed education events and upcoming BridgeLIB community dates.'},{property:'og:title',content:'Education Events — BridgeLIB'},{property:'og:description',content:'Upcoming verified education events for BridgeLIB learners.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:()=> <LearnerShell active="events"><section className="bl-news-banner"><img src={referencePhotos.news} alt="Students at school"/><div><h1>Education Events</h1><p>Learning opportunities and community dates.</p></div></section><h2 className="bl-h2"><CalendarDays size={20}/> Upcoming Events</h2><EmptyState title="No confirmed events yet" text="Verified event dates will appear here when available." action={<Link to="/news" className="bl-btn bl-btn-primary">News & Updates <ArrowRight size={15}/></Link>}/></LearnerShell>});
+import { createFileRoute } from '@tanstack/react-router';
+import { EventsPage } from '@/components/site/NewsEvents';
+export const Route=createFileRoute('/events')({head:()=>({meta:[{title:'Education Events — BridgeLIB'},{name:'description',content:'Confirmed education events and upcoming BridgeLIB community dates.'},{property:'og:title',content:'Education Events — BridgeLIB'},{property:'og:description',content:'Upcoming verified education events for BridgeLIB learners.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary_large_image'}]}),component:EventsPage});

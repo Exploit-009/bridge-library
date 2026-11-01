@@ -2838,3 +2838,11 @@ html.sp-large-text { font-size: 112.5%; }
 .ai-upgrade div{flex:1;display:grid}.ai-upgrade small{opacity:.85}
 @media (max-width:900px){.ai-grid{grid-template-columns:1fr}.ai-tiles{grid-template-columns:1fr 1fr}.ai-hero{grid-template-columns:1fr;padding:1.25rem 1.25rem 0}.ai-hero img{height:180px}}
 .ai-hero h1{color:var(--primary-foreground)}
+.ta-done{display:grid;gap:.4rem}.ta-done li{display:flex;gap:.4rem;align-items:center}
+.ne-list{display:grid;gap:.75rem}.ne-news{padding:.9rem 1rem;border:1px solid var(--border);border-radius:.75rem;background:var(--card);display:grid;gap:.3rem}
+.ne-news h3,.ne-event h3{font-weight:700;color:var(--foreground)}.ne-news p,.ne-event p{color:var(--muted-foreground);white-space:pre-wrap}
+.ne-news small,.ne-event small{color:var(--muted-foreground);display:flex;gap:.25rem;align-items:center}
+.ne-event{display:flex;gap:.8rem;padding:.75rem 0;border-bottom:1px solid var(--border)}
+.ne-date{flex:none;width:54px;height:58px;border-radius:.6rem;background:var(--primary);color:var(--primary-foreground);display:grid;place-content:center;text-align:center;font-size:.75rem}.ne-date b{font-size:1.3rem;line-height:1}
+.ne-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}.ne-grid .ne-event{background:var(--card);border:1px solid var(--border);border-radius:.8rem;padding:.9rem}
+.ne-past{opacity:.7}
