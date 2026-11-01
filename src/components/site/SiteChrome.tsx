@@ -146,7 +146,7 @@ export function SiteHeader({ actions, student = false }: { actions?: ReactNode; 
       <a href="/?auth=login" className="bl-btn bl-btn-outline bl-btn-sm">
         Login
       </a>
-      <a href="/?auth=signup" className="bl-btn bl-btn-primary bl-btn-sm">
+      <a href="/signup" className="bl-btn bl-btn-primary bl-btn-sm">
         Sign Up
       </a>
     </>
