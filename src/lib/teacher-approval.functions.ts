@@ -43,3 +43,20 @@ export const approveTeacher = createServerFn({ method: "POST" })
     if (r.error) throw new Error(r.error.message);
     return { ok: true };
   });
+
+/** Removes a teacher request without touching the account; marks it rejected so sign-in doesn't re-add it. */
+export const rejectTeacher = createServerFn({ method: "POST" })
+  .middleware([requireBridgeAuth])
+  .inputValidator((v: unknown) => z.object({ user_id: z.string().uuid() }).parse(v))
+  .handler(async ({ data, context: { supabase, userId } }) => {
+    await assertAdmin(supabase, userId);
+    const p = await supabase.from("profiles").select("preferences").eq("id", data.user_id).maybeSingle();
+    if (p.error || !p.data) throw new Error(p.error?.message ?? "Request not found.");
+    const { teacher_request: _old, ...rest } = (p.data.preferences ?? {}) as Record<string, unknown>;
+    const u = await supabase.from("profiles")
+      .update({ preferences: { ...rest, teacher_request_rejected: new Date().toISOString() } } as never)
+      .eq("id", data.user_id).select("id");
+    if (u.error) throw new Error(u.error.message);
+    if (!u.data?.length) throw new Error("Your admin account isn't allowed to edit this profile.");
+    return { ok: true };
+  });
