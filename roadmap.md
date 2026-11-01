@@ -25,3 +25,5 @@
 - [x] Admin sign-in page for /admin-dashboard
 - [x] Student portal page (courses, quiz scores, certificates)
 - [ ] AI chat test as test student (needs email confirmed)
+- [x] Footer contact details come only from admin Website content
+- [ ] Admin account for l.elijahcooper20@gmail.com (needs role granted in database)
