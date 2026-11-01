@@ -1,0 +1,97 @@
+{
+  "source": "archive-to-app-main.zip (code archive; Lovable TanStack project 'archive-to-app' = BridgeLIB, previously pointed at Lovable Cloud)",
+  "target_backend": "external Supabase 'BridgeLIB' (ref qlwtccmvddhgdnknrgnh), already connected to this project",
+  "capabilities": [
+    {
+      "capability": "Application code, pages, components, assets, styles",
+      "source": "src/ + public/ (40 routes, 151 source files)",
+      "outcome": "copy into this project, keeping this project's generated Supabase client files and pinned framework versions",
+      "status": "in_progress",
+      "next_action": "none"
+    },
+    {
+      "capability": "Schema: class_messages, class_content, class_quiz_keys, class_quiz_attempts, class_lesson_completions, class_message_reads, bridge_bookmarks, bridge_ratings, bridge_certificates, bridge_study_threads, bridge_study_messages",
+      "source": "drizzle/migrations/0001-0006 (source project's schema history)",
+      "outcome": "migrate: recreated in the connected BridgeLIB database with access rules, since BridgeLIB is missing all 11 tables",
+      "status": "pending",
+      "next_action": "run migration, then confirm types regeneration"
+    },
+    {
+      "capability": "Database functions and triggers: try_uuid, extract_class_quiz_keys, submit_class_quiz, protect_class_message, bridge_course_metrics, bridge_issue_certificate, bridge_my_certificates, bridge_practice_feedback",
+      "source": "drizzle/migrations/0001-0006",
+      "outcome": "migrate: recreated in BridgeLIB; none of them exist there yet",
+      "status": "pending",
+      "next_action": "run migration"
+    },
+    {
+      "capability": "File storage: exam-papers (exists, private), student-photos, class-resources",
+      "source": "source project buckets + storage policies in 0003/0004",
+      "outcome": "migrate: create the two missing private buckets on BridgeLIB and recreate owner/class access rules",
+      "status": "pending",
+      "next_action": "create buckets, then confirm upload paths"
+    },
+    {
+      "capability": "Records (subjects, lessons, questions, answer keys, scholarships, plans)",
+      "source": "BridgeLIB live data (subjects 12, lessons 0, questions 0, scholarships 0, plans 0)",
+      "outcome": "user chose 'add starter content': seed editable starter lessons, practice questions with answer keys, scholarships and pricing plans",
+      "status": "pending",
+      "next_action": "seed rows, then confirm pages show them"
+    },
+    {
+      "capability": "Auth identities",
+      "source": "BridgeLIB auth.users (2 accounts: 1 student, 1 admin), email confirmation on, no OAuth providers",
+      "outcome": "preserved: same database, so no user export or import is needed",
+      "status": "pending",
+      "next_action": "verify sign-in through the app UI"
+    },
+    {
+      "capability": "Authorization (roles, RLS, RPCs)",
+      "source": "BridgeLIB user_roles + has_role + is_class_teacher/is_class_member + submit_exam_attempt",
+      "outcome": "preserved: reused as-is; new tables get policies written against the same helpers",
+      "status": "pending",
+      "next_action": "verify with a signed-in student and an admin"
+    },
+    {
+      "capability": "AI study guide (streaming chat)",
+      "source": "/api/study-chat + src/lib/study-ai, uses LOVABLE_API_KEY (Lovable AI Gateway)",
+      "outcome": "preserve code; needs the AI Gateway key bound as a secret on this project",
+      "status": "pending",
+      "next_action": "enable AI Gateway / add LOVABLE_API_KEY secret, then test signed in"
+    },
+    {
+      "capability": "MCP server, OAuth consent screen, well-known metadata",
+      "source": "src/routes/mcp.ts, [.]lovable.oauth.consent.tsx, [.well-known]/oauth-protected-resource.ts, mcpPlugin in vite.config.ts",
+      "outcome": "preserve code and build plugin; the OAuth server it points at must be configured for this project",
+      "status": "pending",
+      "next_action": "confirm build, then report what platform setup is still required"
+    },
+    {
+      "capability": "Payments",
+      "source": "subscription_plans + premium_payment_transactions (RLS blocks student self-subscribe)",
+      "outcome": "user chose 'plans page only': show plans and status, no card checkout",
+      "status": "accepted",
+      "next_action": "none"
+    },
+    {
+      "capability": "Old backend / schema tooling",
+      "source": "drizzle/ migrations, drizzle.config.ts, .env with Cloud project values",
+      "outcome": "not copied: schema now lives in the connected BridgeLIB database and this project's .env already points there",
+      "status": "accepted",
+      "next_action": "none"
+    },
+    {
+      "capability": "Cutover",
+      "source": "source project's Lovable Cloud connection",
+      "outcome": "app now runs against the connected BridgeLIB database only",
+      "status": "pending",
+      "next_action": "confirm no Cloud project values remain in the code"
+    },
+    {
+      "capability": "Verification",
+      "source": "-",
+      "outcome": "build, typecheck-free errors, signed-in student flow (dashboard, lesson, practice, study guide), admin flow",
+      "status": "pending",
+      "next_action": "run checks and report"
+    }
+  ]
+}

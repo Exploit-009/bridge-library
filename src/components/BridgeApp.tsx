@@ -1,0 +1,1989 @@
+import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } from "react";
+import { INTRO_VIDEO_URL } from "@/config/video";
+import { useSiteContent } from "@/lib/site-content";
+import { resolveVideoSource, withAutoplay } from "@/lib/video";
+import { oauthReturnPath } from "@/lib/oauth-return-path";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BookOpen,
+  Check,
+  GraduationCap,
+  Layers3,
+  LayoutDashboard,
+  LogOut,
+  MapPin,
+  RefreshCw,
+  UsersRound,
+  X,
+  PlayCircle,
+  CheckCircle2,
+  Timer,
+  TrendingUp,
+  FileText,
+  ClipboardCheck,
+  NotebookPen,
+  Laptop,
+  Wrench,
+  Target,
+  HeartHandshake,
+} from "lucide-react";
+import type { Session, User } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import AdminDashboard from "@/components/admin-dashboard";
+import {
+  SiteFooter,
+  SiteHeader,
+  SubjectIcon,
+  learningCategories,
+} from "@/components/site/SiteChrome";
+import heroImg from "@/assets/hero-student.jpg";
+import { PracticeView } from "@/components/practice/PracticeView";
+import { useQueryClient } from "@tanstack/react-query";
+import sunsetImg from "@/assets/liberia-sunset.jpg";
+import signupPhoto from "@/assets/signup-exact-photo.jpg";
+import signupFlag from "@/assets/signup-exact-flag.jpg";
+import { referencePhotos } from '@/lib/reference-photos';
+const homeReferencePhoto = referencePhotos.home;
+const homeReferenceWassce = referencePhotos.study;
+const homeReferenceJoin = referencePhotos.join;
+import homeReferenceLogo from '@/assets/bridgelib-shield.png';
+import wassceImg from '@/assets/wassce-hero.jpg';
+import joinImg from '@/assets/hero-student.jpg';
+import shieldImg from '@/assets/bridgelib-shield.png';
+import { FeaturedCourses } from '@/components/learning/FeaturedCourses';
+import { useServerFn } from '@tanstack/react-start';
+import { studentRegistrationSchema, validateStudentPhoto } from "@/lib/student-registration";
+import { publishedPracticeQuestions } from "@/lib/practice-content";
+import { Button } from "@/components/ui/button";
+import { practiceFeedback } from '@/lib/reference.functions';
+
+type AuthMode = "signup" | "login";
+const liberianCounties = ["Bomi","Bong","Gbarpolu","Grand Bassa","Grand Cape Mount","Grand Gedeh","Grand Kru","Lofa","Margibi","Maryland","Montserrado","Nimba","River Cess","River Gee","Sinoe"];
+const gradeOptions: [string, string][] = [["Grade 7","junior_high"],["Grade 8","junior_high"],["Grade 9","junior_high"],["Grade 10","senior_high"],["Grade 11","senior_high"],["Grade 12 (WASSCE)","senior_high"],["Private candidate","other"],["College / Vocational","college_vocational"]];
+type LearnerPath = "school_learner" | "wassce_candidate" | "independent_learner";
+
+type Profile = {
+  id: string;
+  role: string | null;
+  full_name: string | null;
+  learner_path: LearnerPath | null;
+  education_level: string | null;
+  grade_level: string | null;
+  school_name: string | null;
+  county: string | null;
+  target_exam_year: number | null;
+  onboarding_completed: boolean | null;
+};
+
+type Subject = {
+  id: string | number;
+  name: string;
+  description: string | null;
+};
+
+type LearningClass = {
+  id: string;
+  name: string;
+  education_level: string | null;
+  grade_level: string | null;
+  academic_year: number | string | null;
+  status: string | null;
+};
+
+type Toast = {
+  message: string;
+  kind: "success" | "error";
+} | null;
+
+type PracticeOption = {
+  id: string;
+  text: string;
+};
+
+type PracticeQuestion = {
+  id: string;
+  prompt: string;
+  options: PracticeOption[];
+  explanation: string | null;
+  exam_type: string | null;
+};
+
+type ReviewItem = {
+  question_id: string;
+  prompt: string;
+  is_correct: boolean;
+  correct_option: string;
+  explanation: string | null;
+};
+
+type ExamResult = {
+  score: number;
+  total_questions: number;
+  review?: ReviewItem[];
+};
+
+const paths: {
+  id: LearnerPath;
+  title: string;
+  description: string;
+  number: string;
+}[] = [
+  {
+    id: "school_learner",
+    title: "School learner",
+    description: "For primary, junior high, and senior high students building strong foundations.",
+    number: "01",
+  },
+  {
+    id: "wassce_candidate",
+    title: "WASSCE candidate",
+    description: "For learners preparing for WASSCE, including private candidates.",
+    number: "02",
+  },
+  {
+    id: "independent_learner",
+    title: "Independent learner",
+    description: "For self-study, adult learning, and revision at your own pace.",
+    number: "03",
+  },
+];
+
+const educationLevels = [
+  ["primary", "Primary school"],
+  ["junior_high", "Junior high school"],
+  ["senior_high", "Senior high school"],
+  ["college_vocational", "College / vocational"],
+  ["other", "Other / not sure yet"],
+];
+
+const pretty = (value?: string | null) =>
+  value ? value.replaceAll("_", " ").replace(/\b\w/g, (letter) => letter.toUpperCase()) : "";
+
+const getErrorMessage = (error: unknown, fallback: string) =>
+  error instanceof Error ? error.message : fallback;
+
+const subjectImages: Record<string, string> = {
+  mathematics:
+    "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=900&q=80",
+  english:
+    "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80",
+  biology:
+    "https://images.unsplash.com/photo-1530026405186-ed1f139313f8?auto=format&fit=crop&w=900&q=80",
+  chemistry:
+    "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=900&q=80",
+  physics:
+    "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=900&q=80",
+  economics:
+    "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&w=900&q=80",
+  geography:
+    "https://images.unsplash.com/photo-1524666041070-0a4a2f7a7a9a?auto=format&fit=crop&w=900&q=80",
+  history:
+    "https://images.unsplash.com/photo-1461360370896-922624d12aa1?auto=format&fit=crop&w=900&q=80",
+  default:
+    "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80",
+};
+
+const subjectImageFor = (name: string) => {
+  const key = Object.keys(subjectImages).find(
+    (candidate) => candidate !== "default" && name.toLowerCase().includes(candidate),
+  );
+
+  return subjectImages[key ?? "default"];
+};
+
+function Brand() {
+  return (
+    <a className="brand" href="/" aria-label="BridgeLIB home" data-testid="link-bridgelib-home">
+      <span className="brand-mark">B</span>
+      <span>
+        Bridge<span className="brand-light">LIB</span>
+      </span>
+    </a>
+  );
+}
+
+function AdminAccessNotice({
+  message,
+  onReturnHome,
+  onRetry,
+}: {
+  message: string;
+  onReturnHome: () => void;
+  onRetry?: () => void;
+}) {
+  return (
+    <main className="admin-access-page" data-testid="admin-access-denied">
+      <div className="bridge-wrap">
+        <section className="admin-access-card" role="alert">
+          <p className="eyebrow">ADMIN ACCESS</p>
+          <h1>Access denied</h1>
+          <p>{message}</p>
+          <div className="admin-access-actions">
+            {onRetry && (
+              <button
+                className="bridge-button primary"
+                type="button"
+                onClick={onRetry}
+                data-testid="button-retry-admin-check"
+              >
+                Retry profile check
+              </button>
+            )}
+            <button
+              className="bridge-button secondary"
+              type="button"
+              onClick={onReturnHome}
+              data-testid="button-return-from-admin"
+            >
+              Return to learning space
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+  );
+}
+
+function VideoModal({ url, onClose }: { url: string; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const source = useMemo(() => resolveVideoSource(url), [url]);
+
+  useEffect(() => {
+    closeRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [onClose]);
+
+  return (
+    <div className="bl-video-backdrop" onClick={onClose} role="presentation">
+      <div
+        className="bl-video-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-label="BridgeLIB introduction video"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <button
+          ref={closeRef}
+          type="button"
+          className="bl-video-close"
+          onClick={onClose}
+          aria-label="Close video"
+        >
+          ✕
+        </button>
+        {source ? (
+          source.kind === "embed" ? (
+            <iframe
+              className="bl-video-frame"
+              src={withAutoplay(source.src)}
+              title="BridgeLIB introduction video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
+          ) : (
+            <video className="bl-video-frame" src={source.src} controls autoPlay playsInline />
+          )
+        ) : (
+          <div className="bl-video-empty">
+            <PlayCircle size={56} aria-hidden />
+            <b>Video coming soon</b>
+            <p>Our introduction video is almost ready. Check back shortly to see BridgeLIB in action!</p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export function BridgeHome() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [user, setUser] = useState<User | null>(null);
+  const [restoring, setRestoring] = useState(true);
+  const [mode, setMode] = useState<AuthMode>("signup");
+  const [signupStep, setSignupStep] = useState(1);
+  const [signupDone, setSignupDone] = useState(false);
+  const authFormRef = useRef<HTMLFormElement>(null);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [resetMode, setResetMode] = useState(false);
+  const [recoveryMode, setRecoveryMode] = useState(false);
+  const [selectedPath, setSelectedPath] = useState<LearnerPath>("school_learner");
+  const [busy, setBusy] = useState(false);
+  const [authMessage, setAuthMessage] = useState<Toast>(null);
+  const [toast, setToast] = useState<Toast>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [selectedSubject, setSelectedSubject] = useState<Subject | null>(null);
+  const [classes, setClasses] = useState<LearningClass[]>([]);
+  const [profileState, setProfileState] = useState<"loading" | "ready" | "error">("loading");
+  const [subjectsState, setSubjectsState] = useState<"loading" | "ready" | "error">("loading");
+  const [classesState, setClassesState] = useState<"loading" | "ready" | "error">("loading");
+  const [dashboardError, setDashboardError] = useState("");
+  const [subjectError, setSubjectError] = useState("");
+  const [classError, setClassError] = useState("");
+  const [onboardingBusy, setOnboardingBusy] = useState(false);
+  const [schoolBusy, setSchoolBusy] = useState(false);
+  const [schoolMessage, setSchoolMessage] = useState<Toast>(null);
+  const [videoOpen, setVideoOpen] = useState(false);
+  const siteContent = useSiteContent();
+
+  useEffect(() => {
+    let active = true;
+
+    supabase.auth
+      .getSession()
+      .then(({ data, error }) => {
+        if (!active) return;
+
+        if (error) {
+          setToast({
+            message: `We could not restore your session: ${error.message}`,
+            kind: "error",
+          });
+        }
+
+        setUser(data.session?.user ?? null);
+        setRestoring(false);
+      })
+      .catch((error: unknown) => {
+        if (!active) return;
+
+        setToast({
+          message: getErrorMessage(error, "Could not restore your session."),
+          kind: "error",
+        });
+        setRestoring(false);
+      });
+
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session: Session | null) => {
+      setUser(session?.user ?? null);
+      setRestoring(false);
+
+      if (event === "PASSWORD_RECOVERY") {
+        setRecoveryMode(true);
+        setResetMode(false);
+        setMode("login");
+        setAuthOpen(true);
+        setAuthMessage(null);
+
+        window.setTimeout(() => {
+          document
+            .getElementById("auth-section")
+            ?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }, 100);
+      }
+    });
+
+    return () => {
+      active = false;
+      listener.subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("auth");
+    if (requested === "login" || requested === "signup") {
+      openAuth(requested);
+      window.history.replaceState(null, "", window.location.pathname);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!toast) return;
+
+    const timer = window.setTimeout(() => setToast(null), 4500);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
+
+  useEffect(() => {
+    if (!user) setSelectedSubject(null);
+  }, [user]);
+
+  const loadDashboard = useCallback(async (current: User) => {
+    setProfileState("loading");
+    setSubjectsState("loading");
+    setClassesState("loading");
+    setDashboardError("");
+    setSubjectError("");
+    setClassError("");
+
+    const [profileResult, subjectResult, classResult, roleResult] = await Promise.all([
+      supabase.from("profiles").select("*").eq("id", current.id).maybeSingle(),
+      supabase.from("subjects").select("id,name,description").order("name"),
+      supabase
+        .from("classes")
+        .select("id,name,education_level,grade_level,academic_year,status")
+        .order("created_at", { ascending: false })
+        .limit(20),
+      supabase.from('user_roles').select('role').eq('user_id',current.id),
+    ]);
+
+    if (profileResult.error) {
+      setProfileState("error");
+      setDashboardError(profileResult.error.message);
+    } else {
+      const roles = roleResult.data?.map(r=>r.role) ?? [];
+      const role = roles.includes('admin') ? 'admin' : roles.includes('teacher') ? 'teacher' : roles.includes('school_admin') ? 'school_admin' : 'student';
+      setProfile(profileResult.data ? {...profileResult.data, role: roleResult.error ? null : role} as Profile : null);
+      setProfileState("ready");
+    }
+
+    if (subjectResult.error) {
+      setSubjectsState("error");
+      setSubjectError(subjectResult.error.message);
+    } else {
+      setSubjects((subjectResult.data ?? []) as Subject[]);
+      setSubjectsState("ready");
+    }
+
+    if (classResult.error) {
+      setClassesState("error");
+      setClassError(classResult.error.message);
+    } else {
+      setClasses((classResult.data ?? []) as LearningClass[]);
+      setClassesState("ready");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      void loadDashboard(user);
+    } else {
+      setProfile(null);
+      setSubjects([]);
+      setClasses([]);
+      setProfileState("loading");
+      setSubjectsState("loading");
+      setClassesState("loading");
+    }
+  }, [user?.id, loadDashboard]);
+
+  const openAuth = (nextMode: AuthMode, path: LearnerPath = "school_learner") => {
+    setMode(nextMode);
+    setSelectedPath(path);
+    setResetMode(false);
+    setRecoveryMode(false);
+    setAuthOpen(true);
+    setAuthMessage(null);
+
+    window.setTimeout(() => {
+      document
+        .getElementById("auth-section")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 30);
+  };
+
+  const isSignupWizard = mode === "signup" && !resetMode && !recoveryMode;
+
+  const goNextSignupStep = () => {
+    const step = authFormRef.current?.querySelector<HTMLElement>(`[data-step="${signupStep}"]`);
+    const fields = step ? Array.from(step.querySelectorAll<HTMLInputElement | HTMLSelectElement>("input, select")) : [];
+    for (const field of fields) {
+      if (!field.checkValidity()) {
+        field.reportValidity();
+        return;
+      }
+      if (field instanceof HTMLInputElement && field.type === "file" && field.files?.[0]) {
+        try {
+          validateStudentPhoto(field.files[0]);
+        } catch (error) {
+          setAuthMessage({ message: getErrorMessage(error, "Choose a different photo."), kind: "error" });
+          return;
+        }
+      }
+    }
+    setAuthMessage(null);
+    setSignupStep((s) => Math.min(3, s + 1));
+  };
+
+  const onAuthSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const form = new FormData(event.currentTarget);
+    const email = String(form.get("email") ?? "").trim();
+    const password = String(form.get("password") ?? "");
+
+    setBusy(true);
+    setAuthMessage(null);
+
+    try {
+      if (recoveryMode) {
+        const newPassword = String(form.get("newPassword") ?? "");
+        const confirmPassword = String(form.get("confirmPassword") ?? "");
+
+        if (newPassword.length < 8) {
+          throw new Error("Your new password must be at least 8 characters long.");
+        }
+
+        if (newPassword !== confirmPassword) {
+          throw new Error("The new passwords do not match.");
+        }
+
+        const {
+          data: { session },
+          error: sessionError,
+        } = await supabase.auth.getSession();
+
+        if (sessionError) throw sessionError;
+
+        if (!session) {
+          throw new Error(
+            "Your password-reset session is missing or expired. Request a new reset email and open its latest link.",
+          );
+        }
+
+        const { error } = await supabase.auth.updateUser({
+          password: newPassword,
+        });
+
+        if (error) throw error;
+
+        setRecoveryMode(false);
+        setResetMode(false);
+        setMode("login");
+        setAuthMessage({
+          message: "Your password has been changed. You can now sign in with your new password.",
+          kind: "success",
+        });
+        return;
+      }
+
+      if (resetMode) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/`,
+        });
+
+        if (error) throw error;
+
+        setAuthMessage({
+          message:
+            "If an account exists for that email, a password-reset link has been sent. Check your inbox and spam folder.",
+          kind: "success",
+        });
+        return;
+      }
+
+      if (mode === "signup") {
+        const fullName = String(form.get("fullName") ?? "").trim();
+        const learnerPath = String(form.get("learnerPath") ?? selectedPath) as LearnerPath;
+        const gradeText = String(form.get("gradeLevel") ?? "");
+        const educationLevel = gradeOptions.find(([g]) => g === gradeText)?.[1] ?? "other";
+        const dateOfBirth = String(form.get("dateOfBirth") ?? "");
+        const gender = String(form.get("gender") ?? "");
+        const county = String(form.get("county") ?? "");
+        if (!form.get("terms")) throw new Error("Please agree to the Terms of Service and Privacy Policy.");
+        const gradeLevel = String(form.get("gradeLevel") ?? "").trim() || null;
+        const yearText = String(form.get("examYear") ?? "").trim();
+        const targetExamYear = yearText ? Number(yearText) : null;
+
+        if (password !== String(form.get("signupConfirm") ?? "")) throw new Error("The passwords do not match.");
+        const registration = studentRegistrationSchema.safeParse({fullName,email,password,phone:String(form.get('phone')??''),school:String(form.get('schoolName')??''),learnerPath,educationLevel,gradeLevel:gradeLevel??'',targetExamYear});
+        if (!registration.success) throw new Error(registration.error.issues[0]?.message ?? 'Check your account details.');
+        const photo=form.get('studentPhoto');
+        if (!(photo instanceof File) || photo.size===0) throw new Error('Choose your student photo.');
+        validateStudentPhoto(photo);
+        const { data, error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            emailRedirectTo: new URL(oauthReturnPath(new URLSearchParams(window.location.search).get("next")), window.location.origin).href,
+            data: {
+              full_name: fullName,
+              phone_number: registration.data.phone,
+              school_name: registration.data.school,
+              learner_path: learnerPath,
+              education_level: educationLevel,
+              grade_level: gradeLevel,
+              target_exam_year: targetExamYear,
+              date_of_birth: dateOfBirth || null,
+              gender: gender || null,
+              county: county || null,
+            },
+          },
+        });
+
+        if (error) throw error;
+
+        if (data.session && data.user) {
+          const { error: updateError } = await supabase
+            .from("profiles")
+            .update({
+              full_name: fullName,
+              learner_path: learnerPath,
+              education_level: educationLevel,
+              grade_level: gradeLevel,
+              target_exam_year: targetExamYear,
+              school_name: registration.data.school,
+              county: county || null,
+              onboarding_completed: true,
+              updated_at: new Date().toISOString(),
+            })
+            .eq("id", data.user.id);
+
+          if (updateError) throw new Error('Your account was created, but your learner profile could not be saved. Sign in and try again from your profile.');
+          const photoPath=`${data.user.id}/profile.${photo.type==='image/png'?'png':photo.type==='image/webp'?'webp':'jpg'}`;
+          const uploaded=await supabase.storage.from('student-photos').upload(photoPath,photo,{upsert:true});
+          if(!uploaded.error) await supabase.auth.updateUser({data:{student_photo_path:photoPath}});
+          else setToast({kind:'error',message:'Account created, but your photo could not be saved. You can add it later from your profile.'});
+
+          setAuthMessage({
+            message: "Your account is ready. Opening your BridgeLIB space…",
+            kind: "success",
+          });
+          setUser(data.user);
+          await navigate({to:"/dashboard"});
+        } else {
+          setAuthMessage(null);
+          setSignupDone(true);
+        }
+      } else {
+        const { data, error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+
+        if (error) throw error;
+
+        setUser(data.user);
+        setAuthOpen(false);
+        const next = oauthReturnPath(new URLSearchParams(window.location.search).get("next"));
+        if (next !== "/") { window.location.assign(next); return; }
+        await navigate({to:"/dashboard"});
+      }
+    } catch (error) {
+      setAuthMessage({
+        message: getErrorMessage(error, "Something went wrong. Please try again."),
+        kind: "error",
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onOnboardingSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!user) return;
+
+    const form = new FormData(event.currentTarget);
+    const yearText = String(form.get("target_exam_year") ?? "").trim();
+
+    setOnboardingBusy(true);
+
+    try {
+      const { error } = await supabase
+        .from("profiles")
+        .update({
+          full_name: String(form.get("full_name") ?? "").trim(),
+          learner_path: String(form.get("learner_path") ?? ""),
+          education_level: String(form.get("education_level") ?? ""),
+          grade_level: String(form.get("grade_level") ?? "").trim() || null,
+          target_exam_year: yearText ? Number(yearText) : null,
+          onboarding_completed: true,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", user.id);
+
+      if (error) throw error;
+
+      setToast({
+        message: "Your learner profile has been saved.",
+        kind: "success",
+      });
+      await loadDashboard(user);
+    } catch (error) {
+      setToast({
+        message: getErrorMessage(error, "Your profile could not be saved."),
+        kind: "error",
+      });
+    } finally {
+      setOnboardingBusy(false);
+    }
+  };
+
+  const onSchoolSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!user) return;
+
+    const form = new FormData(event.currentTarget);
+    setSchoolBusy(true);
+    setSchoolMessage(null);
+
+    try {
+      const { error } = await supabase.from("schools").insert({
+        name: String(form.get("schoolName") ?? "").trim(),
+        county: String(form.get("county") ?? "").trim() || null,
+        school_type: String(form.get("schoolType") ?? "public"),
+        created_by: user.id,
+        status: "pending",
+      });
+
+      if (error) throw error;
+
+      setSchoolMessage({
+        message: "Application submitted for review. Your school is not verified yet.",
+        kind: "success",
+      });
+      (event.currentTarget as HTMLFormElement).reset();
+    } catch (error) {
+      setSchoolMessage({
+        message: getErrorMessage(error, "Could not submit the school application."),
+        kind: "error",
+      });
+    } finally {
+      setSchoolBusy(false);
+    }
+  };
+
+  const signOut = async () => {
+    await queryClient.cancelQueries();
+    queryClient.clear();
+    const { error } = await supabase.auth.signOut();
+
+    if (error) {
+      setToast({ message: error.message, kind: "error" });
+    } else {
+      setUser(null);
+      setToast({ message: "You have signed out.", kind: "success" });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      void navigate({ to: "/", replace: true });
+    }
+  };
+
+  const isAdminRoute = pathname === "/admin" || pathname === "/admin/";
+  const isVerifiedAdmin = Boolean(user && profileState === "ready" && profile?.role === "admin");
+
+  const returnHome = () => void navigate({ to: "/" });
+
+  const adminRouteView = !user ? (
+    <AdminAccessNotice
+      message="Sign in with a BridgeLIB administrator account. Access is denied until the profile role can be verified."
+      onReturnHome={returnHome}
+    />
+  ) : profileState === "loading" ? (
+    <main className="admin-access-page" aria-live="polite" data-testid="admin-access-checking">
+      <div className="bridge-wrap">
+        <section className="admin-access-card">
+          <p className="eyebrow">ADMIN ACCESS</p>
+          <h1>Checking your profile</h1>
+          <p>Admin access stays closed until BridgeLIB can verify your database profile.</p>
+          <div className="loading-line" aria-hidden="true" />
+        </section>
+      </div>
+    </main>
+  ) : profileState === "error" ? (
+    <AdminAccessNotice
+      message="We couldn't verify your admin profile. Access is denied until the profile check succeeds."
+      onReturnHome={returnHome}
+      onRetry={() => void loadDashboard(user)}
+    />
+  ) : profile?.role !== "admin" ? (
+    <AdminAccessNotice
+      message="This account does not have an admin role. No management data is available on this page."
+      onReturnHome={returnHome}
+    />
+  ) : (
+    <AdminDashboard onNavigateHome={returnHome} onSignOut={signOut} />
+  );
+
+  const restoreView = restoring ? (
+    <main className="app-section" aria-live="polite">
+      <div className="bridge-wrap">
+        <div className="loading-line" />
+        <div style={{ height: 18 }} />
+        <div className="loading-block" />
+      </div>
+    </main>
+  ) : isAdminRoute ? (
+    adminRouteView
+  ) : user ? (
+    <div className="bl-dash">
+      <aside className="bl-sidebar" aria-label="Dashboard navigation">
+        <Link to="/" className="bl-side-link active">
+          <LayoutDashboard size={18} /> <span>Dashboard</span>
+        </Link>
+        <Link to="/dashboard" className="bl-side-link">
+          <BookOpen size={18} /> <span>My Courses</span>
+        </Link>
+        <Link to="/practice" className="bl-side-link">
+          <GraduationCap size={18} /> <span>Quizzes</span>
+        </Link>
+        <Link to="/wassce" className="bl-side-link">
+          <Layers3 size={18} /> <span>WASSCE</span>
+        </Link>
+        <Link to="/teacher" className="bl-side-link"><UsersRound size={18} />Classes</Link>
+        <Link to="/settings" className="bl-side-link">Settings</Link>
+        {isVerifiedAdmin && (
+          <Link to="/admin" className="bl-side-link">
+            <UsersRound size={18} /> <span>Admin</span>
+          </Link>
+        )}
+        <button type="button" className="bl-side-link bl-side-logout" onClick={signOut}>
+          <LogOut size={18} /> <span>Logout</span>
+        </button>
+      </aside>
+      <main className="app-section" id="dashboard">
+        <div className="bridge-wrap">
+          <header className="app-header">
+            <div>
+              <p className="eyebrow">YOUR BRIDGELIB SPACE</p>
+              <h2 data-testid="text-welcome">
+                {profile?.full_name
+                  ? `Welcome, ${profile.full_name.split(" ")[0]}`
+                  : `Welcome, ${user.email?.split("@")[0] ?? "learner"}`}
+              </h2>
+              <p>
+                {profile?.role === "teacher"
+                  ? "Your teacher workspace is ready to grow."
+                  : "Your learning journey continues here."}
+              </p>
+            </div>
+            <button
+              className="bridge-button secondary"
+              type="button"
+              onClick={signOut}
+              data-testid="button-sign-out"
+            >
+              Sign out <ArrowUpRight size={16} />
+            </button>
+          </header>
+
+          {profileState === "error" && (
+            <div className="dashboard-card" role="alert" data-testid="status-profile-error">
+              <h3>We could not load your profile</h3>
+              <p>{dashboardError}</p>
+              <button className="bridge-button secondary" onClick={() => void loadDashboard(user)}>
+                <RefreshCw size={15} /> Try again
+              </button>
+            </div>
+          )}
+
+          {profileState === "loading" && (
+            <div className="dashboard-card" aria-label="Loading learner profile">
+              <div className="loading-line" />
+              <div style={{ height: 14 }} />
+              <div className="loading-line" />
+            </div>
+          )}
+
+          {profileState === "ready" && profile && !profile.onboarding_completed && (
+            <section className="dashboard-card" aria-labelledby="onboarding-heading">
+              <h3 id="onboarding-heading">Finish your learner profile</h3>
+              <p>
+                These details help BridgeLIB show the right learning information. Your account role
+                cannot be changed here.
+              </p>
+
+              <form className="school-form" onSubmit={onOnboardingSubmit}>
+                <label className="form-field">
+                  Full name
+                  <input name="full_name" defaultValue={profile.full_name ?? ""} required />
+                </label>
+
+                <label className="form-field">
+                  Learning path
+                  <select
+                    name="learner_path"
+                    defaultValue={profile.learner_path ?? "school_learner"}
+                  >
+                    {paths.map((path) => (
+                      <option key={path.id} value={path.id}>
+                        {path.title}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="form-field">
+                  Education level
+                  <select
+                    name="education_level"
+                    defaultValue={profile.education_level ?? "primary"}
+                  >
+                    {educationLevels.map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                <label className="form-field">
+                  Grade / class
+                  <input
+                    name="grade_level"
+                    defaultValue={profile.grade_level ?? ""}
+                    placeholder="For example, Grade 8"
+                  />
+                </label>
+
+                <label className="form-field">
+                  Target WASSCE year
+                  <input
+                    name="target_exam_year"
+                    type="number"
+                    min="2020"
+                    max="2100"
+                    defaultValue={profile.target_exam_year ?? ""}
+                  />
+                </label>
+
+                <button className="bridge-button primary" type="submit" disabled={onboardingBusy}>
+                  {onboardingBusy ? "Saving…" : "Save learner profile"}
+                </button>
+              </form>
+            </section>
+          )}
+
+          <div className="dashboard-grid">
+            <section className="dashboard-card dashboard-main">
+              <span className="dashboard-icon">
+                <BookOpen />
+              </span>
+              <h3>My learning</h3>
+              <p data-testid="text-profile-summary">
+                {profile
+                  ? [
+                      pretty(profile.learner_path),
+                      pretty(profile.education_level),
+                      profile.grade_level,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ") || "Your learner profile is being prepared."
+                  : "Your learning profile is loading."}
+              </p>
+
+              <div className="subject-list" aria-live="polite">
+                {subjectsState === "loading" && (
+                  <>
+                    <div className="loading-block" />
+                    <div className="loading-block" />
+                  </>
+                )}
+
+                {subjectsState === "error" && (
+                  <div className="list-state" role="alert" data-testid="status-subjects-error">
+                    Subjects could not be loaded. {subjectError}
+                    <br />
+                    <button
+                      className="text-button"
+                      onClick={() => user && void loadDashboard(user)}
+                    >
+                      Try again
+                    </button>
+                  </div>
+                )}
+
+                {subjectsState === "ready" && subjects.length === 0 && (
+                  <div className="list-state">
+                    Subject resources will appear here as they are added.
+                  </div>
+                )}
+
+                {subjectsState === "ready" && (
+                  <Dialog
+                    open={selectedSubject !== null}
+                    onOpenChange={(open) => {
+                      if (!open) setSelectedSubject(null);
+                    }}
+                  >
+                    <div className="subject-list">
+                      {subjects.map((subject) => (
+                        <DialogTrigger asChild key={subject.id}>
+                          <button
+                            className="subject-item subject-card-trigger"
+                            type="button"
+                            onClick={() => setSelectedSubject(subject)}
+                          >
+                            <img
+                              src={subjectImageFor(subject.name)}
+                              alt={`${subject.name} learning`}
+                              loading="lazy"
+                              style={{
+                                width: "100%",
+                                height: 132,
+                                objectFit: "cover",
+                                borderRadius: 10,
+                                marginBottom: 10,
+                              }}
+                              onError={(event) => {
+                                event.currentTarget.src = subjectImages["default"] ?? "";
+                              }}
+                            />
+                            <span>{subject.name}</span>
+                            <small>
+                              {subject.description || "Explore lessons and practice questions"}
+                            </small>
+                          </button>
+                        </DialogTrigger>
+                      ))}
+                    </div>
+
+                    <DialogContent className="subject-dialog">
+                      <>
+                        {selectedSubject && (
+                          <>
+                            <DialogHeader className="subject-dialog-header">
+                              <img
+                                src={subjectImageFor(selectedSubject.name)}
+                                alt={`${selectedSubject.name} learning`}
+                                style={{
+                                  width: "100%",
+                                  height: 170,
+                                  objectFit: "cover",
+                                  borderRadius: 12,
+                                  marginBottom: 14,
+                                }}
+                                onError={(event) => {
+                                  event.currentTarget.src = subjectImages["default"] ?? "";
+                                }}
+                              />
+                              <span className="subject-dialog-kicker">SUBJECT OVERVIEW</span>
+                              <DialogTitle className="subject-dialog-title">
+                                {selectedSubject.name}
+                              </DialogTitle>
+                              <DialogDescription className="subject-dialog-description">
+                                {selectedSubject.description?.trim() ||
+                                  "No description has been added for this subject yet."}
+                              </DialogDescription>
+                            </DialogHeader>
+
+                            <section className="subject-learning-note">
+                              <h4>Learning resources</h4>
+                              <p>
+                                Lessons, activities, and practice for {selectedSubject.name} will
+                                appear here as they are added to BridgeLIB.
+                              </p>
+                              <Link to="/practice" className="bridge-button primary">
+                                Open Practice Exams <ArrowRight size={16} />
+                              </Link>
+                            </section>
+
+                            <DialogFooter className="subject-dialog-footer">
+                              <DialogClose asChild>
+                                <button className="bridge-button secondary" type="button">
+                                  Back to subjects
+                                </button>
+                              </DialogClose>
+                            </DialogFooter>
+                          </>
+                        )}
+                      </>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
+            </section>
+
+            <section className="dashboard-card">
+              <span className="dashboard-icon">
+                <UsersRound />
+              </span>
+              <h3>Available classes</h3>
+              <p>
+                Classes visible to your account under current access rules. Class joining is not
+                available yet.
+              </p>
+
+              <div className="subject-list" aria-live="polite">
+                {classesState === "loading" && <div className="loading-block" />}
+
+                {classesState === "error" && (
+                  <div className="list-state" role="alert">
+                    Class information could not be loaded. {classError}
+                    <br />
+                    <button
+                      className="text-button"
+                      onClick={() => user && void loadDashboard(user)}
+                    >
+                      Try again
+                    </button>
+                  </div>
+                )}
+
+                {classesState === "ready" && classes.length === 0 && (
+                  <div className="list-state">
+                    No available classes are currently visible to your account.
+                  </div>
+                )}
+
+                {classesState === "ready" &&
+                  classes.map((item) => (
+                    <div className="subject-item" key={item.id}>
+                      {item.name}
+                      <small>
+                        {[
+                          pretty(item.education_level),
+                          item.grade_level,
+                          item.academic_year,
+                          pretty(item.status),
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")}
+                      </small>
+                    </div>
+                  ))}
+              </div>
+            </section>
+
+            <section className="dashboard-card">
+              <span className="dashboard-icon">
+                <Layers3 />
+              </span>
+              <h3>Practice & exams</h3>
+              <p>
+                Practise subjects, answer exam questions, check your score, and review explanations.
+              </p>
+              <Link to="/practice" className="bridge-button primary">
+                Start Practice <ArrowRight size={16} />
+              </Link>
+            </section>
+
+            <section className="dashboard-card">
+              <span className="dashboard-icon">
+                <ArrowUpRight />
+              </span>
+              <h3>My progress</h3>
+              <Link to="/dashboard" className="bridge-button primary">View saved progress</Link>
+            </section>
+          </div>
+
+          <section className="dashboard-card school-application">
+            <h3>Register a school</h3>
+            <p>
+              Submit a school profile for review. Submitting it does not mean the school is
+              verified.
+            </p>
+
+            <form className="school-form" onSubmit={onSchoolSubmit}>
+              <label className="form-field">
+                School name
+                <input name="schoolName" required maxLength={180} placeholder="School name" />
+              </label>
+
+              <label className="form-field">
+                School type
+                <select name="schoolType" defaultValue="public">
+                  <option value="public">Public</option>
+                  <option value="private">Private</option>
+                  <option value="faith_based">Faith-based</option>
+                  <option value="community">Community</option>
+                  <option value="other">Other</option>
+                </select>
+              </label>
+
+              <label className="form-field">
+                County
+                <input name="county" placeholder="County (optional)" />
+              </label>
+
+              <button className="bridge-button primary" type="submit" disabled={schoolBusy}>
+                {schoolBusy ? "Submitting…" : "Submit school"}
+              </button>
+            </form>
+
+            {schoolMessage && (
+              <p className={`status-message ${schoolMessage.kind}`} role="status">
+                {schoolMessage.message}
+              </p>
+            )}
+          </section>
+
+          {["teacher", "school_admin", "admin"].includes(profile?.role ?? "") && (
+            <section className="dashboard-card teacher-notice">
+              <span className="dashboard-icon">
+                <GraduationCap />
+              </span>
+              <h3>Teacher workspace</h3>
+              <Link to="/teacher" className="bridge-button primary">Open teacher workspace</Link>
+            </section>
+          )}
+        </div>
+      </main>
+    </div>
+  ) : (
+    <>
+      <main>
+        <section className="bl-hero" id="hero">
+          <img className="bl-home-hero-photo" src={homeReferencePhoto} alt="Liberian students with books outside school beside the Liberian flag" />
+          <div className="bl-container bl-hero-inner">
+            <p className="bl-hero-brand">
+              <img src={homeReferenceLogo} alt="" width={64} height={64} />
+              <span>
+                Bridge<span className="bl-red">LIB</span>
+              </span>
+            </p>
+            <h1 className="bl-hero-title">
+              Learn Today,
+              <br />
+              Build <span className="bl-red">Tomorrow.</span>
+            </h1>
+            <p className="bl-hero-text">
+              Your complete online learning platform for Liberia. Study, practice, and achieve your
+              goals with ease.
+            </p>
+            <div className="bl-hero-actions">
+              <Button variant="ghost" className="bl-btn bl-btn-red" onClick={() => openAuth("signup")}>
+                Get Started Free <ArrowRight size={18} />
+              </Button>
+              <Button variant="outline" type="button" className="bl-btn bl-btn-ghost" onClick={() => setVideoOpen(true)}>
+                Watch Video <PlayCircle size={18} />
+              </Button>
+            </div>
+          </div>
+          <div className="bl-container">
+            <div className="bl-benefit-strip">
+              {[
+                [<GraduationCap key="a" size={26} />, "Quality Education", "Learn at your own pace"],
+                [<FileText key="b" size={26} />, "WASSCE Preparation", "Past Questions & Practice"],
+                [<TrendingUp key="c" size={26} />, "Progress Tracking", "Track your growth"],
+                [<UsersRound key="d" size={26} />, "For a Better Liberia", "Empowering the next generation"],
+              ].map(([icon, title, sub]) => (
+                <div className="bl-benefit-item" key={String(title)}>
+                  <span className="bl-benefit-dot">{icon}</span>
+                  <span>
+                    <b>{title}</b>
+                    <small>{sub}</small>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {videoOpen ? <VideoModal url={siteContent.data?.video_url ?? INTRO_VIDEO_URL} onClose={() => setVideoOpen(false)} /> : null}
+
+        <section className="bl-container bl-section-sm">
+          <h2 className="bl-h2 bl-center">Explore Our Learning Categories</h2>
+          <p className="bl-muted bl-center">
+            Choose from a wide range of subjects and resources designed to help you succeed.
+          </p>
+          <div className="bl-cats">
+            {learningCategories.map((c) => (
+              <Link to="/courses" search={{category:c}} className="bl-card bl-cat" key={c}>
+                <SubjectIcon name={c} />
+                <span className="bl-cat-row">
+                  {c} <ArrowRight size={16} />
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <FeaturedCourses />
+
+        <section className="bl-container">
+          <div className="bl-wassce-band">
+            <div className="bl-wassce-copy">
+              <h2>WASSCE Preparation</h2>
+              <p className="bl-wassce-sub">Past Questions, Mock Tests, Study Notes and More</p>
+              <p>
+                Get ready for your WASSCE with our comprehensive preparation resources. Practice past
+                questions, take mock tests, and improve your performance.
+              </p>
+              <div className="bl-hero-actions">
+                <Link to="/practice" className="bl-btn bl-btn-red">
+                  Start Practicing <ArrowRight size={18} />
+                </Link>
+                <Link to="/wassce" className="bl-btn bl-btn-ghost">
+                  Learn More
+                </Link>
+              </div>
+            </div>
+            <ul className="bl-wassce-list">
+              {[
+                [<FileText key="a" size={20} />, "Past Questions", "Real exam questions"],
+                [<ClipboardCheck key="b" size={20} />, "Mock Tests", "Timed practice tests"],
+                [<NotebookPen key="c" size={20} />, "Study Notes", "Key concepts & tips"],
+                [<TrendingUp key="d" size={20} />, "Progress Tracking", "Monitor your progress"],
+              ].map(([icon, t, s]) => (
+                <li key={String(t)}>
+                  <span className="bl-wassce-ico">{icon}</span>
+                  <span>
+                    <b>{t}</b>
+                    <small>{s}</small>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <img className="bl-wassce-img" src={homeReferenceWassce} alt="Student studying for WASSCE" loading="lazy" />
+          </div>
+        </section>
+
+        <section className="bl-container">
+          <div className="bl-join">
+            <img src={homeReferenceJoin} alt="Liberian student holding books" loading="lazy" />
+            <div className="bl-join-copy">
+              <h2>Join BridgeLIB Today</h2>
+              <p className="bl-muted">
+                Be part of a growing community of learners, teachers and schools working together for a
+                brighter Liberia.
+              </p>
+              <div className="bl-join-points">
+                {[
+                  [<Laptop key="a" size={20} />, "Learn", "anytime, anywhere"],
+                  [<Wrench key="b" size={20} />, "Build", "new skills"],
+                  [<Target key="c" size={20} />, "Achieve", "your goals"],
+                  [<HeartHandshake key="d" size={20} />, "Help", "build a better Liberia"],
+                ].map(([icon, t, s]) => (
+                  <div key={String(t)}>
+                    <span className="bl-join-ico">{icon}</span>
+                    <span>
+                      <b>{t}</b>
+                      <small>{s}</small>
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <Button variant="ghost" className="bl-btn bl-btn-red" onClick={() => openAuth("signup")}>
+                Get Started Free <ArrowRight size={18} />
+              </Button>
+            </div>
+          </div>
+        </section>
+
+        <section
+          className={`auth-section ${authOpen ? "" : "hidden"} ${isSignupWizard ? "su-ref" : ""}`}
+          id="auth-section"
+          aria-labelledby="auth-title"
+        >
+          <div className="auth-split">
+            {isSignupWizard ? (
+              <aside className="su-photo">
+                <img src={referencePhotos.about} alt="Smiling Liberian student holding books" />
+                <div className="su-photo-text">
+                  <h3>Join BridgeLIB Today</h3>
+                  <p>Create your free account and start your learning journey towards a brighter future.</p>
+                  <div className="su-stats">
+                    <span><UsersRound size={22} /><b>Free</b><small>Student account</small></span>
+                    <span><BookOpen size={22} /><b>{learningCategories.length}</b><small>Subjects</small></span>
+                    <span><Laptop size={22} /><b>100%</b><small>Online Access</small></span>
+                  </div>
+                </div>
+              </aside>
+            ) : (
+            <aside className="auth-photo" style={{ backgroundImage: `url(${referencePhotos.about})` }}>
+              <div>
+                <h3>Your Future<br/><span className="bl-red">Starts Here</span></h3>
+                <p>Quality education, better opportunities,<br/>a stronger Liberia.</p>
+              </div>
+            </aside>
+            )}
+            <div className="auth-card">
+              <button
+                className="close-button"
+                aria-label="Close account form"
+                onClick={() => {
+                  setAuthOpen(false);
+                  setResetMode(false);
+                  setRecoveryMode(false);
+                  document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                <X size={18} />
+              </button>
+
+              {isSignupWizard ? (
+                <div className="su-head">
+                  <span className="su-head-ico"><UsersRound size={30} /></span>
+                  <div>
+                    <h2 id="auth-title">Create Your Student Account</h2>
+                    <p>Fill in your details to get started. It only takes a few minutes.</p>
+                  </div>
+                </div>
+              ) : (
+              <>
+              <div className="auth-heading">
+                <p className="bl-hero-brand"><img src={shieldImg} alt="" width={40} height={40}/><span>Bridge<span className="bl-red">LIB</span></span></p>
+                <p className="eyebrow">WELCOME TO BRIDGELIB</p>
+                <h2 id="auth-title">
+                  {recoveryMode
+                    ? "Create a new password"
+                    : resetMode
+                      ? "Reset your password"
+                      : "Welcome back"}
+                </h2>
+                <p>
+                  {recoveryMode
+                    ? "Choose and confirm a new password for your BridgeLIB account."
+                    : resetMode
+                      ? "Enter your email and we will send a password-reset link."
+                      : "Sign in to continue learning."}
+                </p>
+              </div>
+
+              {!resetMode && !recoveryMode && (
+                <div className="auth-tabs" role="tablist" aria-label="Account access">
+                  <button
+                    className="auth-tab"
+                    role="tab"
+                    aria-selected={false}
+                    onClick={() => {
+                      setMode("signup");
+                      setSignupStep(1);
+                      setSignupDone(false);
+                      setAuthMessage(null);
+                    }}
+                  >
+                    Create account
+                  </button>
+                  <button className="auth-tab active" role="tab" aria-selected>
+                    Sign in
+                  </button>
+                </div>
+              )}
+              </>
+              )}
+
+              {isSignupWizard && (
+                <ol className="bl-steps" aria-label="Sign-up progress">
+                  {["Personal Info", "Academic Info", "Account Setup", "Complete"].map((label, index) => {
+                    const n = index + 1;
+                    const current = signupDone ? 4 : signupStep;
+                    return (
+                      <li key={label} className={n < current ? "done" : n === current ? "active" : ""} aria-current={n === current ? "step" : undefined}>
+                        <span className="bl-step-dot">{n}</span>
+                        <span>{label}</span>
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
+
+              {isSignupWizard && signupDone ? (
+                <div className="bl-step-complete" data-testid="signup-complete">
+                  <span className="su-done"><Check size={40} strokeWidth={3} /></span>
+                  <h3>Account Created!</h3>
+                  <p>Welcome to BridgeLIB! We sent a confirmation link to your email. Open it, then sign in to access your courses, practice tests and more.</p>
+                  <Button className="bridge-button primary" type="button" onClick={() => { setSignupDone(false); setSignupStep(1); setMode("login"); setAuthMessage(null); }}>
+                    Go to Sign In <ArrowRight size={16} />
+                  </Button>
+                </div>
+              ) : (
+              <form ref={authFormRef} onSubmit={onAuthSubmit} noValidate={isSignupWizard}>
+                {mode === "signup" && !resetMode && !recoveryMode && (
+                  <>
+                  <div data-step="1" hidden={signupStep !== 1}>
+                    <h3 className="su-step-title">1. Personal Information</h3>
+                    <div className="su-grid">
+                      <label className="su-box"><span className="su-ico"><UsersRound size={18} /></span><span><span className="su-l">Full Name <em>*</em></span><input name="fullName" autoComplete="name" placeholder="Enter your full name" required /></span></label>
+                      <label className="su-box"><span className="su-ico"><FileText size={18} /></span><span><span className="su-l">Email Address <em>*</em></span><input name="email" type="email" autoComplete="email" placeholder="Enter your email address" required /></span></label>
+                      <label className="su-box"><span className="su-ico"><Laptop size={18} /></span><span><span className="su-l">Phone Number <em>*</em></span><input name="phone" type="tel" autoComplete="tel" placeholder="+231 770 123 456" required /></span></label>
+                      <label className="su-box"><span className="su-ico"><Timer size={18} /></span><span><span className="su-l">Date of Birth <em>*</em></span><input name="dateOfBirth" type="date" max={new Date().toISOString().slice(0, 10)} required /></span></label>
+                      <fieldset className="su-gender">
+                        <legend>Gender <em>*</em></legend>
+                        {["Male", "Female", "Prefer not to say"].map((g, i) => (
+                          <label key={g}><input type="radio" name="gender" value={g} defaultChecked={i === 0} required /> {g}</label>
+                        ))}
+                      </fieldset>
+                      <label className="su-plain"><span className="su-l">County <em>*</em></span>
+                        <select name="county" required defaultValue="">
+                          <option value="" disabled>Select your county</option>
+                          {liberianCounties.map((c) => <option key={c} value={c}>{c}</option>)}
+                        </select>
+                      </label>
+                      <label className="su-plain su-wide"><span className="su-l">School Name <em>*</em></span>
+                        <span className="su-box su-inline"><span className="su-ico"><GraduationCap size={18} /></span><input name="schoolName" autoComplete="organization" placeholder="Enter your school name" required /></span>
+                      </label>
+                    </div>
+                  </div>
+                  <div data-step="2" hidden={signupStep !== 2}>
+                    <h3 className="su-step-title">2. Academic Information</h3>
+                    <div className="su-grid">
+                      <label className="su-plain"><span className="su-l">Current Class/Grade <em>*</em></span>
+                        <select name="gradeLevel" required defaultValue="">
+                          <option value="" disabled>Select your class</option>
+                          {gradeOptions.map(([v]) => <option key={v} value={v}>{v}</option>)}
+                        </select>
+                      </label>
+                      <label className="su-plain"><span className="su-l">Exam Type <em>*</em></span>
+                        <select name="learnerPath" value={selectedPath} onChange={(event) => setSelectedPath(event.target.value as LearnerPath)}>
+                          <option value="wassce_candidate">WASSCE</option>
+                          <option value="school_learner">School exams (no WASSCE yet)</option>
+                          <option value="independent_learner">Independent learner</option>
+                        </select>
+                      </label>
+                      {selectedPath === "wassce_candidate" && (
+                        <label className="su-plain">Target WASSCE Year <span className="muted">(optional)</span>
+                          <input name="examYear" type="number" min="2020" max="2100" placeholder="For example, 2027" />
+                        </label>
+                      )}
+                      <label className="su-plain"><span className="su-l">Student Photo <em>*</em></span>
+                        <input name="studentPhoto" type="file" accept="image/jpeg,image/png,image/webp" required />
+                        <small>JPG, PNG or WebP, up to 5 MB.</small>
+                      </label>
+                    </div>
+                  </div>
+                  </>
+                )}
+
+                <div data-step="3" hidden={isSignupWizard && signupStep !== 3}>
+                {isSignupWizard && <h3 className="su-step-title">3. Account Setup</h3>}
+                {!recoveryMode && !isSignupWizard && (
+                  <label className="form-field">
+                    Email address
+                    <input
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      placeholder="you@example.com"
+                      required
+                    />
+                  </label>
+                )}
+
+                {!resetMode && !recoveryMode && (
+                  <label className="form-field">
+                    {isSignupWizard ? <span className="su-l">Password <em>*</em></span> : "Password"}
+                    <input
+                      name="password"
+                      type="password"
+                      autoComplete={mode === "signup" ? "new-password" : "current-password"}
+                      minLength={8}
+                      placeholder="At least 8 characters"
+                      required
+                    />
+                  </label>
+                )}
+                {isSignupWizard && (
+                  <>
+                    <label className="form-field">
+                      <span className="su-l">Confirm Password <em>*</em></span>
+                      <input name="signupConfirm" type="password" autoComplete="new-password" minLength={8} placeholder="Enter the password again" required />
+                    </label>
+                    <label className="su-terms">
+                      <input name="terms" type="checkbox" required />
+                      <span>I agree to the <Link to="/terms">Terms of Service</Link> and <Link to="/privacy">Privacy Policy</Link></span>
+                    </label>
+                  </>
+                )}
+                </div>
+
+                {recoveryMode && (
+                  <>
+                    <label className="form-field">
+                      New password
+                      <input
+                        name="newPassword"
+                        type="password"
+                        autoComplete="new-password"
+                        minLength={8}
+                        placeholder="At least 8 characters"
+                        required
+                      />
+                    </label>
+
+                    <label className="form-field">
+                      Confirm new password
+                      <input
+                        name="confirmPassword"
+                        type="password"
+                        autoComplete="new-password"
+                        minLength={8}
+                        placeholder="Enter the new password again"
+                        required
+                      />
+                    </label>
+                  </>
+                )}
+
+                {isSignupWizard && signupStep < 3 ? (
+                  <div className="bl-step-actions" key="wizard-actions">
+                    {signupStep > 1 && (
+                      <Button className="bridge-button" type="button" variant="outline" onClick={() => setSignupStep((s) => s - 1)}>Back</Button>
+                    )}
+                    <Button key="next" className="bridge-button primary button-full" type="button" onClick={goNextSignupStep}>
+                      Next Step <ArrowRight size={16} />
+                    </Button>
+                  </div>
+                ) : (
+                <div className="bl-step-actions" key="submit-actions">
+                {isSignupWizard && (
+                  <Button className="bridge-button" type="button" variant="outline" onClick={() => setSignupStep(2)}>Back</Button>
+                )}
+                <Button key="submit" className="bridge-button primary button-full" type="submit" disabled={busy}>
+                  {busy
+                    ? recoveryMode
+                      ? "Updating password…"
+                      : resetMode
+                        ? "Sending link…"
+                        : mode === "signup"
+                          ? "Creating account…"
+                          : "Signing in…"
+                    : recoveryMode
+                      ? "Save new password"
+                      : resetMode
+                        ? "Send password-reset link"
+                        : mode === "signup"
+                          ? "Create Account"
+                          : "Sign in"}
+                  <ArrowRight size={16} />
+                </Button>
+                </div>
+                )}
+
+                {mode === "login" && !resetMode && !recoveryMode && (
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={() => {
+                      setResetMode(true);
+                      setAuthMessage(null);
+                    }}
+                  >
+                    Forgot password?
+                  </button>
+                )}
+
+                {(resetMode || recoveryMode) && (
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={() => {
+                      setResetMode(false);
+                      setRecoveryMode(false);
+                      setAuthMessage(null);
+                      setMode("login");
+                    }}
+                  >
+                    Back to sign in
+                  </button>
+                )}
+
+                {authMessage && (
+                  <p className={`status-message ${authMessage.kind}`} role="status">
+                    {authMessage.message}
+                  </p>
+                )}
+              </form>
+              )}
+
+              {isSignupWizard ? (
+                !signupDone && (
+                  <p className="su-signin">
+                    Already have an account?{" "}
+                    <button type="button" onClick={() => { setMode("login"); setAuthMessage(null); }}>Sign In</button>
+                  </p>
+                )
+              ) : (
+                <p className="auth-note">
+                  Teacher and school access use a separate verification process. This learner form
+                  cannot grant teacher privileges.
+                </p>
+              )}
+            </div>
+            {isSignupWizard && (
+              <aside className="su-why" aria-label="Why join BridgeLIB">
+                <h3>Why Join BridgeLIB?</h3>
+                <p>Get access to quality education, exam preparation and resources — all in one place.</p>
+                <ul>
+                  {[
+                    [<BookOpen key="a" size={20} />, "WASSCE Past Questions", "Published school records"],
+                    [<ClipboardCheck key="b" size={20} />, "Interactive Practice Tests", "& Quizzes"],
+                    [<NotebookPen key="c" size={20} />, "Study Notes & Revision", "Materials"],
+                    [<TrendingUp key="d" size={20} />, "Progress Tracking", "& Certificates"],
+                    [<Laptop key="e" size={20} />, "Learn Anytime, Anywhere", "(Phone & Web)"],
+                  ].map(([icon, t, s]) => (
+                    <li key={String(t)}><span>{icon}</span><div><b>{t}</b><small>{s}</small></div></li>
+                  ))}
+                </ul>
+                <h4>I am a...</h4>
+                <div className="su-roles">
+                  <button type="button" className="active" aria-pressed="true"><GraduationCap size={22} /><span><b>Student</b><small>Learn and grow</small></span></button>
+                  <button type="button" aria-pressed="false" onClick={() => setToast({ kind: "error", message: "Teacher accounts are set up by a school administrator after verification. This form creates student accounts only." })}><UsersRound size={22} /><span><b>Teacher</b><small>Teach and inspire</small></span></button>
+                </div>
+                <blockquote>
+                  <span>“Education is the key to a brighter tomorrow.”</span>
+                  <img src={signupFlag} alt="Liberian flag" />
+                </blockquote>
+              </aside>
+            )}
+          </div>
+        </section>
+      </main>
+
+      <SiteFooter />
+    </>
+  );
+
+  return (
+    <div className={`bridge-shell ${!user && !isAdminRoute ? 'bl-home-reference' : ''}`}>
+      <SiteHeader
+        actions={
+          user ? (
+            <>
+              {isVerifiedAdmin && (
+                <Link to="/admin" className="bl-btn bl-btn-outline bl-btn-sm">
+                  Admin
+                </Link>
+              )}
+              <button className="bl-btn bl-btn-primary bl-btn-sm" type="button" onClick={signOut}>
+                Logout
+              </button>
+            </>
+          ) : undefined
+        }
+      />
+
+      {restoreView}
+
+      {toast && (
+        <div className={`toast ${toast.kind}`} role="status" data-testid="status-toast">
+          {toast.message}
+        </div>
+      )}
+    </div>
+  );
+}
+
+export function PracticePage() {
+  const feedback = useServerFn(practiceFeedback);
+  const feedbackVersion = useRef(0);
+  const [subjects, setSubjects] = useState<Subject[]>([]);
+  const [subjectId, setSubjectId] = useState("");
+  useEffect(() => { const requested = new URLSearchParams(window.location.search).get('subject'); if (requested) setSubjectId(requested); }, []);
+  const [questions, setQuestions] = useState<PracticeQuestion[]>([]);
+  const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [review, setReview] = useState<ReviewItem[]>([]);
+  const [result, setResult] = useState<ExamResult | null>(null);
+  const [secondsLeft, setSecondsLeft] = useState(30 * 60);
+  const [loading, setLoading] = useState(true);
+  const [examStarted, setExamStarted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [authRequired, setAuthRequired] = useState(false);
+  const submittingRef = useRef(false);
+
+  useEffect(() => {
+    let active = true;
+
+    (async () => {
+      setLoading(true);
+      setErrorMessage("");
+
+      try {
+        const { data, error } = await supabase
+          .from("subjects")
+          .select("id,name,description")
+          .order("name");
+
+        if (error) throw error;
+
+        if (active) setSubjects((data ?? []) as Subject[]);
+      } catch (error) {
+        if (active) {
+          setErrorMessage(getErrorMessage(error, "Could not load subjects. Try again."));
+        }
+      } finally {
+        if (active) setLoading(false);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!examStarted || result) return;
+
+    const timer = window.setInterval(() => {
+      setSecondsLeft((previous) => Math.max(0, previous - 1));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [examStarted, result]);
+
+  async function startExam() {
+    if (!subjectId) {
+      setErrorMessage("Please choose a subject first.");
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage("");
+    setAuthRequired(false);
+    feedbackVersion.current += 1;
+    setQuestions([]);
+    setExamStarted(false);
+    setAnswers({});
+    setReview([]);
+    setResult(null);
+    submittingRef.current = false;
+
+    try {
+      const who = await supabase.auth.getUser();
+      if (!who.data.user) { setAuthRequired(true); throw new Error("Please sign in to start a practice test."); }
+      const { data, error } = await supabase
+        .from("exam_questions")
+        .select("id,prompt,options,explanation,exam_type")
+        .eq("subject_id", Number(subjectId))
+        .eq("is_published", true)
+        .limit(20);
+
+      if (error) throw error;
+
+      const valid = publishedPracticeQuestions(data ?? []);
+      if (!valid.length) throw new Error("No published exam questions are available for this subject yet. No sample test has been substituted.");
+      setQuestions(valid);
+
+      setSecondsLeft(30 * 60);
+      setExamStarted(true);
+    } catch (error) {
+      const { data: who } = await supabase.auth.getUser();
+      if (!who.user) {
+        setAuthRequired(true);
+        setErrorMessage("Please sign in to start a practice test.");
+      } else {
+        setErrorMessage(getErrorMessage(error, "Could not load the questions. Please try again."));
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function submitExam(timeExpired = false) {
+    if (submittingRef.current || result || questions.length === 0) return;
+
+    const answered = questions.filter((question) => answers[question.id]);
+
+    if (!timeExpired && answered.length === 0) {
+      setErrorMessage("Answer at least one question before submitting.");
+      return;
+    }
+
+    if (answered.length === 0) {
+      setErrorMessage(
+        "No answers were recorded. Please answer at least one question before submitting.",
+      );
+      setExamStarted(false);
+      return;
+    }
+
+    submittingRef.current = true;
+    setSubmitting(true);
+    setErrorMessage("");
+
+    try {
+      const { data: authData, error: authError } = await supabase.auth.getUser();
+
+      if (authError) throw authError;
+
+      if (!authData.user) {
+        setAuthRequired(true);
+        throw new Error("Please sign in to BridgeLIB before submitting your exam.");
+      }
+
+      const payload = answered.map((question) => ({
+        question_id: question.id,
+        selected_option: answers[question.id],
+      }));
+
+      const { data, error } = await supabase.rpc("submit_exam_attempt", {
+        p_answers: payload,
+      });
+
+      if (error) throw error;
+
+      const examResult = data as ExamResult;
+
+      if (
+        !examResult ||
+        typeof examResult.score !== "number" ||
+        typeof examResult.total_questions !== "number"
+      ) {
+        throw new Error(
+          "The exam was submitted, but the server returned results in an unexpected format.",
+        );
+      }
+
+      setResult(examResult);
+      setReview(Array.isArray(examResult.review) ? examResult.review : []);
+      setExamStarted(false);
+    } catch (error) {
+      setErrorMessage(getErrorMessage(error, "Could not submit your exam. Please try again."));
+      submittingRef.current = false;
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  useEffect(() => {
+    if (examStarted && secondsLeft === 0 && !result && !submitting) {
+      void submitExam(true);
+    }
+  }, [secondsLeft, examStarted, result, submitting]);
+
+  async function answerQuestion(qid: string, oid: string) {
+    if (result || submitting) return;
+    const version = feedbackVersion.current;
+    setAnswers(prev => ({ ...prev, [qid]: oid }));
+    const question = questions.find(q => q.id === qid);
+    if (!question) return;
+    try {
+      const item = await feedback({ data: { question_id: qid, selected_option: oid } });
+      if (version !== feedbackVersion.current) return;
+      setReview(prev => [...prev.filter(r => r.question_id !== qid), { ...item, prompt: question.prompt }]);
+    } catch { setErrorMessage('Immediate feedback could not load for this answer. You can still submit your test for marking.'); }
+  }
+
+  function resetPractice() {
+    feedbackVersion.current += 1;
+    setResult(null);
+    setReview([]);
+    setQuestions([]);
+    setAnswers({});
+    setExamStarted(false);
+    setSecondsLeft(30 * 60);
+    setErrorMessage("");
+    setAuthRequired(false);
+    submittingRef.current = false;
+  }
+
+  return (
+    <div className="bl-site">
+      <SiteHeader student />
+      <PracticeView
+        subjects={subjects}
+        subjectId={subjectId}
+        onSubject={(id) => { setSubjectId(id); setErrorMessage(""); }}
+        questions={questions}
+        answers={answers}
+        onAnswer={(qid, oid) => void answerQuestion(qid, oid)}
+        result={result}
+        review={review}
+        secondsLeft={secondsLeft}
+        loading={loading}
+        examStarted={examStarted}
+        submitting={submitting}
+        errorMessage={errorMessage}
+        authRequired={authRequired}
+        onStart={() => void startExam()}
+        onSubmit={() => void submitExam()}
+        onReset={resetPractice}
+      />
+      <SiteFooter />
+    </div>
+  );
+}
