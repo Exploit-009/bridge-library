@@ -16,3 +16,4 @@
 - [ ] BridgeLIB AI dashboard page (chat, chips, feature tiles)
 - [ ] Footer Help/Contact/social links real
 - [ ] Signup e2e: blocked on email confirmation (external backend)
+- [ ] Teacher four-step signup (teacher access needs admin approval)
