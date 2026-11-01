@@ -10,3 +10,6 @@
 - [x] Help Center & FAQ page matching reference
 - [ ] Sign Up flow matching reference (desktop + mobile steps)
 - [ ] Student Dashboard with BridgeLIB AI matching reference
+
+- [ ] AI explainer / practice quiz tool (/study-tools)
+- [ ] Four-step student signup flow with role selection + dashboard redirect
