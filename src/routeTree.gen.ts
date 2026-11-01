@@ -46,6 +46,7 @@ import { Route as ApiStudyToolsRouteImport } from './routes/api/study-tools'
 import { Route as CoursesSubjectIdRouteImport } from './routes/courses_.$subjectId'
 import { Route as PracticePastQuestionsRouteImport } from './routes/practice_.past-questions'
 import { Route as PracticeStudyNotesRouteImport } from './routes/practice_.study-notes'
+import { Route as SignupTeacherRouteImport } from './routes/signup_.teacher'
 import { Route as StudyGuideThreadIdRouteImport } from './routes/study-guide_.$threadId'
 import { Route as StudyGuideStepsRouteImport } from './routes/study-guide_.steps'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -237,6 +238,11 @@ const PracticeStudyNotesRoute = PracticeStudyNotesRouteImport.update({
   path: '/practice/study-notes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupTeacherRoute = SignupTeacherRouteImport.update({
+  id: '/signup_/teacher',
+  path: '/signup/teacher',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudyGuideThreadIdRoute = StudyGuideThreadIdRouteImport.update({
   id: '/study-guide_/$threadId',
   path: '/study-guide/$threadId',
@@ -297,6 +303,7 @@ export interface FileRoutesByFullPath {
   '/courses/$subjectId': typeof CoursesSubjectIdRoute
   '/practice/past-questions': typeof PracticePastQuestionsRoute
   '/practice/study-notes': typeof PracticeStudyNotesRoute
+  '/signup/teacher': typeof SignupTeacherRoute
   '/study-guide/$threadId': typeof StudyGuideThreadIdRoute
   '/study-guide/steps': typeof StudyGuideStepsRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -340,6 +347,7 @@ export interface FileRoutesByTo {
   '/courses/$subjectId': typeof CoursesSubjectIdRoute
   '/practice/past-questions': typeof PracticePastQuestionsRoute
   '/practice/study-notes': typeof PracticeStudyNotesRoute
+  '/signup/teacher': typeof SignupTeacherRoute
   '/study-guide/$threadId': typeof StudyGuideThreadIdRoute
   '/study-guide/steps': typeof StudyGuideStepsRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -384,6 +392,7 @@ export interface FileRoutesById {
   '/courses_/$subjectId': typeof CoursesSubjectIdRoute
   '/practice_/past-questions': typeof PracticePastQuestionsRoute
   '/practice_/study-notes': typeof PracticeStudyNotesRoute
+  '/signup_/teacher': typeof SignupTeacherRoute
   '/study-guide_/$threadId': typeof StudyGuideThreadIdRoute
   '/study-guide_/steps': typeof StudyGuideStepsRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -429,6 +438,7 @@ export interface FileRouteTypes {
     | '/courses/$subjectId'
     | '/practice/past-questions'
     | '/practice/study-notes'
+    | '/signup/teacher'
     | '/study-guide/$threadId'
     | '/study-guide/steps'
     | '/.lovable/oauth/consent'
@@ -472,6 +482,7 @@ export interface FileRouteTypes {
     | '/courses/$subjectId'
     | '/practice/past-questions'
     | '/practice/study-notes'
+    | '/signup/teacher'
     | '/study-guide/$threadId'
     | '/study-guide/steps'
     | '/.lovable/oauth/consent'
@@ -515,6 +526,7 @@ export interface FileRouteTypes {
     | '/courses_/$subjectId'
     | '/practice_/past-questions'
     | '/practice_/study-notes'
+    | '/signup_/teacher'
     | '/study-guide_/$threadId'
     | '/study-guide_/steps'
     | '/.lovable/oauth/consent'
@@ -559,6 +571,7 @@ export interface RootRouteChildren {
   CoursesSubjectIdRoute: typeof CoursesSubjectIdRoute
   PracticePastQuestionsRoute: typeof PracticePastQuestionsRoute
   PracticeStudyNotesRoute: typeof PracticeStudyNotesRoute
+  SignupTeacherRoute: typeof SignupTeacherRoute
   StudyGuideThreadIdRoute: typeof StudyGuideThreadIdRoute
   StudyGuideStepsRoute: typeof StudyGuideStepsRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
@@ -826,6 +839,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PracticeStudyNotesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup_/teacher': {
+      id: '/signup_/teacher'
+      path: '/signup/teacher'
+      fullPath: '/signup/teacher'
+      preLoaderRoute: typeof SignupTeacherRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/study-guide_/$threadId': {
       id: '/study-guide_/$threadId'
       path: '/study-guide/$threadId'
@@ -896,6 +916,7 @@ const rootRouteChildren: RootRouteChildren = {
   CoursesSubjectIdRoute: CoursesSubjectIdRoute,
   PracticePastQuestionsRoute: PracticePastQuestionsRoute,
   PracticeStudyNotesRoute: PracticeStudyNotesRoute,
+  SignupTeacherRoute: SignupTeacherRoute,
   StudyGuideThreadIdRoute: StudyGuideThreadIdRoute,
   StudyGuideStepsRoute: StudyGuideStepsRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
