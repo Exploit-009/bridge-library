@@ -110,5 +110,5 @@ export const adminSchools = createServerFn({ method: "POST" }).middleware([requi
     supabase.from("exam_papers").select("*").order("exam_year", { ascending: false }).limit(1000),
     supabase.from("subjects").select("id,name"),
   ]);
-  return { schools: must(schools) as Array<Record<string, any>>, papers: must(papers) as Array<Record<string, any>>, subjects: must(subjects) as Array<{ id: number; name: string }> };
+  return { schools: must(schools) as any[], papers: must(papers) as any[], subjects: must(subjects) as Array<{ id: number; name: string }> };
 });
