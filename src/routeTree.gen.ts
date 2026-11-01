@@ -31,6 +31,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SiteContentRouteImport } from './routes/site-content'
 import { Route as StudyGuideRouteImport } from './routes/study-guide'
 import { Route as StudyToolsRouteImport } from './routes/study-tools'
@@ -158,6 +159,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SiteContentRoute = SiteContentRouteImport.update({
   id: '/site-content',
   path: '/site-content',
@@ -264,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
@@ -304,6 +311,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
@@ -345,6 +353,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
   '/settings': typeof SettingsRoute
+  '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
@@ -387,6 +396,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/settings'
+    | '/signup'
     | '/site-content'
     | '/study-guide'
     | '/study-tools'
@@ -427,6 +437,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/settings'
+    | '/signup'
     | '/site-content'
     | '/study-guide'
     | '/study-tools'
@@ -467,6 +478,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/settings'
+    | '/signup'
     | '/site-content'
     | '/study-guide'
     | '/study-tools'
@@ -508,6 +520,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
   SettingsRoute: typeof SettingsRoute
+  SignupRoute: typeof SignupRoute
   SiteContentRoute: typeof SiteContentRoute
   StudyGuideRoute: typeof StudyGuideRoute
   StudyToolsRoute: typeof StudyToolsRoute
@@ -682,6 +695,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/signup': {
+      id: '/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof SignupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/site-content': {
       id: '/site-content'
       path: '/site-content'
@@ -820,6 +840,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
   SettingsRoute: SettingsRoute,
+  SignupRoute: SignupRoute,
   SiteContentRoute: SiteContentRoute,
   StudyGuideRoute: StudyGuideRoute,
   StudyToolsRoute: StudyToolsRoute,
