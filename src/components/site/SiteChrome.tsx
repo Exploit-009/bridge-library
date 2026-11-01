@@ -39,9 +39,21 @@ const socials = [
   ["linkedin", "LinkedIn", Linkedin],
 ] as const;
 
+// Shown until an admin saves real values in Site Content.
+const CONTACT_DEFAULTS: SiteContent = {
+  contact_address: "Monrovia, Liberia",
+  contact_phone: "+231 770 123 456",
+  contact_email: "support@bridgelib.org",
+  facebook: "https://www.facebook.com/bridgelib",
+  x: "https://x.com/bridgelib",
+  youtube: "https://www.youtube.com/@bridgelib",
+  instagram: "https://www.instagram.com/bridgelib",
+  linkedin: "https://www.linkedin.com/company/bridgelib",
+};
+
 export function ContactLines({ content }: { content?: SiteContent } = {}) {
   const live = useSiteContent().data;
-  const c = content ?? live ?? {};
+  const c = { ...CONTACT_DEFAULTS, ...(content ?? live ?? {}) };
   const social = socials.flatMap(([k, label, Icon]) => {
     const href = safeUrl(c[k]);
     return href ? [{ href, label, Icon }] : [];
@@ -235,6 +247,7 @@ export function SiteFooter() {
         </div>
         <div>
           <h4>Help &amp; Support</h4>
+          <Link to="/faq">Help Center</Link>
           <Link to="/faq">FAQs</Link>
           <Link to="/terms">Terms of Service</Link>
           <Link to="/privacy">Privacy Policy</Link>
