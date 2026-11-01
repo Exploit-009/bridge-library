@@ -15,7 +15,7 @@ function Shell({ title, text, q, children }: { title: string; text: string; q: {
     <Link to="/admin-dashboard" className="bl-link">← Admin dashboard</Link>
     <nav className="ap-nav">{NAV.map(([to, l]) => <Link key={to} to={to} activeProps={{ className: "on" }}>{l}</Link>)}</nav>
     <header><h1 className="bl-page-title">{title}</h1><p className="bl-muted">{text}</p></header>
-    {q.isPending ? <p>Loading…</p> : q.error ? <EmptyState title="Administrator access required" text={q.error instanceof Error ? q.error.message : "Please sign in."} action={<a href="/?auth=login" className="bl-btn bl-btn-primary">Sign in as admin</a>} /> : children}
+    {q.isPending ? <p>Loading…</p> : q.error ? <EmptyState title="Administrator access required" text={q.error instanceof Error ? q.error.message : "Please sign in."} action={<a href="/admin-login" className="bl-btn bl-btn-primary">Sign in as admin</a>} /> : children}
   </section></SiteLayout>;
 }
 function useRun(refetch: () => unknown) {

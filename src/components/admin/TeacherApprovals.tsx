@@ -41,7 +41,7 @@ export function TeacherApprovalsPage() {
         <p className="bl-muted">Teachers who signed up at /signup/teacher appear here. Approving unlocks their teacher dashboard.</p>
         {msg && <p role="status" className="bl-mt">{msg}</p>}
         {q.isPending ? <p className="bl-mt">Loading requests…</p>
-          : q.error ? <EmptyState title="Approvals unavailable" text={q.error instanceof Error ? q.error.message : "Please try again."} action={<a href="/?auth=login" className="bl-btn bl-btn-primary">Sign in as admin</a>} />
+          : q.error ? <EmptyState title="Approvals unavailable" text={q.error instanceof Error ? q.error.message : "Please try again."} action={<a href="/admin-login" className="bl-btn bl-btn-primary">Sign in as admin</a>} />
           : <>
             <h2 className="bl-h2 bl-mt-lg">Pending ({pending.length})</h2>
             {!pending.length ? <p className="bl-muted">No teacher requests waiting.</p> :
