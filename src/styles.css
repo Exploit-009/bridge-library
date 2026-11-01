@@ -2837,3 +2837,4 @@ html.sp-large-text { font-size: 112.5%; }
 .ai-upgrade{display:flex;gap:1rem;align-items:center;flex-wrap:wrap;padding:1rem 1.25rem;border-radius:1rem;background:var(--primary);color:var(--primary-foreground)}
 .ai-upgrade div{flex:1;display:grid}.ai-upgrade small{opacity:.85}
 @media (max-width:900px){.ai-grid{grid-template-columns:1fr}.ai-tiles{grid-template-columns:1fr 1fr}.ai-hero{grid-template-columns:1fr;padding:1.25rem 1.25rem 0}.ai-hero img{height:180px}}
+.ai-hero h1{color:var(--primary-foreground)}

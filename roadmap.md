@@ -13,7 +13,7 @@
 
 - [x] AI explainer / practice quiz tool (/study-tools)
 - [x] Four-step student signup flow with role selection + dashboard redirect
-- [ ] BridgeLIB AI dashboard page (chat, chips, feature tiles)
-- [ ] Footer Help/Contact/social links real
+- [x] BridgeLIB AI dashboard page (chat, chips, feature tiles)
+- [x] Footer Help/Contact/social links real
 - [ ] Signup e2e: blocked on email confirmation (external backend)
-- [ ] Teacher four-step signup (teacher access needs admin approval)
+- [x] Teacher four-step signup (teacher access needs admin approval)
