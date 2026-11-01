@@ -37,6 +37,7 @@ import { Route as SiteContentRouteImport } from './routes/site-content'
 import { Route as StudyGuideRouteImport } from './routes/study-guide'
 import { Route as StudyToolsRouteImport } from './routes/study-tools'
 import { Route as TeacherRouteImport } from './routes/teacher'
+import { Route as TeacherApprovalsRouteImport } from './routes/teacher-approvals'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WassceRouteImport } from './routes/wassce'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
@@ -192,6 +193,11 @@ const TeacherRoute = TeacherRouteImport.update({
   path: '/teacher',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeacherApprovalsRoute = TeacherApprovalsRouteImport.update({
+  id: '/teacher-approvals',
+  path: '/teacher-approvals',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -294,6 +300,7 @@ export interface FileRoutesByFullPath {
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
+  '/teacher-approvals': typeof TeacherApprovalsRoute
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -338,6 +345,7 @@ export interface FileRoutesByTo {
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
+  '/teacher-approvals': typeof TeacherApprovalsRoute
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -383,6 +391,7 @@ export interface FileRoutesById {
   '/study-guide': typeof StudyGuideRoute
   '/study-tools': typeof StudyToolsRoute
   '/teacher': typeof TeacherRoute
+  '/teacher-approvals': typeof TeacherApprovalsRoute
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -429,6 +438,7 @@ export interface FileRouteTypes {
     | '/study-guide'
     | '/study-tools'
     | '/teacher'
+    | '/teacher-approvals'
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
@@ -473,6 +483,7 @@ export interface FileRouteTypes {
     | '/study-guide'
     | '/study-tools'
     | '/teacher'
+    | '/teacher-approvals'
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
@@ -517,6 +528,7 @@ export interface FileRouteTypes {
     | '/study-guide'
     | '/study-tools'
     | '/teacher'
+    | '/teacher-approvals'
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
@@ -562,6 +574,7 @@ export interface RootRouteChildren {
   StudyGuideRoute: typeof StudyGuideRoute
   StudyToolsRoute: typeof StudyToolsRoute
   TeacherRoute: typeof TeacherRoute
+  TeacherApprovalsRoute: typeof TeacherApprovalsRoute
   TermsRoute: typeof TermsRoute
   WassceRoute: typeof WassceRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
@@ -776,6 +789,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeacherRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teacher-approvals': {
+      id: '/teacher-approvals'
+      path: '/teacher-approvals'
+      fullPath: '/teacher-approvals'
+      preLoaderRoute: typeof TeacherApprovalsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/terms': {
       id: '/terms'
       path: '/terms'
@@ -906,6 +926,7 @@ const rootRouteChildren: RootRouteChildren = {
   StudyGuideRoute: StudyGuideRoute,
   StudyToolsRoute: StudyToolsRoute,
   TeacherRoute: TeacherRoute,
+  TeacherApprovalsRoute: TeacherApprovalsRoute,
   TermsRoute: TermsRoute,
   WassceRoute: WassceRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
