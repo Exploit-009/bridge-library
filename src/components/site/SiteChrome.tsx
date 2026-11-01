@@ -28,6 +28,7 @@ import {
 import { supabase } from "@/lib/supabase";
 import shieldImg from "@/assets/bridgelib-shield.png";
 import homeLogo from "@/assets/bridgelib-shield.png";
+import { syncTeacherRequest } from "@/lib/teacher-request";
 import { safeUrl, useSiteContent, type SiteContent } from "@/lib/site-content";
 import { Button } from "@/components/ui/button";
 
@@ -140,6 +141,7 @@ export function SiteHeader({ actions, student = false }: { actions?: ReactNode; 
   const [noticesOpen, setNoticesOpen] = useState(false);
   const [studentName, setStudentName] = useState("Guest");
   useEffect(() => {
+    void supabase.auth.getUser().then(({ data }) => { if (data.user) void syncTeacherRequest(data.user); });
     if (!student) return;
     void supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return;
