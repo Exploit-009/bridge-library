@@ -22,3 +22,4 @@
 - [x] Admin sub-pages: courses, quizzes, certificates, students, schools
 - [ ] Signed-in AI chat test (test account unconfirmed)
 - [x] Dashboard totals: add published courses (courses with a published lesson)
+- [ ] Admin sign-in page for /admin-dashboard
