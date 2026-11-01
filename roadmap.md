@@ -17,5 +17,5 @@
 - [x] Footer Help/Contact/social links real
 - [ ] Signup e2e: blocked on email confirmation (external backend)
 - [x] Teacher four-step signup (teacher access needs admin approval)
-- [ ] Admin teacher approval page
+- [x] Admin teacher approval page
 - [ ] News & Events pages with real content

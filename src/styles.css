@@ -2838,3 +2838,4 @@ html.sp-large-text { font-size: 112.5%; }
 .ai-upgrade div{flex:1;display:grid}.ai-upgrade small{opacity:.85}
 @media (max-width:900px){.ai-grid{grid-template-columns:1fr}.ai-tiles{grid-template-columns:1fr 1fr}.ai-hero{grid-template-columns:1fr;padding:1.25rem 1.25rem 0}.ai-hero img{height:180px}}
 .ai-hero h1{color:var(--primary-foreground)}
+.ta-done{display:grid;gap:.4rem}.ta-done li{display:flex;gap:.4rem;align-items:center}
