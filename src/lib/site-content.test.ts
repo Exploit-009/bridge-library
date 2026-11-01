@@ -22,3 +22,11 @@ describe("site content", () => {
     expect(safeUrl("https://youtu.be/x")).toBe("https://youtu.be/x");
   });
 });
+import { parseEvents } from "./site-content";
+describe("parseEvents", () => {
+  it("reads title, date and place and sorts by date", () => {
+    const e = parseEvents("Science Fair | 2026-12-05 | Monrovia\nBring projects\n\nMath Camp | 2026-11-20 | Gbarnga");
+    expect(e.map((x) => x.title)).toEqual(["Math Camp", "Science Fair"]);
+    expect(e[1]).toMatchObject({ date: "2026-12-05", place: "Monrovia", details: "Bring projects" });
+  });
+});
