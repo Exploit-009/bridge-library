@@ -24,7 +24,7 @@ export function StudentSidebar({ active = 'practice', verificationLabel }: { act
   {key:'downloads',to:'/downloads',label:'Downloads',Icon:Download},
   {key:'news',to:'/news',label:'News & Updates',Icon:Newspaper},
   {key:'events',to:'/events',label:'Events',Icon:CalendarDays},
-  {key:'study-tools',to:'/study-tools',label:'BridgeLIB AI Tools',Icon:Sparkles},
+  {key:'study-tools',to:'/bridgelib-ai',label:'BridgeLIB AI',Icon:Sparkles},
  ] as const).map(({key,to,label,Icon})=><Link key={key} to={to} className={active===key?'is-active':''}><Icon size={18}/>{label}</Link>)}
  <Link to="/classroom" search={{tab:'messages',classId:''}} className={active==='messages'?'is-active':''}><MessageSquare size={18}/>Messages</Link><hr/><Link to="/profile" className={active==='profile'?'is-active':''}><User size={18}/>Profile</Link><Link to="/settings" className={active==='settings'?'is-active':''}><Settings size={18}/>Settings</Link>
  {signedIn?<Button className="bl-side-logout" onClick={async()=>{await supabase.auth.signOut();await navigate({to:'/'});}}><LogOut size={18}/>Logout</Button>:<a href="/?auth=login"><LogOut size={18}/>Login</a>}

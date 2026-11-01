@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { SiteLayout, LiberiaFlag } from "./SiteChrome";
 import { referencePhotos } from "@/lib/reference-photos";
 import { LIBERIA_COUNTIES } from "@/lib/profile-summary";
-import { academicStep, accountStep, EXAM_TYPES, GRADES, gradeEducationLevel, passwordStrength, personalStep } from "@/lib/signup-steps";
+import { academicStep, accountStep, EXAM_TYPES, GRADES, gradeEducationLevel, passwordStrength, personalStep, teacherAcademicStep, TEACH_LEVELS, TEACH_SUBJECTS } from "@/lib/signup-steps";
 
 type Role = "student" | "teacher";
 const STEPS = ["Personal Info", "Academic Info", "Account Setup", "Complete"];
@@ -17,11 +17,11 @@ const BENEFITS: [typeof BookOpen, string, string][] = [
   [ShieldCheck, "Safe & Free", "Learn securely, anytime, anywhere."],
 ];
 
-export function SignupFlowPage() {
+export function SignupFlowPage({ initialRole = "student" }: { initialRole?: Role }) {
   const navigate = useNavigate();
   const [step, setStep] = useState(0);
-  const [role, setRole] = useState<Role>("student");
-  const [f, setF] = useState({ fullName: "", email: "", phone: "+231 ", dateOfBirth: "", gender: "", county: "", school: "", grade: "", examType: "WASSCE", password: "", confirm: "", terms: false });
+  const [role, setRole] = useState<Role>(initialRole);
+  const [f, setF] = useState({ fullName: "", email: "", phone: "+231 ", dateOfBirth: "", gender: "", county: "", school: "", grade: "", examType: "WASSCE", subject: "", teachLevel: "", password: "", confirm: "", terms: false });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
@@ -30,18 +30,18 @@ export function SignupFlowPage() {
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
     setF({ ...f, [k]: e.target.type === "checkbox" ? (e.target as HTMLInputElement).checked : e.target.value });
 
-  function check(schema: typeof personalStep | typeof academicStep | typeof accountStep) {
+  function check(schema: typeof personalStep | typeof academicStep | typeof teacherAcademicStep | typeof accountStep) {
     const r = schema.safeParse(f);
     if (r.success) { setErrors({}); return true; }
     const e: Record<string, string> = {};
     for (const i of r.error.issues) e[String(i.path[0])] ??= i.message;
     setErrors(e); return false;
   }
-  const next = () => { setMsg(""); if (check(step === 0 ? personalStep : academicStep)) setStep(step + 1); };
+  const next = () => { setMsg(""); if (check(step === 0 ? personalStep : role === "teacher" ? teacherAcademicStep : academicStep)) setStep(step + 1); };
 
   async function create() {
     setMsg("");
-    if (!check(personalStep) || !check(academicStep)) return setMsg("Please review earlier steps.");
+    if (!check(personalStep) || !check(role === "teacher" ? teacherAcademicStep : academicStep)) return setMsg("Please review earlier steps.");
     if (!check(accountStep)) return;
     setBusy(true);
     try {
@@ -51,7 +51,7 @@ export function SignupFlowPage() {
         email: f.email.trim().toLowerCase(), password: f.password,
         options: {
           emailRedirectTo: `${window.location.origin}/dashboard`,
-          data: { full_name: f.fullName.trim(), phone_number: f.phone.trim(), school_name: f.school.trim(), learner_path: learnerPath, education_level: educationLevel, grade_level: f.grade, exam_type: f.examType, date_of_birth: f.dateOfBirth, gender: f.gender, county: f.county, requested_role: role },
+          data: { full_name: f.fullName.trim(), phone_number: f.phone.trim(), school_name: f.school.trim(), learner_path: learnerPath, education_level: educationLevel, grade_level: f.grade, exam_type: f.examType, date_of_birth: f.dateOfBirth, gender: f.gender, county: f.county, requested_role: role, ...(role === "teacher" ? { subject_taught: f.subject, teaching_level: f.teachLevel } : {}) },
         },
       });
       if (error) throw error;
@@ -107,8 +107,13 @@ export function SignupFlowPage() {
           {step === 1 && <div className="su-form">
             <label>County<select value={f.county} onChange={set("county")}><option value="">Select your county</option>{LIBERIA_COUNTIES.map((c) => <option key={c}>{c}</option>)}</select>{err("county")}</label>
             <label>School Name<input value={f.school} onChange={set("school")} placeholder="Your school" />{err("school")}</label>
+            {role === "teacher" ? <>
+            <label>Subject You Teach<select value={f.subject} onChange={set("subject")}><option value="">Select subject</option>{TEACH_SUBJECTS.map((g) => <option key={g}>{g}</option>)}</select>{err("subject")}</label>
+            <label>Level You Teach<select value={f.teachLevel} onChange={set("teachLevel")}><option value="">Select level</option>{TEACH_LEVELS.map((g) => <option key={g}>{g}</option>)}</select>{err("teachLevel")}</label>
+            </> : <>
             <label>Current Class / Grade<select value={f.grade} onChange={set("grade")}><option value="">Select class</option>{GRADES.map((g) => <option key={g}>{g}</option>)}</select>{err("grade")}</label>
             <label>Exam Type<select value={f.examType} onChange={set("examType")}>{EXAM_TYPES.map((g) => <option key={g}>{g}</option>)}</select>{err("examType")}</label>
+            </>}
           </div>}
 
           {step === 2 && <div className="su-form">
@@ -121,7 +126,7 @@ export function SignupFlowPage() {
           {step === 3 && <div className="su-done">
             <CheckCircle2 size={72} />
             <h2>Account Created!</h2>
-            <p>{needsConfirm ? `We sent a confirmation link to ${f.email}. Confirm your email, then you'll land on your dashboard.` : "Welcome to BridgeLIB. Your learning space is ready."}</p>
+            <p>{needsConfirm ? `We sent a confirmation link to ${f.email}. Confirm your email, then you'll land on your dashboard.` : "Welcome to BridgeLIB. Your learning space is ready."}{role === "teacher" && " Your teacher tools unlock as soon as a BridgeLIB admin approves your account."}</p>
             {needsConfirm ? <a href="/?auth=login" className="bl-btn bl-btn-primary">Go to Sign In</a> : <button className="bl-btn bl-btn-primary" onClick={() => navigate({ to: "/dashboard" })}>Go to Dashboard</button>}
           </div>}
 

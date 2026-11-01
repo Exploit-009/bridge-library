@@ -52,3 +52,12 @@ export function passwordStrength(p: string) {
   if (/[^A-Za-z0-9]/.test(p) || p.length >= 12) s++;
   return s; // 0–4
 }
+
+export const TEACH_SUBJECTS = ["Mathematics", "English Language", "Biology", "Chemistry", "Physics", "Economics", "Literature", "Geography", "History", "Civics", "Other"] as const;
+export const TEACH_LEVELS = ["Junior High", "Senior High", "Junior & Senior High", "College / Vocational"] as const;
+export const teacherAcademicStep = z.object({
+  county: z.enum(LIBERIA_COUNTIES, { message: "Choose your county." }),
+  school: z.string().trim().min(2, "Enter your school name.").max(200),
+  subject: z.enum(TEACH_SUBJECTS, { message: "Choose the subject you teach." }),
+  teachLevel: z.enum(TEACH_LEVELS, { message: "Choose the level you teach." }),
+});

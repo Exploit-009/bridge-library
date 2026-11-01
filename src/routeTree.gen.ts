@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BookmarksRouteImport } from './routes/bookmarks'
+import { Route as BridgelibAiRouteImport } from './routes/bridgelib-ai'
 import { Route as CertificatesRouteImport } from './routes/certificates'
 import { Route as ClassroomRouteImport } from './routes/classroom'
 import { Route as ContactRouteImport } from './routes/contact'
@@ -39,11 +40,13 @@ import { Route as TeacherRouteImport } from './routes/teacher'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WassceRouteImport } from './routes/wassce'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as ApiAiChatRouteImport } from './routes/api/ai-chat'
 import { Route as ApiStudyChatRouteImport } from './routes/api/study-chat'
 import { Route as ApiStudyToolsRouteImport } from './routes/api/study-tools'
 import { Route as CoursesSubjectIdRouteImport } from './routes/courses_.$subjectId'
 import { Route as PracticePastQuestionsRouteImport } from './routes/practice_.past-questions'
 import { Route as PracticeStudyNotesRouteImport } from './routes/practice_.study-notes'
+import { Route as SignupTeacherRouteImport } from './routes/signup_.teacher'
 import { Route as StudyGuideThreadIdRouteImport } from './routes/study-guide_.$threadId'
 import { Route as StudyGuideStepsRouteImport } from './routes/study-guide_.steps'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
@@ -67,6 +70,11 @@ const AdminRoute = AdminRouteImport.update({
 const BookmarksRoute = BookmarksRouteImport.update({
   id: '/bookmarks',
   path: '/bookmarks',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BridgelibAiRoute = BridgelibAiRouteImport.update({
+  id: '/bridgelib-ai',
+  path: '/bridgelib-ai',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CertificatesRoute = CertificatesRouteImport.update({
@@ -200,6 +208,11 @@ const Char91DotwellKnownChar93OauthProtectedResourceRoute =
     path: '/.well-known/oauth-protected-resource',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiAiChatRoute = ApiAiChatRouteImport.update({
+  id: '/api/ai-chat',
+  path: '/api/ai-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiStudyChatRoute = ApiStudyChatRouteImport.update({
   id: '/api/study-chat',
   path: '/api/study-chat',
@@ -223,6 +236,11 @@ const PracticePastQuestionsRoute = PracticePastQuestionsRouteImport.update({
 const PracticeStudyNotesRoute = PracticeStudyNotesRouteImport.update({
   id: '/practice_/study-notes',
   path: '/practice/study-notes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupTeacherRoute = SignupTeacherRouteImport.update({
+  id: '/signup_/teacher',
+  path: '/signup/teacher',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StudyGuideThreadIdRoute = StudyGuideThreadIdRouteImport.update({
@@ -252,6 +270,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/bookmarks': typeof BookmarksRoute
+  '/bridgelib-ai': typeof BridgelibAiRoute
   '/certificates': typeof CertificatesRoute
   '/classroom': typeof ClassroomRoute
   '/contact': typeof ContactRoute
@@ -278,11 +297,13 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/api/ai-chat': typeof ApiAiChatRoute
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
   '/courses/$subjectId': typeof CoursesSubjectIdRoute
   '/practice/past-questions': typeof PracticePastQuestionsRoute
   '/practice/study-notes': typeof PracticeStudyNotesRoute
+  '/signup/teacher': typeof SignupTeacherRoute
   '/study-guide/$threadId': typeof StudyGuideThreadIdRoute
   '/study-guide/steps': typeof StudyGuideStepsRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -293,6 +314,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/bookmarks': typeof BookmarksRoute
+  '/bridgelib-ai': typeof BridgelibAiRoute
   '/certificates': typeof CertificatesRoute
   '/classroom': typeof ClassroomRoute
   '/contact': typeof ContactRoute
@@ -319,11 +341,13 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/api/ai-chat': typeof ApiAiChatRoute
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
   '/courses/$subjectId': typeof CoursesSubjectIdRoute
   '/practice/past-questions': typeof PracticePastQuestionsRoute
   '/practice/study-notes': typeof PracticeStudyNotesRoute
+  '/signup/teacher': typeof SignupTeacherRoute
   '/study-guide/$threadId': typeof StudyGuideThreadIdRoute
   '/study-guide/steps': typeof StudyGuideStepsRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -335,6 +359,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/admin': typeof AdminRoute
   '/bookmarks': typeof BookmarksRoute
+  '/bridgelib-ai': typeof BridgelibAiRoute
   '/certificates': typeof CertificatesRoute
   '/classroom': typeof ClassroomRoute
   '/contact': typeof ContactRoute
@@ -361,11 +386,13 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  '/api/ai-chat': typeof ApiAiChatRoute
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
   '/courses_/$subjectId': typeof CoursesSubjectIdRoute
   '/practice_/past-questions': typeof PracticePastQuestionsRoute
   '/practice_/study-notes': typeof PracticeStudyNotesRoute
+  '/signup_/teacher': typeof SignupTeacherRoute
   '/study-guide_/$threadId': typeof StudyGuideThreadIdRoute
   '/study-guide_/steps': typeof StudyGuideStepsRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
@@ -378,6 +405,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/bookmarks'
+    | '/bridgelib-ai'
     | '/certificates'
     | '/classroom'
     | '/contact'
@@ -404,11 +432,13 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
+    | '/api/ai-chat'
     | '/api/study-chat'
     | '/api/study-tools'
     | '/courses/$subjectId'
     | '/practice/past-questions'
     | '/practice/study-notes'
+    | '/signup/teacher'
     | '/study-guide/$threadId'
     | '/study-guide/steps'
     | '/.lovable/oauth/consent'
@@ -419,6 +449,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/bookmarks'
+    | '/bridgelib-ai'
     | '/certificates'
     | '/classroom'
     | '/contact'
@@ -445,11 +476,13 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
+    | '/api/ai-chat'
     | '/api/study-chat'
     | '/api/study-tools'
     | '/courses/$subjectId'
     | '/practice/past-questions'
     | '/practice/study-notes'
+    | '/signup/teacher'
     | '/study-guide/$threadId'
     | '/study-guide/steps'
     | '/.lovable/oauth/consent'
@@ -460,6 +493,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/admin'
     | '/bookmarks'
+    | '/bridgelib-ai'
     | '/certificates'
     | '/classroom'
     | '/contact'
@@ -486,11 +520,13 @@ export interface FileRouteTypes {
     | '/terms'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
+    | '/api/ai-chat'
     | '/api/study-chat'
     | '/api/study-tools'
     | '/courses_/$subjectId'
     | '/practice_/past-questions'
     | '/practice_/study-notes'
+    | '/signup_/teacher'
     | '/study-guide_/$threadId'
     | '/study-guide_/steps'
     | '/.lovable/oauth/consent'
@@ -502,6 +538,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AdminRoute: typeof AdminRoute
   BookmarksRoute: typeof BookmarksRoute
+  BridgelibAiRoute: typeof BridgelibAiRoute
   CertificatesRoute: typeof CertificatesRoute
   ClassroomRoute: typeof ClassroomRoute
   ContactRoute: typeof ContactRoute
@@ -528,11 +565,13 @@ export interface RootRouteChildren {
   TermsRoute: typeof TermsRoute
   WassceRoute: typeof WassceRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  ApiAiChatRoute: typeof ApiAiChatRoute
   ApiStudyChatRoute: typeof ApiStudyChatRoute
   ApiStudyToolsRoute: typeof ApiStudyToolsRoute
   CoursesSubjectIdRoute: typeof CoursesSubjectIdRoute
   PracticePastQuestionsRoute: typeof PracticePastQuestionsRoute
   PracticeStudyNotesRoute: typeof PracticeStudyNotesRoute
+  SignupTeacherRoute: typeof SignupTeacherRoute
   StudyGuideThreadIdRoute: typeof StudyGuideThreadIdRoute
   StudyGuideStepsRoute: typeof StudyGuideStepsRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
@@ -567,6 +606,13 @@ declare module '@tanstack/react-router' {
       path: '/bookmarks'
       fullPath: '/bookmarks'
       preLoaderRoute: typeof BookmarksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bridgelib-ai': {
+      id: '/bridgelib-ai'
+      path: '/bridgelib-ai'
+      fullPath: '/bridgelib-ai'
+      preLoaderRoute: typeof BridgelibAiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/certificates': {
@@ -751,6 +797,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/ai-chat': {
+      id: '/api/ai-chat'
+      path: '/api/ai-chat'
+      fullPath: '/api/ai-chat'
+      preLoaderRoute: typeof ApiAiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/study-chat': {
       id: '/api/study-chat'
       path: '/api/study-chat'
@@ -784,6 +837,13 @@ declare module '@tanstack/react-router' {
       path: '/practice/study-notes'
       fullPath: '/practice/study-notes'
       preLoaderRoute: typeof PracticeStudyNotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/signup_/teacher': {
+      id: '/signup_/teacher'
+      path: '/signup/teacher'
+      fullPath: '/signup/teacher'
+      preLoaderRoute: typeof SignupTeacherRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/study-guide_/$threadId': {
@@ -822,6 +882,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AdminRoute: AdminRoute,
   BookmarksRoute: BookmarksRoute,
+  BridgelibAiRoute: BridgelibAiRoute,
   CertificatesRoute: CertificatesRoute,
   ClassroomRoute: ClassroomRoute,
   ContactRoute: ContactRoute,
@@ -849,11 +910,13 @@ const rootRouteChildren: RootRouteChildren = {
   WassceRoute: WassceRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  ApiAiChatRoute: ApiAiChatRoute,
   ApiStudyChatRoute: ApiStudyChatRoute,
   ApiStudyToolsRoute: ApiStudyToolsRoute,
   CoursesSubjectIdRoute: CoursesSubjectIdRoute,
   PracticePastQuestionsRoute: PracticePastQuestionsRoute,
   PracticeStudyNotesRoute: PracticeStudyNotesRoute,
+  SignupTeacherRoute: SignupTeacherRoute,
   StudyGuideThreadIdRoute: StudyGuideThreadIdRoute,
   StudyGuideStepsRoute: StudyGuideStepsRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,

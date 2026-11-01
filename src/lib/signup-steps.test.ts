@@ -12,3 +12,8 @@ describe("signup steps", () => {
     expect(accountStep.safeParse({ password: "abcdefgh", confirm: "abcdefgh", terms: true }).success).toBe(false));
   it("maps grade 12 to senior high", () => expect(gradeEducationLevel("Grade 12 (WASSCE)")).toBe("senior_high"));
 });
+import { teacherAcademicStep } from "./signup-steps";
+describe("teacher signup", () => {
+  it("requires subject taught", () =>
+    expect(teacherAcademicStep.safeParse({ county: "Bong", school: "CWA", subject: "", teachLevel: "Senior High" }).success).toBe(false));
+});
