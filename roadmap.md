@@ -2,6 +2,8 @@
 
 - [ ] Add admin news publishing dashboard linked to existing admin sign-in.
 - [ ] Replace reference news cards with actual stored BridgeLIB announcements; verify publishing where access permits.
+- [ ] Open full stored articles from every Read More link.
+- [ ] Connect news subscriptions to a real mailing list — needs a marketing email service and credentials.
 
 - [x] Reproduce BridgeLIB AI reference; desktop/mobile, navigation and signed-out chat handling verified.
 - [x] Implement News portal reference, article detail/search/updates/events and profile-based newsletter opt-ins; preserve external backend.
