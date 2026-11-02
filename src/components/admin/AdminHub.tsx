@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery } from "@tanstack/react-query";
-import { Award, BookOpen, ClipboardList, FileQuestion, Globe, GraduationCap, LayoutDashboard, School, UserCheck, Users } from "lucide-react";
+import { Award, BookOpen, ClipboardList, FileQuestion, Globe, GraduationCap, LayoutDashboard, Newspaper, School, UserCheck, Users } from "lucide-react";
 import { SiteLayout, EmptyState } from "@/components/site/SiteChrome";
 import { adminOverview } from "@/lib/admin-overview.functions";
 
@@ -22,6 +22,7 @@ export function AdminHubPage() {
     { Icon: UserCheck, title: "Teacher Approvals", text: `${show(s?.teachers)} approved teachers`, to: "/teacher-approvals" as const, cta: "Review requests" },
     { Icon: School, title: "Schools & Papers", text: "Schools, past papers and scholarships", to: "/admin-dashboard/schools" as const, cta: "Manage schools" },
     { Icon: Globe, title: "Website Content", text: "News, events, contacts, FAQs, policies", to: "/site-content" as const, cta: "Edit content" },
+    { Icon: Newspaper, title: "News & Announcements", text: "Publish, edit and remove BridgeLIB updates", to: "/admin-dashboard/news" as const, cta: "Manage announcements" },
   ];
 
   return (

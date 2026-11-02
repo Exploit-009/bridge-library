@@ -70,7 +70,8 @@ export function SiteContentEditor() {
         <p className="bl-notice">Only administrators can edit website content. Sign in with an admin account.</p>
       ) : (
         <form onSubmit={onSubmit} style={{ display: "grid", gap: 16, maxWidth: 760, marginTop: 16 }}>
-          {siteFields.map((f) => (
+          <Link to="/admin-dashboard/news" className="bl-link">Manage news announcements →</Link>
+          {siteFields.filter((f) => f.key !== "news").map((f) => (
             <label key={f.key} style={{ display: "grid", gap: 6, fontWeight: 600 }}>
               {f.label}
               {f.type === "long" ? (

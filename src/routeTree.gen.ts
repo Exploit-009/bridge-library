@@ -46,6 +46,7 @@ import { Route as WassceRouteImport } from './routes/wassce'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AdminDashboardCertificatesRouteImport } from './routes/admin-dashboard_.certificates'
 import { Route as AdminDashboardCoursesRouteImport } from './routes/admin-dashboard_.courses'
+import { Route as AdminDashboardNewsRouteImport } from './routes/admin-dashboard_.news'
 import { Route as AdminDashboardQuizzesRouteImport } from './routes/admin-dashboard_.quizzes'
 import { Route as AdminDashboardSchoolsRouteImport } from './routes/admin-dashboard_.schools'
 import { Route as AdminDashboardStudentsRouteImport } from './routes/admin-dashboard_.students'
@@ -249,6 +250,11 @@ const AdminDashboardCoursesRoute = AdminDashboardCoursesRouteImport.update({
   path: '/admin-dashboard/courses',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminDashboardNewsRoute = AdminDashboardNewsRouteImport.update({
+  id: '/admin-dashboard_/news',
+  path: '/admin-dashboard/news',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminDashboardQuizzesRoute = AdminDashboardQuizzesRouteImport.update({
   id: '/admin-dashboard_/quizzes',
   path: '/admin-dashboard/quizzes',
@@ -364,6 +370,7 @@ export interface FileRoutesByFullPath {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin-dashboard/certificates': typeof AdminDashboardCertificatesRoute
   '/admin-dashboard/courses': typeof AdminDashboardCoursesRoute
+  '/admin-dashboard/news': typeof AdminDashboardNewsRoute
   '/admin-dashboard/quizzes': typeof AdminDashboardQuizzesRoute
   '/admin-dashboard/schools': typeof AdminDashboardSchoolsRoute
   '/admin-dashboard/students': typeof AdminDashboardStudentsRoute
@@ -418,6 +425,7 @@ export interface FileRoutesByTo {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin-dashboard/certificates': typeof AdminDashboardCertificatesRoute
   '/admin-dashboard/courses': typeof AdminDashboardCoursesRoute
+  '/admin-dashboard/news': typeof AdminDashboardNewsRoute
   '/admin-dashboard/quizzes': typeof AdminDashboardQuizzesRoute
   '/admin-dashboard/schools': typeof AdminDashboardSchoolsRoute
   '/admin-dashboard/students': typeof AdminDashboardStudentsRoute
@@ -473,6 +481,7 @@ export interface FileRoutesById {
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin-dashboard_/certificates': typeof AdminDashboardCertificatesRoute
   '/admin-dashboard_/courses': typeof AdminDashboardCoursesRoute
+  '/admin-dashboard_/news': typeof AdminDashboardNewsRoute
   '/admin-dashboard_/quizzes': typeof AdminDashboardQuizzesRoute
   '/admin-dashboard_/schools': typeof AdminDashboardSchoolsRoute
   '/admin-dashboard_/students': typeof AdminDashboardStudentsRoute
@@ -529,6 +538,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin-dashboard/certificates'
     | '/admin-dashboard/courses'
+    | '/admin-dashboard/news'
     | '/admin-dashboard/quizzes'
     | '/admin-dashboard/schools'
     | '/admin-dashboard/students'
@@ -583,6 +593,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin-dashboard/certificates'
     | '/admin-dashboard/courses'
+    | '/admin-dashboard/news'
     | '/admin-dashboard/quizzes'
     | '/admin-dashboard/schools'
     | '/admin-dashboard/students'
@@ -637,6 +648,7 @@ export interface FileRouteTypes {
     | '/.well-known/oauth-protected-resource'
     | '/admin-dashboard_/certificates'
     | '/admin-dashboard_/courses'
+    | '/admin-dashboard_/news'
     | '/admin-dashboard_/quizzes'
     | '/admin-dashboard_/schools'
     | '/admin-dashboard_/students'
@@ -692,6 +704,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminDashboardCertificatesRoute: typeof AdminDashboardCertificatesRoute
   AdminDashboardCoursesRoute: typeof AdminDashboardCoursesRoute
+  AdminDashboardNewsRoute: typeof AdminDashboardNewsRoute
   AdminDashboardQuizzesRoute: typeof AdminDashboardQuizzesRoute
   AdminDashboardSchoolsRoute: typeof AdminDashboardSchoolsRoute
   AdminDashboardStudentsRoute: typeof AdminDashboardStudentsRoute
@@ -970,6 +983,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDashboardCoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin-dashboard_/news': {
+      id: '/admin-dashboard_/news'
+      path: '/admin-dashboard/news'
+      fullPath: '/admin-dashboard/news'
+      preLoaderRoute: typeof AdminDashboardNewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin-dashboard_/quizzes': {
       id: '/admin-dashboard_/quizzes'
       path: '/admin-dashboard/quizzes'
@@ -1117,6 +1137,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   AdminDashboardCertificatesRoute: AdminDashboardCertificatesRoute,
   AdminDashboardCoursesRoute: AdminDashboardCoursesRoute,
+  AdminDashboardNewsRoute: AdminDashboardNewsRoute,
   AdminDashboardQuizzesRoute: AdminDashboardQuizzesRoute,
   AdminDashboardSchoolsRoute: AdminDashboardSchoolsRoute,
   AdminDashboardStudentsRoute: AdminDashboardStudentsRoute,

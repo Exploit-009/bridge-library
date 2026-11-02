@@ -1,10 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { NewsPortal } from "@/components/site/NewsPortal";
-import { referenceArticles } from "@/lib/news-articles";
 export const Route = createFileRoute("/news_/$slug")({
   head: ({ params }) => {
-    const title =
-      referenceArticles.find((a) => a.slug === params.slug)?.title ?? "Education Announcement";
+    const title = "BridgeLIB Announcement";
     return {
       meta: [
         { title: `${title} — BridgeLIB` },
