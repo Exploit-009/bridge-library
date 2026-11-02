@@ -1,5 +1,8 @@
 # BridgeLIB design update
 
+- [ ] Add admin news publishing dashboard linked to existing admin sign-in.
+- [ ] Replace reference news cards with actual stored BridgeLIB announcements; verify publishing where access permits.
+
 - [x] Reproduce BridgeLIB AI reference; desktop/mobile, navigation and signed-out chat handling verified.
 - [x] Implement News portal reference, article detail/search/updates/events and profile-based newsletter opt-ins; preserve external backend.
 - [ ] Verify signed-in newsletter save/readback and AI answers — external backend has no available confirmed test session.
