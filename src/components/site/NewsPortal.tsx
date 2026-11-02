@@ -161,6 +161,7 @@ export function NewsPortal({
               Reference dates are retained from the design. Ministry content is an unverified
               example; current official dates must be confirmed.
             </p>
+            {all && <section className="np-scholarships"><h2>Scholarships &amp; Opportunities</h2>{scholarships.data?.length ? scholarships.data.map(item=>{const href=safeUrl(item.application_url??undefined);return <article key={item.id}><h3>{item.title}</h3><p>{item.description}</p>{href&&<a href={href} target="_blank" rel="noopener noreferrer">Apply with {item.organization} →</a>}</article>;}) : <p>No published scholarship opportunities are available.</p>}</section>}
           </section>
           <aside className="np-side">
             <section>
