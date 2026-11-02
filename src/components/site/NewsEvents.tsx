@@ -7,7 +7,7 @@ import { referencePhotos } from "@/lib/reference-photos";
 import { parseBlocks, parseEvents, safeUrl, useSiteContent, type SiteEvent } from "@/lib/site-content";
 import { supabase } from "@/lib/supabase";
 
-function useScholarships() {
+export function useScholarships() {
   return useQuery({
     queryKey: ["public-scholarships"],
     queryFn: async () => {

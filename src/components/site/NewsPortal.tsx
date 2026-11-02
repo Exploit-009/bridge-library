@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowRight, CalendarDays, Mail, Newspaper, Search, Star } from "lucide-react";
@@ -8,7 +8,8 @@ import { Button } from "@/components/ui/button";
 import { LiberiaFlag } from "./SiteChrome";
 import hero from "@/assets/bridgelib-ai-students.jpg";
 import { newsArticles } from "@/lib/news-articles";
-import { parseEvents, useSiteContent } from "@/lib/site-content";
+import { parseEvents, safeUrl, useSiteContent } from "@/lib/site-content";
+import { useScholarships } from './NewsEvents';
 import { subscriptionEmail } from "@/lib/news-subscription";
 import { subscribeNews } from "@/lib/news-subscription.functions";
 const dateLabel = (value: string) =>
@@ -29,6 +30,8 @@ export function NewsPortal({
   slug?: string;
 }) {
   const content = useSiteContent();
+  const scholarships = useScholarships();
+  const navigate = useNavigate();
   const articles = newsArticles(content.data?.news);
   const selected = slug ? articles.find((a) => a.slug === slug) : undefined;
   const [email, setEmail] = useState("");
@@ -93,7 +96,7 @@ export function NewsPortal({
                 }}
               >
                 <Search size={18} />
-                <input aria-label="Search news articles" value={query} readOnly />
+                <input aria-label="Search news articles" value={query} maxLength={200} onChange={e=>void navigate({to:'/news',search:{q:e.target.value,all:true},replace:true})} />
                 <Link to="/news" search={{ all: false, q: "" }}>
                   Clear
                 </Link>
