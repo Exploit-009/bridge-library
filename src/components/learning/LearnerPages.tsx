@@ -1,43 +1,571 @@
-import { useState, type ReactNode } from 'react';
-import { Link } from '@tanstack/react-router';
-import { useServerFn } from '@tanstack/react-start';
-import { useQuery } from '@tanstack/react-query';
-import { Bookmark, Download, GraduationCap, User, Settings, ChevronRight, ShieldCheck, Pencil, MapPin, BookOpen, BarChart3 } from 'lucide-react';
-import { StudentSidebar } from './StudentSidebar';
-import { StudentHeaderActions } from './StudentHeaderActions';
-import { SiteHeader, SiteFooter, EmptyState, SubjectIcon } from '@/components/site/SiteChrome';
-import { Button } from '@/components/ui/button';
-import { bookmarkCourse, savedCourses, myCertificates, issueCertificate } from '@/lib/reference.functions';
-import { courseData, workspaceData, resourceData, paperDownload } from '@/lib/learning.functions';
-import { completionEligible } from '@/lib/reference-features';
-import { StudentDetails } from './StudentDetails';
-import { IssuedCertificate } from './IssuedCertificate';
-import { StudentClasses } from './StudentClasses';
-import { referencePhotos } from '@/lib/reference-photos';
-export function LearnerShell({ active, children, aiReference = false }: {active:string;children:ReactNode;aiReference?:boolean}) {return <div className={`bl-site ${aiReference?'ai-reference-page':''}`}><SiteHeader student aiReference={aiReference} actions={<StudentHeaderActions profileMenu={aiReference}/>}/><div className="bl-pt"><StudentSidebar active={active} aiReference={aiReference}/><main className="bl-pt-main bl-library">{children}</main></div><SiteFooter aiReference={aiReference}/></div>;}
-function AccessError({ error }: {error:unknown}) {const text=error instanceof Error?error.message:'Please try again.';return <EmptyState title={/sign in|session/i.test(text)?'Sign in to continue':'Something went wrong'} text={text} action={<a href="/?auth=login" className="bl-btn bl-btn-primary">Sign in</a>}/>;}
-function CertificateButton({subjectId,onIssued}:{subjectId:number;onIssued:()=>void}) {
- const load=useServerFn(courseData);const issue=useServerFn(issueCertificate);const [message,setMessage]=useState('');const [busy,setBusy]=useState(false);
- const q=useQuery({queryKey:['course',String(subjectId)],queryFn:()=>load({data:subjectId}),retry:false});const d=q.data;
- const eligible=d && completionEligible(d.lessons.map(l=>l.id),d.completions.map(c=>c.lesson_id),d.enrolled);
- return <><Button variant="outline" disabled={!eligible || busy} onClick={async()=>{setBusy(true);try{await issue({data:subjectId});onIssued();}catch(e){setMessage(e instanceof Error?e.message:'Could not issue certificate.');}finally{setBusy(false);}}}><GraduationCap size={16}/>{busy?'Issuing…':'Get certificate'}</Button>{!eligible&&<small>Complete all published lessons first.</small>}{message&&<p role="alert">{message}</p>}</>;
+import { useState, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery } from "@tanstack/react-query";
+import {
+  Bookmark,
+  Download,
+  GraduationCap,
+  User,
+  Settings,
+  ChevronRight,
+  ShieldCheck,
+  Pencil,
+  MapPin,
+  BookOpen,
+  BarChart3,
+} from "lucide-react";
+import { StudentSidebar } from "./StudentSidebar";
+import { StudentHeaderActions } from "./StudentHeaderActions";
+import { SiteHeader, SiteFooter, EmptyState, SubjectIcon } from "@/components/site/SiteChrome";
+import { Button } from "@/components/ui/button";
+import {
+  bookmarkCourse,
+  savedCourses,
+  myCertificates,
+  issueCertificate,
+} from "@/lib/reference.functions";
+import { courseData, workspaceData, resourceData, paperDownload } from "@/lib/learning.functions";
+import { completionEligible } from "@/lib/reference-features";
+import { StudentDetails } from "./StudentDetails";
+import { IssuedCertificate } from "./IssuedCertificate";
+import { StudentClasses } from "./StudentClasses";
+import { referencePhotos } from "@/lib/reference-photos";
+export function LearnerShell({
+  active,
+  children,
+  aiReference = false,
+  newsReference = false,
+}: {
+  active: string;
+  children: ReactNode;
+  aiReference?: boolean;
+  newsReference?: boolean;
+}) {
+  return (
+    <div
+      className={`bl-site ${aiReference ? "ai-reference-page" : ""} ${newsReference ? "news-reference-page" : ""}`}
+    >
+      <SiteHeader
+        student
+        aiReference={aiReference}
+        newsReference={newsReference}
+        actions={<StudentHeaderActions profileMenu={aiReference} />}
+      />
+      <div className="bl-pt">
+        <StudentSidebar active={active} aiReference={aiReference} newsReference={newsReference} />
+        <main className="bl-pt-main bl-library">{children}</main>
+      </div>
+      <SiteFooter aiReference={aiReference} />
+    </div>
+  );
+}
+function AccessError({ error }: { error: unknown }) {
+  const text = error instanceof Error ? error.message : "Please try again.";
+  return (
+    <EmptyState
+      title={/sign in|session/i.test(text) ? "Sign in to continue" : "Something went wrong"}
+      text={text}
+      action={
+        <a href="/?auth=login" className="bl-btn bl-btn-primary">
+          Sign in
+        </a>
+      }
+    />
+  );
+}
+function CertificateButton({ subjectId, onIssued }: { subjectId: number; onIssued: () => void }) {
+  const load = useServerFn(courseData);
+  const issue = useServerFn(issueCertificate);
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  const q = useQuery({
+    queryKey: ["course", String(subjectId)],
+    queryFn: () => load({ data: subjectId }),
+    retry: false,
+  });
+  const d = q.data;
+  const eligible =
+    d &&
+    completionEligible(
+      d.lessons.map((l) => l.id),
+      d.completions.map((c) => c.lesson_id),
+      d.enrolled,
+    );
+  return (
+    <>
+      <Button
+        variant="outline"
+        disabled={!eligible || busy}
+        onClick={async () => {
+          setBusy(true);
+          try {
+            await issue({ data: subjectId });
+            onIssued();
+          } catch (e) {
+            setMessage(e instanceof Error ? e.message : "Could not issue certificate.");
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        <GraduationCap size={16} />
+        {busy ? "Issuing…" : "Get certificate"}
+      </Button>
+      {!eligible && <small>Complete all published lessons first.</small>}
+      {message && <p role="alert">{message}</p>}
+    </>
+  );
 }
 export function CertificatesPage() {
- const load=useServerFn(myCertificates);const ws=useServerFn(workspaceData);const q=useQuery({queryKey:['certificates'],queryFn:()=>load(),retry:false});const w=useQuery({queryKey:['workspace'],queryFn:()=>ws(),retry:false});const [selected,setSelected]=useState('');
- const c=q.data?.find(x=>x.id===selected);
- return <LearnerShell active="certificates"><h1>My Certificates</h1><p className="bl-muted">Issued BridgeLIB course completion records. Official WASSCE or school exam certificates are not connected.</p>{q.isPending?<p>Loading certificates…</p>:q.error?<EmptyState title={q.error instanceof Error&&/sign in|session/i.test(q.error.message)?'Sign in to view certificates':'Certificate records unavailable'} text={q.error instanceof Error?q.error.message:'Issued records could not be loaded.'} action={<Link to="/" search={{auth:'login'}} className="bl-btn bl-btn-primary">Sign in</Link>}/>:<><div className="bl-grid-3">{q.data?.map(c=><article className="bl-card bl-course" key={c.id}><GraduationCap/><h2>{c.subject_name}</h2><p>Issued {new Date(c.issued_at).toLocaleDateString()}</p><Button variant="outline" onClick={()=>setSelected(c.id)}><Download size={16}/>View / download certificate</Button></article>)}</div>{!q.data?.length&&<p className="bl-muted">No issued completion certificates yet.</p>}</>}{c&&<IssuedCertificate record={c}/>}<h2>Enrolled courses</h2><div className="bl-grid-3">{w.data?.enrollments.map(e=><article key={e.id} className="bl-card bl-course"><h3>{w.data.subjects.find(s=>s.id===e.subject_id)?.name ?? 'Course'}</h3><CertificateButton subjectId={e.subject_id} onIssued={()=>void q.refetch()}/></article>)}</div></LearnerShell>;
+  const load = useServerFn(myCertificates);
+  const ws = useServerFn(workspaceData);
+  const q = useQuery({ queryKey: ["certificates"], queryFn: () => load(), retry: false });
+  const w = useQuery({ queryKey: ["workspace"], queryFn: () => ws(), retry: false });
+  const [selected, setSelected] = useState("");
+  const c = q.data?.find((x) => x.id === selected);
+  return (
+    <LearnerShell active="certificates">
+      <h1>My Certificates</h1>
+      <p className="bl-muted">
+        Issued BridgeLIB course completion records. Official WASSCE or school exam certificates are
+        not connected.
+      </p>
+      {q.isPending ? (
+        <p>Loading certificates…</p>
+      ) : q.error ? (
+        <EmptyState
+          title={
+            q.error instanceof Error && /sign in|session/i.test(q.error.message)
+              ? "Sign in to view certificates"
+              : "Certificate records unavailable"
+          }
+          text={q.error instanceof Error ? q.error.message : "Issued records could not be loaded."}
+          action={
+            <Link to="/" search={{ auth: "login" }} className="bl-btn bl-btn-primary">
+              Sign in
+            </Link>
+          }
+        />
+      ) : (
+        <>
+          <div className="bl-grid-3">
+            {q.data?.map((c) => (
+              <article className="bl-card bl-course" key={c.id}>
+                <GraduationCap />
+                <h2>{c.subject_name}</h2>
+                <p>Issued {new Date(c.issued_at).toLocaleDateString()}</p>
+                <Button variant="outline" onClick={() => setSelected(c.id)}>
+                  <Download size={16} />
+                  View / download certificate
+                </Button>
+              </article>
+            ))}
+          </div>
+          {!q.data?.length && <p className="bl-muted">No issued completion certificates yet.</p>}
+        </>
+      )}
+      {c && <IssuedCertificate record={c} />}
+      <h2>Enrolled courses</h2>
+      <div className="bl-grid-3">
+        {w.data?.enrollments.map((e) => (
+          <article key={e.id} className="bl-card bl-course">
+            <h3>{w.data.subjects.find((s) => s.id === e.subject_id)?.name ?? "Course"}</h3>
+            <CertificateButton subjectId={e.subject_id} onIssued={() => void q.refetch()} />
+          </article>
+        ))}
+      </div>
+    </LearnerShell>
+  );
 }
 export function BookmarksPage() {
- const load=useServerFn(savedCourses);const act=useServerFn(bookmarkCourse);const ws=useServerFn(workspaceData);const q=useQuery({queryKey:['bookmarks'],queryFn:()=>load(),retry:false});const w=useQuery({queryKey:['workspace'],queryFn:()=>ws(),retry:false});const [message,setMessage]=useState('');
- return <LearnerShell active="bookmarks"><h1>Bookmarks</h1>{message&&<p role="alert">{message}</p>}{q.isPending?<p>Loading bookmarks…</p>:q.error?<AccessError error={q.error}/>:!q.data?.length?<EmptyState title="No saved courses yet" text="Your bookmarked courses will appear here." action={<Link to="/courses" className="bl-btn bl-btn-primary">Browse courses</Link>}/>:<div className="bl-grid-3">{q.data.map(b=>{const s=w.data?.subjects.find(x=>x.id===b.subject_id);return <article className="bl-card bl-course" key={b.subject_id}><SubjectIcon name={s?.name??'Course'}/><h2>{s?.name??'Course'}</h2><Link to="/courses/$subjectId" params={{subjectId:String(b.subject_id)}} className="bl-link">Open course</Link><Button variant="outline" onClick={async()=>{try{await act({data:{subject_id:b.subject_id,saved:false}});await q.refetch();}catch(e){setMessage(e instanceof Error?e.message:'Could not remove bookmark.');}}}><Bookmark size={16}/>Remove bookmark</Button></article>;})}</div>}</LearnerShell>;
+  const load = useServerFn(savedCourses);
+  const act = useServerFn(bookmarkCourse);
+  const ws = useServerFn(workspaceData);
+  const q = useQuery({ queryKey: ["bookmarks"], queryFn: () => load(), retry: false });
+  const w = useQuery({ queryKey: ["workspace"], queryFn: () => ws(), retry: false });
+  const [message, setMessage] = useState("");
+  return (
+    <LearnerShell active="bookmarks">
+      <h1>Bookmarks</h1>
+      {message && <p role="alert">{message}</p>}
+      {q.isPending ? (
+        <p>Loading bookmarks…</p>
+      ) : q.error ? (
+        <AccessError error={q.error} />
+      ) : !q.data?.length ? (
+        <EmptyState
+          title="No saved courses yet"
+          text="Your bookmarked courses will appear here."
+          action={
+            <Link to="/courses" className="bl-btn bl-btn-primary">
+              Browse courses
+            </Link>
+          }
+        />
+      ) : (
+        <div className="bl-grid-3">
+          {q.data.map((b) => {
+            const s = w.data?.subjects.find((x) => x.id === b.subject_id);
+            return (
+              <article className="bl-card bl-course" key={b.subject_id}>
+                <SubjectIcon name={s?.name ?? "Course"} />
+                <h2>{s?.name ?? "Course"}</h2>
+                <Link
+                  to="/courses/$subjectId"
+                  params={{ subjectId: String(b.subject_id) }}
+                  className="bl-link"
+                >
+                  Open course
+                </Link>
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    try {
+                      await act({ data: { subject_id: b.subject_id, saved: false } });
+                      await q.refetch();
+                    } catch (e) {
+                      setMessage(e instanceof Error ? e.message : "Could not remove bookmark.");
+                    }
+                  }}
+                >
+                  <Bookmark size={16} />
+                  Remove bookmark
+                </Button>
+              </article>
+            );
+          })}
+        </div>
+      )}
+    </LearnerShell>
+  );
 }
 export function DownloadsPage() {
- const load=useServerFn(resourceData);const download=useServerFn(paperDownload);const q=useQuery({queryKey:['resources'],queryFn:()=>load(),retry:false});const [message,setMessage]=useState('');const [search,setSearch]=useState('');const [busy,setBusy]=useState<number|null>(null);
- return <LearnerShell active="downloads"><h1>Downloads</h1><input type="search" className="bl-search" aria-label="Search downloads" placeholder="Search exam papers…" value={search} onChange={e=>setSearch(e.target.value)}/>{message&&<p role="alert">{message}</p>}{q.isPending?<p>Loading papers…</p>:q.error?<AccessError error={q.error}/>:<><div className="bl-grid-3">{q.data?.papers.filter(p=>`${p.title} ${p.examination} ${p.exam_year}`.toLowerCase().includes(search.toLowerCase())).map(p=><article key={p.id} className="bl-card bl-course"><Download/><h2>{p.title}</h2><p>{p.examination} · {p.exam_year}</p><Button disabled={busy===p.id} onClick={async()=>{setBusy(p.id);try{const url=await download({data:p.id});window.location.assign(url);}catch(e){setMessage(e instanceof Error?e.message:'Download unavailable.');}finally{setBusy(null);}}}>Download PDF</Button></article>)}</div>{!q.data?.papers.length&&<p>No published exam papers yet.</p>}</>}</LearnerShell>;
+  const load = useServerFn(resourceData);
+  const download = useServerFn(paperDownload);
+  const q = useQuery({ queryKey: ["resources"], queryFn: () => load(), retry: false });
+  const [message, setMessage] = useState("");
+  const [search, setSearch] = useState("");
+  const [busy, setBusy] = useState<number | null>(null);
+  return (
+    <LearnerShell active="downloads">
+      <h1>Downloads</h1>
+      <input
+        type="search"
+        className="bl-search"
+        aria-label="Search downloads"
+        placeholder="Search exam papers…"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
+      {message && <p role="alert">{message}</p>}
+      {q.isPending ? (
+        <p>Loading papers…</p>
+      ) : q.error ? (
+        <AccessError error={q.error} />
+      ) : (
+        <>
+          <div className="bl-grid-3">
+            {q.data?.papers
+              .filter((p) =>
+                `${p.title} ${p.examination} ${p.exam_year}`
+                  .toLowerCase()
+                  .includes(search.toLowerCase()),
+              )
+              .map((p) => (
+                <article key={p.id} className="bl-card bl-course">
+                  <Download />
+                  <h2>{p.title}</h2>
+                  <p>
+                    {p.examination} · {p.exam_year}
+                  </p>
+                  <Button
+                    disabled={busy === p.id}
+                    onClick={async () => {
+                      setBusy(p.id);
+                      try {
+                        const url = await download({ data: p.id });
+                        window.location.assign(url);
+                      } catch (e) {
+                        setMessage(e instanceof Error ? e.message : "Download unavailable.");
+                      } finally {
+                        setBusy(null);
+                      }
+                    }}
+                  >
+                    Download PDF
+                  </Button>
+                </article>
+              ))}
+          </div>
+          {!q.data?.papers.length && <p>No published exam papers yet.</p>}
+        </>
+      )}
+    </LearnerShell>
+  );
 }
-export function MyCoursesPage(){const load=useServerFn(workspaceData);const q=useQuery({queryKey:['workspace'],queryFn:()=>load(),retry:false});return <LearnerShell active="my-courses"><h1>My Courses</h1><StudentClasses/><h2>Subject courses</h2>{q.error?<AccessError error={q.error}/>:q.isPending?<p>Loading your courses…</p>:<div className="bl-grid-3">{q.data?.enrollments.map(e=><Link key={e.id} to="/courses/$subjectId" params={{subjectId:String(e.subject_id)}} className="bl-card bl-course"><SubjectIcon name={q.data.subjects.find(s=>s.id===e.subject_id)?.name??'Course'}/><h2>{q.data.subjects.find(s=>s.id===e.subject_id)?.name}</h2><span className="bl-link">Continue learning</span></Link>)}</div>}{q.data&&!q.data.enrollments.length&&<EmptyState title="No enrolled courses" text="Choose your first subject." action={<Link to="/courses" className="bl-btn bl-btn-primary">Browse courses</Link>}/>}</LearnerShell>;}
-export function ProgressPage(){const load=useServerFn(workspaceData);const q=useQuery({queryKey:['workspace'],queryFn:()=>load(),retry:false});return <LearnerShell active="progress"><h1>My Progress</h1>{q.error?<AccessError error={q.error}/>:q.isPending?<p>Loading progress…</p>:q.data&&<><div className="bl-grid-3">{[['Enrolled courses',q.data.enrollments.length],['Completed lessons',q.data.completions.length],['Recent practice attempts',q.data.attempts.length]].map(([label,n])=><article className="bl-card bl-stat" key={label}><small>{label}</small><b>{n}</b></article>)}</div><h2>Class quiz results</h2><div className="bl-table-wrap"><table className="bl-table"><thead><tr><th>Quiz</th><th>Date</th><th>Score</th></tr></thead><tbody>{q.data.classAttempts.map(a=><tr key={a.id}><td>{q.data.content.find(c=>c.id===a.content_id)?.title??'Class quiz'}</td><td>{new Date(a.submitted_at).toLocaleDateString()}</td><td>{a.score} / {a.total_questions}</td></tr>)}</tbody></table></div>{!q.data.classAttempts.length&&<p>No class quiz attempts yet.</p>}<h2>Practice results</h2><div className="bl-table-wrap"><table className="bl-table"><thead><tr><th>Date</th><th>Score</th><th>Result</th></tr></thead><tbody>{q.data.attempts.map(a=><tr key={a.id}><td>{new Date(a.submitted_at).toLocaleDateString()}</td><td>{a.score} / {a.total_questions}</td><td>{a.total_questions?Math.round(a.score/a.total_questions*100):0}%</td></tr>)}</tbody></table></div>{!q.data.attempts.length&&<p>No saved practice results yet.</p>}</>}</LearnerShell>;}
-export function ProfilePage(){
- const load=useServerFn(workspaceData);const q=useQuery({queryKey:['workspace'],queryFn:()=>load(),retry:false});const [message,setMessage]=useState('');const [busy,setBusy]=useState(false);const d=q.data;
- return <LearnerShell active="profile"><section className="bl-profile-banner"><img src={referencePhotos.student} alt="Liberian student at school"/><div><h1>Your Learning Journey</h1><p>Your profile, your progress, your future.</p></div></section>{q.error?<AccessError error={q.error}/>:q.isPending?<p>Loading profile…</p>:d&&<div className="bl-profile-grid"><section><h2><User size={20}/>Profile Overview</h2><div className="bl-profile-summary"><span><User size={34}/></span><div><strong>{d.profile?.full_name||'Student'}</strong><p>{d.roles.map(r=>r.role).join(', ')}</p><p><MapPin size={12}/> {d.profile?.county||'County not set'}</p><p>{d.profile?.school_name||'School not set'}</p></div></div><div className="bl-profile-stats"><div><BookOpen size={22}/><b>{d.enrollments.length}</b>Courses Enrolled</div><div><BarChart3 size={22}/><b>{d.completions.length}</b>Lessons Completed</div></div><Link className="bl-link" to="/progress">View learning progress <ChevronRight size={14}/></Link></section><section><h2><Pencil size={20}/>Edit Profile</h2><form className="bl-form-grid" onSubmit={async e=>{e.preventDefault();const f=new FormData(e.currentTarget);setBusy(true);try{const {supabase}=await import('@/lib/supabase');const r=await supabase.from('profiles').update({full_name:String(f.get('name')).trim(),school_name:String(f.get('school')).trim(),county:String(f.get('county')).trim()}).eq('id',d.userId);if(r.error)throw r.error;await q.refetch();setMessage('Profile saved.');}catch(e){setMessage(e instanceof Error?e.message:'Could not save profile.');}finally{setBusy(false);}}}><label>Full name<input required name="name" defaultValue={d.profile?.full_name??''}/></label><label>School name<input name="school" defaultValue={d.profile?.school_name??''}/></label><label>County<input name="county" defaultValue={d.profile?.county??''}/></label><Button disabled={busy}><User size={16}/>{busy?'Saving…':'Save Changes'}</Button></form></section><section><h2><Settings size={20}/>Account Settings</h2><div className="bl-profile-settings"><Link to="/settings"><ShieldCheck size={18}/>Password & Security<ChevronRight size={15}/></Link><Link to="/settings"><User size={18}/>Account Details<ChevronRight size={15}/></Link><Link to="/bookmarks"><Bookmark size={18}/>Saved Courses<ChevronRight size={15}/></Link><Link to="/contact"><Settings size={18}/>Help & Support<ChevronRight size={15}/></Link></div></section></div>}{message&&<p role="status">{message}</p>}</LearnerShell>;
+export function MyCoursesPage() {
+  const load = useServerFn(workspaceData);
+  const q = useQuery({ queryKey: ["workspace"], queryFn: () => load(), retry: false });
+  return (
+    <LearnerShell active="my-courses">
+      <h1>My Courses</h1>
+      <StudentClasses />
+      <h2>Subject courses</h2>
+      {q.error ? (
+        <AccessError error={q.error} />
+      ) : q.isPending ? (
+        <p>Loading your courses…</p>
+      ) : (
+        <div className="bl-grid-3">
+          {q.data?.enrollments.map((e) => (
+            <Link
+              key={e.id}
+              to="/courses/$subjectId"
+              params={{ subjectId: String(e.subject_id) }}
+              className="bl-card bl-course"
+            >
+              <SubjectIcon
+                name={q.data.subjects.find((s) => s.id === e.subject_id)?.name ?? "Course"}
+              />
+              <h2>{q.data.subjects.find((s) => s.id === e.subject_id)?.name}</h2>
+              <span className="bl-link">Continue learning</span>
+            </Link>
+          ))}
+        </div>
+      )}
+      {q.data && !q.data.enrollments.length && (
+        <EmptyState
+          title="No enrolled courses"
+          text="Choose your first subject."
+          action={
+            <Link to="/courses" className="bl-btn bl-btn-primary">
+              Browse courses
+            </Link>
+          }
+        />
+      )}
+    </LearnerShell>
+  );
+}
+export function ProgressPage() {
+  const load = useServerFn(workspaceData);
+  const q = useQuery({ queryKey: ["workspace"], queryFn: () => load(), retry: false });
+  return (
+    <LearnerShell active="progress">
+      <h1>My Progress</h1>
+      {q.error ? (
+        <AccessError error={q.error} />
+      ) : q.isPending ? (
+        <p>Loading progress…</p>
+      ) : (
+        q.data && (
+          <>
+            <div className="bl-grid-3">
+              {[
+                ["Enrolled courses", q.data.enrollments.length],
+                ["Completed lessons", q.data.completions.length],
+                ["Recent practice attempts", q.data.attempts.length],
+              ].map(([label, n]) => (
+                <article className="bl-card bl-stat" key={label}>
+                  <small>{label}</small>
+                  <b>{n}</b>
+                </article>
+              ))}
+            </div>
+            <h2>Class quiz results</h2>
+            <div className="bl-table-wrap">
+              <table className="bl-table">
+                <thead>
+                  <tr>
+                    <th>Quiz</th>
+                    <th>Date</th>
+                    <th>Score</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {q.data.classAttempts.map((a) => (
+                    <tr key={a.id}>
+                      <td>
+                        {q.data.content.find((c) => c.id === a.content_id)?.title ?? "Class quiz"}
+                      </td>
+                      <td>{new Date(a.submitted_at).toLocaleDateString()}</td>
+                      <td>
+                        {a.score} / {a.total_questions}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {!q.data.classAttempts.length && <p>No class quiz attempts yet.</p>}
+            <h2>Practice results</h2>
+            <div className="bl-table-wrap">
+              <table className="bl-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Score</th>
+                    <th>Result</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {q.data.attempts.map((a) => (
+                    <tr key={a.id}>
+                      <td>{new Date(a.submitted_at).toLocaleDateString()}</td>
+                      <td>
+                        {a.score} / {a.total_questions}
+                      </td>
+                      <td>
+                        {a.total_questions ? Math.round((a.score / a.total_questions) * 100) : 0}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {!q.data.attempts.length && <p>No saved practice results yet.</p>}
+          </>
+        )
+      )}
+    </LearnerShell>
+  );
+}
+export function ProfilePage() {
+  const load = useServerFn(workspaceData);
+  const q = useQuery({ queryKey: ["workspace"], queryFn: () => load(), retry: false });
+  const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+  const d = q.data;
+  return (
+    <LearnerShell active="profile">
+      <section className="bl-profile-banner">
+        <img src={referencePhotos.student} alt="Liberian student at school" />
+        <div>
+          <h1>Your Learning Journey</h1>
+          <p>Your profile, your progress, your future.</p>
+        </div>
+      </section>
+      {q.error ? (
+        <AccessError error={q.error} />
+      ) : q.isPending ? (
+        <p>Loading profile…</p>
+      ) : (
+        d && (
+          <div className="bl-profile-grid">
+            <section>
+              <h2>
+                <User size={20} />
+                Profile Overview
+              </h2>
+              <div className="bl-profile-summary">
+                <span>
+                  <User size={34} />
+                </span>
+                <div>
+                  <strong>{d.profile?.full_name || "Student"}</strong>
+                  <p>{d.roles.map((r) => r.role).join(", ")}</p>
+                  <p>
+                    <MapPin size={12} /> {d.profile?.county || "County not set"}
+                  </p>
+                  <p>{d.profile?.school_name || "School not set"}</p>
+                </div>
+              </div>
+              <div className="bl-profile-stats">
+                <div>
+                  <BookOpen size={22} />
+                  <b>{d.enrollments.length}</b>Courses Enrolled
+                </div>
+                <div>
+                  <BarChart3 size={22} />
+                  <b>{d.completions.length}</b>Lessons Completed
+                </div>
+              </div>
+              <Link className="bl-link" to="/progress">
+                View learning progress <ChevronRight size={14} />
+              </Link>
+            </section>
+            <section>
+              <h2>
+                <Pencil size={20} />
+                Edit Profile
+              </h2>
+              <form
+                className="bl-form-grid"
+                onSubmit={async (e) => {
+                  e.preventDefault();
+                  const f = new FormData(e.currentTarget);
+                  setBusy(true);
+                  try {
+                    const { supabase } = await import("@/lib/supabase");
+                    const r = await supabase
+                      .from("profiles")
+                      .update({
+                        full_name: String(f.get("name")).trim(),
+                        school_name: String(f.get("school")).trim(),
+                        county: String(f.get("county")).trim(),
+                      })
+                      .eq("id", d.userId);
+                    if (r.error) throw r.error;
+                    await q.refetch();
+                    setMessage("Profile saved.");
+                  } catch (e) {
+                    setMessage(e instanceof Error ? e.message : "Could not save profile.");
+                  } finally {
+                    setBusy(false);
+                  }
+                }}
+              >
+                <label>
+                  Full name
+                  <input required name="name" defaultValue={d.profile?.full_name ?? ""} />
+                </label>
+                <label>
+                  School name
+                  <input name="school" defaultValue={d.profile?.school_name ?? ""} />
+                </label>
+                <label>
+                  County
+                  <input name="county" defaultValue={d.profile?.county ?? ""} />
+                </label>
+                <Button disabled={busy}>
+                  <User size={16} />
+                  {busy ? "Saving…" : "Save Changes"}
+                </Button>
+              </form>
+            </section>
+            <section>
+              <h2>
+                <Settings size={20} />
+                Account Settings
+              </h2>
+              <div className="bl-profile-settings">
+                <Link to="/settings">
+                  <ShieldCheck size={18} />
+                  Password & Security
+                  <ChevronRight size={15} />
+                </Link>
+                <Link to="/settings">
+                  <User size={18} />
+                  Account Details
+                  <ChevronRight size={15} />
+                </Link>
+                <Link to="/bookmarks">
+                  <Bookmark size={18} />
+                  Saved Courses
+                  <ChevronRight size={15} />
+                </Link>
+                <Link to="/contact">
+                  <Settings size={18} />
+                  Help & Support
+                  <ChevronRight size={15} />
+                </Link>
+              </div>
+            </section>
+          </div>
+        )
+      )}
+      {message && <p role="status">{message}</p>}
+    </LearnerShell>
+  );
 }

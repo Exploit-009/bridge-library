@@ -53,6 +53,7 @@ import { Route as ApiAiChatRouteImport } from './routes/api/ai-chat'
 import { Route as ApiStudyChatRouteImport } from './routes/api/study-chat'
 import { Route as ApiStudyToolsRouteImport } from './routes/api/study-tools'
 import { Route as CoursesSubjectIdRouteImport } from './routes/courses_.$subjectId'
+import { Route as NewsSlugRouteImport } from './routes/news_.$slug'
 import { Route as PracticePastQuestionsRouteImport } from './routes/practice_.past-questions'
 import { Route as PracticeStudyNotesRouteImport } from './routes/practice_.study-notes'
 import { Route as SignupTeacherRouteImport } from './routes/signup_.teacher'
@@ -283,6 +284,11 @@ const CoursesSubjectIdRoute = CoursesSubjectIdRouteImport.update({
   path: '/courses/$subjectId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NewsSlugRoute = NewsSlugRouteImport.update({
+  id: '/news_/$slug',
+  path: '/news/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PracticePastQuestionsRoute = PracticePastQuestionsRouteImport.update({
   id: '/practice_/past-questions',
   path: '/practice/past-questions',
@@ -365,6 +371,7 @@ export interface FileRoutesByFullPath {
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
   '/courses/$subjectId': typeof CoursesSubjectIdRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/practice/past-questions': typeof PracticePastQuestionsRoute
   '/practice/study-notes': typeof PracticeStudyNotesRoute
   '/signup/teacher': typeof SignupTeacherRoute
@@ -418,6 +425,7 @@ export interface FileRoutesByTo {
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
   '/courses/$subjectId': typeof CoursesSubjectIdRoute
+  '/news/$slug': typeof NewsSlugRoute
   '/practice/past-questions': typeof PracticePastQuestionsRoute
   '/practice/study-notes': typeof PracticeStudyNotesRoute
   '/signup/teacher': typeof SignupTeacherRoute
@@ -472,6 +480,7 @@ export interface FileRoutesById {
   '/api/study-chat': typeof ApiStudyChatRoute
   '/api/study-tools': typeof ApiStudyToolsRoute
   '/courses_/$subjectId': typeof CoursesSubjectIdRoute
+  '/news_/$slug': typeof NewsSlugRoute
   '/practice_/past-questions': typeof PracticePastQuestionsRoute
   '/practice_/study-notes': typeof PracticeStudyNotesRoute
   '/signup_/teacher': typeof SignupTeacherRoute
@@ -527,6 +536,7 @@ export interface FileRouteTypes {
     | '/api/study-chat'
     | '/api/study-tools'
     | '/courses/$subjectId'
+    | '/news/$slug'
     | '/practice/past-questions'
     | '/practice/study-notes'
     | '/signup/teacher'
@@ -580,6 +590,7 @@ export interface FileRouteTypes {
     | '/api/study-chat'
     | '/api/study-tools'
     | '/courses/$subjectId'
+    | '/news/$slug'
     | '/practice/past-questions'
     | '/practice/study-notes'
     | '/signup/teacher'
@@ -633,6 +644,7 @@ export interface FileRouteTypes {
     | '/api/study-chat'
     | '/api/study-tools'
     | '/courses_/$subjectId'
+    | '/news_/$slug'
     | '/practice_/past-questions'
     | '/practice_/study-notes'
     | '/signup_/teacher'
@@ -687,6 +699,7 @@ export interface RootRouteChildren {
   ApiStudyChatRoute: typeof ApiStudyChatRoute
   ApiStudyToolsRoute: typeof ApiStudyToolsRoute
   CoursesSubjectIdRoute: typeof CoursesSubjectIdRoute
+  NewsSlugRoute: typeof NewsSlugRoute
   PracticePastQuestionsRoute: typeof PracticePastQuestionsRoute
   PracticeStudyNotesRoute: typeof PracticeStudyNotesRoute
   SignupTeacherRoute: typeof SignupTeacherRoute
@@ -1006,6 +1019,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesSubjectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/news_/$slug': {
+      id: '/news_/$slug'
+      path: '/news/$slug'
+      fullPath: '/news/$slug'
+      preLoaderRoute: typeof NewsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/practice_/past-questions': {
       id: '/practice_/past-questions'
       path: '/practice/past-questions'
@@ -1104,6 +1124,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiStudyChatRoute: ApiStudyChatRoute,
   ApiStudyToolsRoute: ApiStudyToolsRoute,
   CoursesSubjectIdRoute: CoursesSubjectIdRoute,
+  NewsSlugRoute: NewsSlugRoute,
   PracticePastQuestionsRoute: PracticePastQuestionsRoute,
   PracticeStudyNotesRoute: PracticeStudyNotesRoute,
   SignupTeacherRoute: SignupTeacherRoute,
