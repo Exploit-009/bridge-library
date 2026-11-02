@@ -1,11 +1,13 @@
 import { useState, type FormEvent } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { ShieldCheck } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteChrome";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin-login")({
+  validateSearch: (search: Record<string, unknown>): { next?: "news" } => ({ next: search["next"] === "news" ? "news" : undefined }),
   head: () => ({
     meta: [
       { title: "Admin Sign In — BridgeLIB" },
@@ -22,6 +24,8 @@ export const Route = createFileRoute("/admin-login")({
 
 function AdminLogin() {
   const navigate = useNavigate();
+  const cache = useQueryClient();
+  const { next } = Route.useSearch();
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState("");
 
@@ -36,11 +40,13 @@ function AdminLogin() {
       });
       if (error) throw error;
       const r = await supabase.rpc("has_role", { _user_id: data.user.id, _role: "admin" } as never);
-      if (!r.data) {
+      if (r.error || r.data !== true) {
+        await cache.cancelQueries(); cache.clear();
         await supabase.auth.signOut();
         throw new Error("This account doesn't have administrator access.");
       }
-      await navigate({ to: "/admin-dashboard" });
+      await cache.invalidateQueries();
+      await navigate({ to: next === "news" ? "/admin-dashboard/news" : "/admin-dashboard", replace: true });
     } catch (e) {
       setErr(e instanceof Error ? e.message : "Sign in failed.");
     } finally { setBusy(false); }
@@ -51,14 +57,14 @@ function AdminLogin() {
       <section className="bl-container bl-section" style={{ maxWidth: 420 }}>
         <div className="bl-card" style={{ padding: 28 }}>
           <ShieldCheck size={32} className="text-primary" />
-          <h1 className="bl-page-title bl-mt">Admin sign in</h1>
+          <h1 className="bl-page-title bl-mt">{next === "news" ? "News admin sign in" : "Admin sign in"}</h1>
           <p className="bl-muted">Use your administrator email and password.</p>
           <form onSubmit={submit} className="bl-mt" style={{ display: "grid", gap: 12 }}>
             <label>Email<input name="email" type="email" required autoComplete="email" className="bl-input" style={{ width: "100%" }} /></label>
             <label>Password<input name="password" type="password" required autoComplete="current-password" className="bl-input" style={{ width: "100%" }} /></label>
             {err && <p role="alert" className="text-destructive">{err}</p>}
             <Button type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</Button>
-            <a href="/?auth=login" className="bl-link">Forgot password? Use the main sign-in</a>
+            <Link to="/" search={{ auth: "login" }} className="bl-link">Forgot password? Use the main sign-in</Link>
           </form>
         </div>
       </section>

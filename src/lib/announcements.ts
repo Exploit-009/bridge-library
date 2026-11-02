@@ -7,7 +7,7 @@ export const announcementSchema = z.object({
   date: z.iso.date(),
 });
 export type Announcement = z.infer<typeof announcementSchema>;
-const documentSchema = z.object({ version: z.literal(1), articles: z.array(announcementSchema).max(200) });
+const documentSchema = z.object({ version: z.literal(1), articles: z.array(announcementSchema.extend({ date: z.union([z.iso.date(), z.literal("")]) })).max(200) });
 
 export function readAnnouncements(text?: string): Announcement[] {
   if (!text?.trim()) return [];

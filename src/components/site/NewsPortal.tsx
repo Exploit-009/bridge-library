@@ -113,7 +113,7 @@ export function NewsPortal({
                 </Link>
               </form>
             )}
-            {slug ? (
+            {content.isPending ? <p role="status">Loading announcements…</p> : content.error ? <p role="alert">Could not load announcements. Please refresh to retry.</p> : slug ? (
               <article className="np-detail">
                 {selected ? (
                   <>
@@ -167,11 +167,7 @@ export function NewsPortal({
                 ))}
               </div>
             )}
-            {!shown.length && !slug && <p>No matching news articles.</p>}
-            <p className="np-editorial-note">
-              Reference dates are retained from the design. Ministry content is an unverified
-              example; current official dates must be confirmed.
-            </p>
+            {!content.isPending && !content.error && !shown.length && !slug && <p>{query ? "No matching news articles." : "No BridgeLIB announcements have been published yet."}</p>}
             {all && (
               <section className="np-scholarships">
                 <h2>Scholarships &amp; Opportunities</h2>

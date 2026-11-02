@@ -77,7 +77,7 @@ export function useSiteContent() {
 }
 
 export async function saveSiteContent(values: SiteContent) {
-  const rows = siteFields.map((f) => ({
+  const rows = siteFields.filter((f) => f.key !== "news").map((f) => ({
     key: SITE_PREFIX + f.key,
     label: (values[f.key] ?? "").trim(),
     enabled: true,
