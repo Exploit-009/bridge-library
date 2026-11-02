@@ -64,13 +64,35 @@ export function ContactLines({ content }: { content?: SiteContent } = {}) {
   });
   return (
     <>
-      {c.contact_address ? <span className="bl-contact-line"><MapPin size={15}/>{c.contact_address}</span> : null}
-      {c.contact_phone ? <a className="bl-contact-line" href={`tel:${c.contact_phone.replace(/[^+\d]/g, "")}` }><Phone size={15}/>{c.contact_phone}</a> : null}
-      {c.contact_email ? <a className="bl-contact-line" href={`mailto:${c.contact_email}`}><Mail size={15}/>{c.contact_email}</a> : null}
+      {c.contact_address ? (
+        <span className="bl-contact-line">
+          <MapPin size={15} />
+          {c.contact_address}
+        </span>
+      ) : null}
+      {c.contact_phone ? (
+        <a className="bl-contact-line" href={`tel:${c.contact_phone.replace(/[^+\d]/g, "")}`}>
+          <Phone size={15} />
+          {c.contact_phone}
+        </a>
+      ) : null}
+      {c.contact_email ? (
+        <a className="bl-contact-line" href={`mailto:${c.contact_email}`}>
+          <Mail size={15} />
+          {c.contact_email}
+        </a>
+      ) : null}
       {social.length ? (
         <span className="bl-socials">
           {social.map(({ href, label, Icon }) => (
-            <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={label} title={label}>
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={label}
+              title={label}
+            >
               <Icon size={16} />
             </a>
           ))}
@@ -134,15 +156,23 @@ export function useSignedIn() {
 }
 
 const aiNavLinks = [
-  { to: '/', label: 'Home', Icon: House },
-  { to: '/courses', label: 'Courses', Icon: GraduationCap },
-  { to: '/news', label: 'News', Icon: Newspaper },
-  { to: '/events', label: 'Events', Icon: CalendarDays },
-  { to: '/faq', label: 'Help', Icon: Headphones },
-  { to: '/bridgelib-ai', label: 'BridgeLIB AI', Icon: Sparkles },
+  { to: "/", label: "Home", Icon: House },
+  { to: "/courses", label: "Courses", Icon: GraduationCap },
+  { to: "/news", label: "News", Icon: Newspaper },
+  { to: "/events", label: "Events", Icon: CalendarDays },
+  { to: "/faq", label: "Help", Icon: Headphones },
+  { to: "/bridgelib-ai", label: "BridgeLIB AI", Icon: Sparkles },
 ] as const;
 
-export function SiteHeader({ actions, student = false, aiReference = false }: { actions?: ReactNode; student?: boolean; aiReference?: boolean }) {
+export function SiteHeader({
+  actions,
+  student = false,
+  aiReference = false,
+}: {
+  actions?: ReactNode;
+  student?: boolean;
+  aiReference?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const signedIn = useSignedIn();
@@ -153,15 +183,24 @@ export function SiteHeader({ actions, student = false, aiReference = false }: { 
   const [noticesOpen, setNoticesOpen] = useState(false);
   const [studentName, setStudentName] = useState("Guest");
   useEffect(() => {
-    void supabase.auth.getUser().then(({ data }) => { if (data.user) void syncTeacherRequest(data.user); });
+    void supabase.auth.getUser().then(({ data }) => {
+      if (data.user) void syncTeacherRequest(data.user);
+    });
     if (!student) return;
     void supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return;
-      const profile = await supabase.from('profiles').select('full_name').eq('id',data.user.id).maybeSingle();
-      setStudentName(profile.data?.full_name || data.user.user_metadata['full_name'] || 'Student');
+      const profile = await supabase
+        .from("profiles")
+        .select("full_name")
+        .eq("id", data.user.id)
+        .maybeSingle();
+      setStudentName(profile.data?.full_name || data.user.user_metadata["full_name"] || "Student");
     });
   }, [student]);
-  useEffect(() => { setOpen(false); setSearchOpen(false); }, [pathname]);
+  useEffect(() => {
+    setOpen(false);
+    setSearchOpen(false);
+  }, [pathname]);
 
   const defaultActions = signedIn ? (
     <Link to="/dashboard" className="bl-btn bl-btn-primary bl-btn-sm">
@@ -179,27 +218,69 @@ export function SiteHeader({ actions, student = false, aiReference = false }: { 
   );
 
   return (
-    <header className={`bl-header ${student ? 'bl-student-header' : ''}`}>
+    <header className={`bl-header ${student ? "bl-student-header" : ""}`}>
       <div className="bl-container bl-header-inner">
         <Logo />
         <nav className="bl-nav" aria-label="Main navigation">
-          {aiReference ? aiNavLinks.map(({to,label,Icon}) => <Link key={to} to={to} className={`bl-nav-link ${to==='/bridgelib-ai'?'ai-nav-current':''}`}><Icon size={20}/>{label}</Link>) : navLinks.map((l) => (
-            <Link
-              key={l.to}
-              to={l.to}
-              className="bl-nav-link"
-              activeOptions={{ exact: true }}
-              activeProps={{ className: "bl-nav-link active" }}
-            >
-              {l.label}
-            </Link>
-          ))}
+          {aiReference
+            ? aiNavLinks.map(({ to, label, Icon }) => (
+                <Link
+                  key={to}
+                  to={to}
+                  className={`bl-nav-link ${to === "/bridgelib-ai" ? "ai-nav-current" : ""}`}
+                >
+                  <Icon size={20} />
+                  {label}
+                </Link>
+              ))
+            : navLinks.map((l) => (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  className="bl-nav-link"
+                  activeOptions={{ exact: true }}
+                  activeProps={{ className: "bl-nav-link active" }}
+                >
+                  {l.label}
+                </Link>
+              ))}
         </nav>
-        <Button type="button" className="bl-search-btn" aria-label="Search courses" aria-expanded={searchOpen}
-          onClick={() => setSearchOpen((v) => !v)}>
+        <Button
+          type="button"
+          className="bl-search-btn"
+          aria-label="Search courses"
+          aria-expanded={searchOpen}
+          onClick={() => setSearchOpen((v) => !v)}
+        >
           <Search size={18} />
         </Button>
-        {student && (actions ?? <div className="bl-student-actions"><Button className="bl-search-btn" aria-label="Notifications" aria-expanded={noticesOpen} onClick={()=>setNoticesOpen(v=>!v)}><Bell size={18}/></Button><Link to="/profile" className="bl-header-profile"><User size={22}/><span><strong>{studentName}</strong><small>Student</small></span></Link>{noticesOpen&&<div className="bl-notifications"><strong>Notifications</strong><Link to="/dashboard">View class assignments</Link><Link to="/progress">View saved practice results</Link></div>}</div>)}
+        {student &&
+          (actions ?? (
+            <div className="bl-student-actions">
+              <Button
+                className="bl-search-btn"
+                aria-label="Notifications"
+                aria-expanded={noticesOpen}
+                onClick={() => setNoticesOpen((v) => !v)}
+              >
+                <Bell size={18} />
+              </Button>
+              <Link to="/profile" className="bl-header-profile">
+                <User size={22} />
+                <span>
+                  <strong>{studentName}</strong>
+                  <small>Student</small>
+                </span>
+              </Link>
+              {noticesOpen && (
+                <div className="bl-notifications">
+                  <strong>Notifications</strong>
+                  <Link to="/dashboard">View class assignments</Link>
+                  <Link to="/progress">View saved practice results</Link>
+                </div>
+              )}
+            </div>
+          ))}
         {!student && <div className="bl-header-actions">{actions ?? defaultActions}</div>}
         <Button
           type="button"
@@ -212,10 +293,23 @@ export function SiteHeader({ actions, student = false, aiReference = false }: { 
         </Button>
       </div>
       {searchOpen && (
-        <form className="bl-container bl-header-search" role="search"
-          onSubmit={(e) => { e.preventDefault(); void navigate({ to: "/courses", search: term.trim() ? { q: term.trim() } : {} }); setSearchOpen(false); }}>
-          <input autoFocus type="search" value={term} onChange={(e) => setTerm(e.target.value)}
-            placeholder="Search for a course, subject, or topic…" aria-label="Search courses" />
+        <form
+          className="bl-container bl-header-search"
+          role="search"
+          onSubmit={(e) => {
+            e.preventDefault();
+            void navigate({ to: "/courses", search: term.trim() ? { q: term.trim() } : {} });
+            setSearchOpen(false);
+          }}
+        >
+          <input
+            autoFocus
+            type="search"
+            value={term}
+            onChange={(e) => setTerm(e.target.value)}
+            placeholder="Search for a course, subject, or topic…"
+            aria-label="Search courses"
+          />
           <Button className="bl-btn-sm">Search</Button>
         </form>
       )}
@@ -235,13 +329,84 @@ export function SiteHeader({ actions, student = false, aiReference = false }: { 
 
 export function SiteFooter({ aiReference = false }: { aiReference?: boolean } = {}) {
   const content = useSiteContent().data;
-  if (aiReference) return <footer className="bl-footer ai-reference-footer"><div className="bl-container ai-footer-columns">
-    <div><Logo light/><p>Learn Today, Build Tomorrow.</p></div>
-    <div><h4>Quick Links</h4><Link to="/">Home</Link><Link to="/courses">Courses</Link><Link to="/news">News</Link><Link to="/events">Events</Link><Link to="/contact">Contact</Link></div>
-    <div><h4>Help &amp; Support</h4><Link to="/faq">FAQs</Link><Link to="/terms">Terms of Service</Link><Link to="/privacy">Privacy Policy</Link><Link to="/contact">Contact Us</Link></div>
-    <div><h4>Contact Us</h4>{content?.contact_address&&<span><MapPin size={17}/>{content.contact_address}</span>}{content?.contact_phone&&<a href={`tel:${content.contact_phone.replace(/[^+\d]/g,'')}`}><Phone size={17}/>{content.contact_phone}</a>}{content?.contact_email&&<a href={`mailto:${content.contact_email}`}><Mail size={17}/>{content.contact_email}</a>}{!content?.contact_address&&!content?.contact_phone&&!content?.contact_email&&<Link to="/contact">Contact BridgeLIB</Link>}</div>
-    <div><h4>Follow Us</h4><div className="ai-footer-socials">{socials.filter(([key])=>key!=='instagram').map(([key,label,Icon])=>{const href=safeUrl(content?.[key]);return href?<a key={key} href={href} target="_blank" rel="noopener noreferrer" title={label} aria-label={label}><Icon size={19}/></a>:null;})}</div></div>
-  </div><div className="bl-container bl-footer-bottom"><span>© {new Date().getFullYear()} BridgeLIB. All rights reserved.</span><span className="bl-proud">Proudly Liberian <LiberiaFlag size={34}/></span></div></footer>;
+  if (aiReference)
+    return (
+      <footer className="bl-footer ai-reference-footer">
+        <div className="bl-container ai-footer-columns">
+          <div>
+            <Logo light />
+            <p>Learn Today, Build Tomorrow.</p>
+          </div>
+          <div>
+            <h4>Quick Links</h4>
+            <Link to="/">Home</Link>
+            <Link to="/courses">Courses</Link>
+            <Link to="/news">News</Link>
+            <Link to="/events">Events</Link>
+            <Link to="/contact">Contact</Link>
+          </div>
+          <div>
+            <h4>Help &amp; Support</h4>
+            <Link to="/faq">FAQs</Link>
+            <Link to="/terms">Terms of Service</Link>
+            <Link to="/privacy">Privacy Policy</Link>
+            <Link to="/contact">Contact Us</Link>
+          </div>
+          <div>
+            <h4>Contact Us</h4>
+            {content?.contact_address && (
+              <span>
+                <MapPin size={17} />
+                {content.contact_address}
+              </span>
+            )}
+            {content?.contact_phone && (
+              <a href={`tel:${content.contact_phone.replace(/[^+\d]/g, "")}`}>
+                <Phone size={17} />
+                {content.contact_phone}
+              </a>
+            )}
+            {content?.contact_email && (
+              <a href={`mailto:${content.contact_email}`}>
+                <Mail size={17} />
+                {content.contact_email}
+              </a>
+            )}
+            {!content?.contact_address && !content?.contact_phone && !content?.contact_email && (
+              <Link to="/contact">Contact BridgeLIB</Link>
+            )}
+          </div>
+          <div>
+            <h4>Follow Us</h4>
+            <div className="ai-footer-socials">
+              {socials
+                .filter(([key]) => key !== "instagram")
+                .map(([key, label, Icon]) => {
+                  const href = safeUrl(content?.[key]);
+                  return href ? (
+                    <a
+                      key={key}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={label}
+                      aria-label={label}
+                    >
+                      <Icon size={19} />
+                    </a>
+                  ) : null;
+                })}
+            </div>
+          </div>
+        </div>
+        <div className="bl-container bl-footer-bottom">
+          <span>© {new Date().getFullYear()} BridgeLIB. All rights reserved.</span>
+          <span className="bl-proud">
+            Proudly Liberian <LiberiaFlag size={34} />
+          </span>
+        </div>
+      </footer>
+    );
   return (
     <footer className="bl-footer">
       <div className="bl-container bl-footer-grid">
