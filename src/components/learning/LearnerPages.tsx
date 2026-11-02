@@ -35,20 +35,23 @@ export function LearnerShell({
   active,
   children,
   aiReference = false,
+  newsReference = false,
 }: {
   active: string;
   children: ReactNode;
   aiReference?: boolean;
+  newsReference?: boolean;
 }) {
   return (
-    <div className={`bl-site ${aiReference ? "ai-reference-page" : ""}`}>
+    <div className={`bl-site ${aiReference ? "ai-reference-page" : ""} ${newsReference ? "news-reference-page" : ""}`}>
       <SiteHeader
         student
         aiReference={aiReference}
+        newsReference={newsReference}
         actions={<StudentHeaderActions profileMenu={aiReference} />}
       />
       <div className="bl-pt">
-        <StudentSidebar active={active} aiReference={aiReference} />
+        <StudentSidebar active={active} aiReference={aiReference} newsReference={newsReference} />
         <main className="bl-pt-main bl-library">{children}</main>
       </div>
       <SiteFooter aiReference={aiReference} />
