@@ -26,5 +26,5 @@ export const Route = createFileRoute("/news")({
 });
 function NewsRoute() {
   const { q, all } = Route.useSearch();
-  return <NewsPortal query={q ?? ''} all={all ?? false} />;
+  return <NewsPortal query={q ?? ""} all={all ?? false} />;
 }

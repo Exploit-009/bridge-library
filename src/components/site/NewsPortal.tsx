@@ -9,7 +9,7 @@ import { LiberiaFlag } from "./SiteChrome";
 import hero from "@/assets/bridgelib-ai-students.jpg";
 import { newsArticles } from "@/lib/news-articles";
 import { parseEvents, safeUrl, useSiteContent } from "@/lib/site-content";
-import { useScholarships } from './NewsEvents';
+import { useScholarships } from "./NewsEvents";
 import { subscriptionEmail } from "@/lib/news-subscription";
 import { subscribeNews } from "@/lib/news-subscription.functions";
 const dateLabel = (value: string) =>
@@ -96,7 +96,18 @@ export function NewsPortal({
                 }}
               >
                 <Search size={18} />
-                <input aria-label="Search news articles" value={query} maxLength={200} onChange={e=>void navigate({to:'/news',search:{q:e.target.value,all:true},replace:true})} />
+                <input
+                  aria-label="Search news articles"
+                  value={query}
+                  maxLength={200}
+                  onChange={(e) =>
+                    void navigate({
+                      to: "/news",
+                      search: { q: e.target.value, all: true },
+                      replace: true,
+                    })
+                  }
+                />
                 <Link to="/news" search={{ all: false, q: "" }}>
                   Clear
                 </Link>
@@ -161,7 +172,29 @@ export function NewsPortal({
               Reference dates are retained from the design. Ministry content is an unverified
               example; current official dates must be confirmed.
             </p>
-            {all && <section className="np-scholarships"><h2>Scholarships &amp; Opportunities</h2>{scholarships.data?.length ? scholarships.data.map(item=>{const href=safeUrl(item.application_url??undefined);return <article key={item.id}><h3>{item.title}</h3><p>{item.description}</p>{href&&<a href={href} target="_blank" rel="noopener noreferrer">Apply with {item.organization} →</a>}</article>;}) : <p>No published scholarship opportunities are available.</p>}</section>}
+            {all && (
+              <section className="np-scholarships">
+                <h2>Scholarships &amp; Opportunities</h2>
+                {scholarships.data?.length ? (
+                  scholarships.data.map((item) => {
+                    const href = safeUrl(item.application_url ?? undefined);
+                    return (
+                      <article key={item.id}>
+                        <h3>{item.title}</h3>
+                        <p>{item.description}</p>
+                        {href && (
+                          <a href={href} target="_blank" rel="noopener noreferrer">
+                            Apply with {item.organization} →
+                          </a>
+                        )}
+                      </article>
+                    );
+                  })
+                ) : (
+                  <p>No published scholarship opportunities are available.</p>
+                )}
+              </section>
+            )}
           </section>
           <aside className="np-side">
             <section>
