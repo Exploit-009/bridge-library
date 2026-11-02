@@ -43,7 +43,9 @@ export function LearnerShell({
   newsReference?: boolean;
 }) {
   return (
-    <div className={`bl-site ${aiReference ? "ai-reference-page" : ""} ${newsReference ? "news-reference-page" : ""}`}>
+    <div
+      className={`bl-site ${aiReference ? "ai-reference-page" : ""} ${newsReference ? "news-reference-page" : ""}`}
+    >
       <SiteHeader
         student
         aiReference={aiReference}

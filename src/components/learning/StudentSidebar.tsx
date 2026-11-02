@@ -133,7 +133,7 @@ export function StudentSidebar({
                 <MessageSquare size={22} />
                 Messages{unread > 0 && <span className="ai-unread">{unread}</span>}
               </Link>
-              <Link to="/news" className={newsReference ? 'is-active' : ''}>
+              <Link to="/news" className={newsReference ? "is-active" : ""}>
                 <Newspaper size={22} />
                 News &amp; Updates
               </Link>
@@ -141,10 +141,12 @@ export function StudentSidebar({
                 <CalendarDays size={22} />
                 Events
               </Link>
-              {!newsReference && <Link to="/bridgelib-ai" className="is-active">
-                <Sparkles size={22} />
-                BridgeLIB AI
-              </Link>}
+              {!newsReference && (
+                <Link to="/bridgelib-ai" className="is-active">
+                  <Sparkles size={22} />
+                  BridgeLIB AI
+                </Link>
+              )}
               <Link to="/settings">
                 <Settings size={22} />
                 Settings

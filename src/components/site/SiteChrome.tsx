@@ -163,7 +163,14 @@ const aiNavLinks = [
   { to: "/faq", label: "Help", Icon: Headphones },
   { to: "/bridgelib-ai", label: "BridgeLIB AI", Icon: Sparkles },
 ] as const;
-const newsNavLinks = [{to:'/',label:'Home'},{to:'/courses',label:'Courses'},{to:'/wassce',label:'WASSCE'},{to:'/news',label:'News'},{to:'/events',label:'Events'},{to:'/contact',label:'Contact'}] as const;
+const newsNavLinks = [
+  { to: "/", label: "Home" },
+  { to: "/courses", label: "Courses" },
+  { to: "/wassce", label: "WASSCE" },
+  { to: "/news", label: "News" },
+  { to: "/events", label: "Events" },
+  { to: "/contact", label: "Contact" },
+] as const;
 
 export function SiteHeader({
   actions,
@@ -225,33 +232,43 @@ export function SiteHeader({
       <div className="bl-container bl-header-inner">
         <Logo />
         <nav className="bl-nav" aria-label="Main navigation">
-          {newsReference ? newsNavLinks.map(({to,label})=><Link key={to} to={to} className={`bl-nav-link ${to==='/news'?'np-nav-active':''}`}>{label}</Link>) : aiReference
-            ? aiNavLinks.map(({ to, label, Icon }) => (
+          {newsReference
+            ? newsNavLinks.map(({ to, label }) => (
                 <Link
                   key={to}
                   to={to}
-                  className={`bl-nav-link ${to === "/bridgelib-ai" ? "ai-nav-current" : ""}`}
+                  className={`bl-nav-link ${to === "/news" ? "np-nav-active" : ""}`}
                 >
-                  <Icon size={20} />
                   {label}
                 </Link>
               ))
-            : navLinks.map((l) => (
-                <Link
-                  key={l.to}
-                  to={l.to}
-                  className="bl-nav-link"
-                  activeOptions={{ exact: true }}
-                  activeProps={{ className: "bl-nav-link active" }}
-                >
-                  {l.label}
-                </Link>
-              ))}
+            : aiReference
+              ? aiNavLinks.map(({ to, label, Icon }) => (
+                  <Link
+                    key={to}
+                    to={to}
+                    className={`bl-nav-link ${to === "/bridgelib-ai" ? "ai-nav-current" : ""}`}
+                  >
+                    <Icon size={20} />
+                    {label}
+                  </Link>
+                ))
+              : navLinks.map((l) => (
+                  <Link
+                    key={l.to}
+                    to={l.to}
+                    className="bl-nav-link"
+                    activeOptions={{ exact: true }}
+                    activeProps={{ className: "bl-nav-link active" }}
+                  >
+                    {l.label}
+                  </Link>
+                ))}
         </nav>
         <Button
           type="button"
           className="bl-search-btn"
-          aria-label={newsReference ? 'Search news' : 'Search courses'}
+          aria-label={newsReference ? "Search news" : "Search courses"}
           aria-expanded={searchOpen}
           onClick={() => setSearchOpen((v) => !v)}
         >
@@ -301,7 +318,8 @@ export function SiteHeader({
           role="search"
           onSubmit={(e) => {
             e.preventDefault();
-            if(newsReference) void navigate({to:'/news',search:{q:term.trim(),all:true}});
+            if (newsReference)
+              void navigate({ to: "/news", search: { q: term.trim(), all: true } });
             else void navigate({ to: "/courses", search: term.trim() ? { q: term.trim() } : {} });
             setSearchOpen(false);
           }}
@@ -312,7 +330,7 @@ export function SiteHeader({
             value={term}
             onChange={(e) => setTerm(e.target.value)}
             placeholder="Search for a course, subject, or topic…"
-            aria-label={newsReference ? 'Search news articles' : 'Search courses'}
+            aria-label={newsReference ? "Search news articles" : "Search courses"}
           />
           <Button className="bl-btn-sm">Search</Button>
         </form>
