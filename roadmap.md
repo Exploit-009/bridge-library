@@ -1,8 +1,9 @@
 # BridgeLIB design update
 
-- [ ] Add admin news publishing dashboard linked to existing admin sign-in.
-- [ ] Replace reference news cards with actual stored BridgeLIB announcements; verify publishing where access permits.
-- [ ] Open full stored articles from every Read More link.
+- [x] Add admin news publishing dashboard linked to existing admin sign-in.
+- [x] Replace reference news cards with actual stored BridgeLIB announcements; public empty state verified.
+- [x] Open full stored articles from every Read More link; full text preservation tested.
+- [ ] Verify admin publication and article readback end-to-end — no confirmed admin session or backend management access available.
 - [ ] Connect news subscriptions to a real mailing list — needs a marketing email service and credentials.
 
 - [x] Reproduce BridgeLIB AI reference; desktop/mobile, navigation and signed-out chat handling verified.
