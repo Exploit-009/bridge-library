@@ -1,5 +1,8 @@
 # BridgeLIB design update
 
+- [ ] Audit all existing feature connections; fix confirmed missing wiring without replacing working features or the external backend.
+- [ ] Check and repair student profile pictures and layout on portrait phones, landscape phones and desktop.
+
 - [x] Add admin news publishing dashboard linked to existing admin sign-in.
 - [x] Replace reference news cards with actual stored BridgeLIB announcements; public empty state verified.
 - [x] Open full stored articles from every Read More link; full text preservation tested.
