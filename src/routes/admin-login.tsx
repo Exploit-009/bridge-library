@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/admin-login")({
-  validateSearch: (search: Record<string, unknown>): { next?: "news" } => ({ next: search["next"] === "news" ? "news" : undefined }),
+  validateSearch: (search: Record<string, unknown>): { next?: "news" } => search["next"] === "news" ? { next: "news" } : {},
   head: () => ({
     meta: [
       { title: "Admin Sign In — BridgeLIB" },

@@ -54,9 +54,9 @@ export function AdminNewsPage() {
     <Link to="/admin-dashboard" className="bl-link">← Admin dashboard</Link>
     <header className="flex flex-wrap items-center justify-between gap-4">
       <div className="flex items-center gap-3"><Newspaper className="text-primary" size={30} /><div><h1 className="bl-page-title">News dashboard</h1><p className="bl-muted">BridgeLIB announcements</p></div></div>
-      <div className="flex flex-wrap gap-2"><Button variant="outline" asChild><Link to="/news"><Eye size={16} />View portal</Link></Button>{news.data && <Button variant="outline" onClick={() => void signOut()}><LogOut size={16} />Sign out</Button>}</div>
+      <div className="flex flex-wrap gap-2"><Button variant="outline" onClick={() => void navigate({ to: "/news" })}><Eye size={16} />View portal</Button>{news.data && <Button variant="outline" onClick={() => void signOut()}><LogOut size={16} />Sign out</Button>}</div>
     </header>
-    {news.isPending ? <p role="status">Loading announcements…</p> : news.error ? <EmptyState title="Administrator access required" text={news.error.message} action={<div className="flex flex-wrap gap-2"><Button asChild><Link to="/admin-login" search={{ next: "news" }}>Sign in as admin</Link></Button><Button variant="outline" onClick={() => void news.refetch()}>Retry</Button></div>} /> : <>
+    {news.isPending ? <p role="status">Loading announcements…</p> : news.error ? <EmptyState title="Administrator access required" text={news.error.message} action={<div className="flex flex-wrap gap-2"><Button onClick={() => void navigate({ to: "/admin-login", search: { next: "news" } })}>Sign in as admin</Button><Button variant="outline" onClick={() => void news.refetch()}>Retry</Button></div>} /> : <>
       <div className="flex flex-wrap items-center justify-between gap-3 border-y border-border py-4"><b>{news.data?.articles.length ?? 0} published announcements</b><Button disabled={busy} onClick={newArticle}><Plus size={16} />New announcement</Button></div>
       {error && <p role="alert" className="text-destructive">{error}</p>}
       {message && <p role="status" className="bl-notice">{message}</p>}
@@ -70,7 +70,7 @@ export function AdminNewsPage() {
       </form>}
       <div className="grid gap-4">{news.data?.articles.map((article) => <article key={article.slug} className="grid gap-3 rounded-lg border border-border bg-card p-5">
         <div><small className="text-muted-foreground">Published{article.date ? ` · ${article.date}` : ""}</small><h2 className="break-words text-xl font-bold">{article.title}</h2><p className="break-words text-muted-foreground">{article.content.slice(0, 180)}</p></div>
-        <div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy} onClick={() => { setEditor(article); setPreview(false); setError(""); }}><Pencil size={16} />Edit</Button><Button variant="outline" asChild><Link to="/news/$slug" params={{ slug: article.slug }}><Eye size={16} />Read</Link></Button><Button variant="outline" disabled={busy} onClick={() => { if (window.confirm(`Remove “${article.title}” from the public News portal?`)) void save({ kind: "remove", slug: article.slug }); }}><Trash2 size={16} />Remove</Button></div>
+        <div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy} onClick={() => { setEditor(article); setPreview(false); setError(""); }}><Pencil size={16} />Edit</Button><Button variant="outline" onClick={() => void navigate({ to: "/news/$slug", params: { slug: article.slug } })}><Eye size={16} />Read</Button><Button variant="outline" disabled={busy} onClick={() => { if (window.confirm(`Remove “${article.title}” from the public News portal?`)) void save({ kind: "remove", slug: article.slug }); }}><Trash2 size={16} />Remove</Button></div>
       </article>)}</div>
       {!news.data?.articles.length && !editor && <p className="bl-muted">No announcements published yet.</p>}
     </>}
