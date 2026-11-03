@@ -124,13 +124,10 @@ export function NewsPortal({
                       {selected.example ? " · Reference example" : ""}
                     </small>
                     <h1>{selected.title}</h1>
-                    <p>{selected.content}</p>
-                    <Link to={selected.slug === "scholarship-opportunities" ? "/news" : "/courses"}>
-                      {selected.slug === "scholarship-opportunities"
-                        ? "View opportunities"
-                        : "Explore learning resources"}{" "}
-                      <ArrowRight size={16} />
-                    </Link>
+                    <div className="grid gap-5 py-5" aria-label="Full announcement">
+                      {selected.content.split(/\n\s*\n/).filter(Boolean).map((paragraph, index) => <p className="whitespace-pre-wrap break-words" key={index}>{paragraph}</p>)}
+                    </div>
+                    <Link to="/news">More BridgeLIB announcements <ArrowRight size={16} /></Link>
                   </>
                 ) : (
                   <>
