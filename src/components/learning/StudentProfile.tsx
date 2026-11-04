@@ -32,7 +32,8 @@ function Modal({ title, onClose, children }: { title: string; onClose: () => voi
 }
 
 function Avatar({ src, size }: { src: string; size: number }) {
-  return <span className="sp-avatar" style={{ width: size, height: size }}>{src ? <img src={src} alt="Your profile" /> : <User size={size * 0.45} />}</span>;
+  const [failed, setFailed] = useState('');
+  return <span className="sp-avatar" style={{ width: size, height: size }}>{src && failed !== src ? <img src={src} alt="Your profile" onError={() => setFailed(src)} /> : <User size={size * 0.45} />}</span>;
 }
 
 export function StudentProfilePage() {
@@ -46,7 +47,8 @@ export function StudentProfilePage() {
   async function refreshUser() {
     const { data } = await supabase.auth.getUser(); setUser(data.user); setAuthChecked(true);
     const path = data.user?.user_metadata['student_photo_path'];
-    if (data.user && typeof path === 'string' && path.startsWith(`${data.user.id}/`)) { const r = await supabase.storage.from('student-photos').createSignedUrl(path, 3600); if (r.data) setPhoto(r.data.signedUrl); }
+    if (data.user && typeof path === 'string' && path.startsWith(`${data.user.id}/`)) { const r = await supabase.storage.from('student-photos').createSignedUrl(path, 3600); setPhoto(r.data?.signedUrl ?? ''); }
+    else setPhoto('');
   }
   useEffect(() => { void refreshUser(); }, []);
   useEffect(() => { if (!toast) return; const t = setTimeout(() => setToast(''), 4000); return () => clearTimeout(t); }, [toast]);
@@ -176,7 +178,8 @@ function EditProfile({ d, email, photo, onSaved }: { d: WS; email: string; photo
   const p = d.profile; const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<Record<string, string>>({}); const [busy, setBusy] = useState(false); const [msg, setMsg] = useState('');
   async function submit() {
-    const f = new FormData(formRef.current!);
+    if (!formRef.current) return;
+    const f = new FormData(formRef.current);
     const parsed = profileFormSchema.safeParse({ fullName: f.get('fullName'), email: f.get('email'), phone: f.get('phone'), county: f.get('county'), school: f.get('school'), educationLevel: f.get('educationLevel') });
     if (!parsed.success) { const e: Record<string, string> = {}; for (const i of parsed.error.issues) e[String(i.path[0])] ??= i.message; setErrors(e); setMsg('Please fix the highlighted fields.'); return; }
     setErrors({}); setBusy(true); setMsg('');
@@ -200,7 +203,7 @@ function EditProfile({ d, email, photo, onSaved }: { d: WS; email: string; photo
         {field('phone', 'Phone Number', <input name="phone" type="tel" defaultValue={p?.phone ?? ''} placeholder="+231 770 123 456" maxLength={25} autoComplete="tel" />)}
         {field('county', 'County', <select name="county" defaultValue={p?.county && (LIBERIA_COUNTIES as readonly string[]).includes(p.county) ? p.county : ''}><option value="" disabled>Choose county</option>{LIBERIA_COUNTIES.map(c => <option key={c}>{c}</option>)}</select>)}
         {field('school', 'School Name', <input name="school" defaultValue={p?.school_name ?? ''} maxLength={180} />)}
-        {field('educationLevel', 'Education Level', <select name="educationLevel" defaultValue={EDUCATION_LEVELS.some(l => l.value === p?.education_level) ? p!.education_level! : ''}><option value="" disabled>{p?.education_level ? educationLabel(p.education_level) : 'Choose level'}</option>{EDUCATION_LEVELS.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}</select>)}
+        {field('educationLevel', 'Education Level', <select name="educationLevel" defaultValue={EDUCATION_LEVELS.some(l => l.value === p?.education_level) ? p?.education_level ?? '' : ''}><option value="" disabled>{p?.education_level ? educationLabel(p.education_level) : 'Choose level'}</option>{EDUCATION_LEVELS.map(l => <option key={l.value} value={l.value}>{l.label}</option>)}</select>)}
         <button hidden />
       </div>
     </form>
