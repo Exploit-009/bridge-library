@@ -10,3 +10,8 @@ export const studentClassActionSchema = z.discriminatedUnion('kind', [
 ]);
 export function classProgress(lessonIds: string[], completedIds: string[]) { return lessonIds.length ? Math.round(lessonIds.filter(id => completedIds.includes(id)).length / lessonIds.length * 100) : 0; }
 export function unreadClassMessages(messages: Array<{id:string;sender_id:string}>, readIds: string[], userId: string) { return messages.filter(m => m.sender_id !== userId && !readIds.includes(m.id)); }
+export function classMessageAlertsEnabled(preferences: unknown) {
+ if (!preferences || typeof preferences !== 'object' || !('notifications' in preferences)) return true;
+ const notifications = preferences.notifications;
+ return !notifications || typeof notifications !== 'object' || !('classMessages' in notifications) || notifications.classMessages !== false;
+}

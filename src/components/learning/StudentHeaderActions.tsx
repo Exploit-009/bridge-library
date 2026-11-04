@@ -6,7 +6,7 @@ import { Bell, User, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
 import { workspaceData } from "@/lib/learning.functions";
-import { unreadClassMessages } from "@/lib/student-class";
+import { unreadClassMessages, classMessageAlertsEnabled } from "@/lib/student-class";
 export function StudentHeaderActions({ profileMenu = false }: { profileMenu?: boolean } = {}) {
   const load = useServerFn(workspaceData);
   const q = useQuery({ queryKey: ["workspace"], queryFn: () => load(), retry: false });
@@ -27,6 +27,7 @@ export function StudentHeaderActions({ profileMenu = false }: { profileMenu?: bo
     };
   }, []);
   const [profileOpen, setProfileOpen] = useState(false);
+  const alertsEnabled = classMessageAlertsEnabled(d?.profile?.preferences);
   const unread = d
     ? unreadClassMessages(
         d.messages,
@@ -52,7 +53,7 @@ export function StudentHeaderActions({ profileMenu = false }: { profileMenu?: bo
     <div className="bl-student-actions">
       <Button
         className="bl-search-btn sc-bell"
-        aria-label={`Notifications, ${unread.length} unread messages`}
+        aria-label={alertsEnabled ? `Notifications, ${unread.length} unread messages` : 'Notifications, class message alerts off'}
         aria-expanded={open}
         onClick={() => {
           setOpen(!open);
@@ -60,7 +61,7 @@ export function StudentHeaderActions({ profileMenu = false }: { profileMenu?: bo
         }}
       >
         <Bell size={18} />
-        {unread.length > 0 && <span className="sc-unread">{unread.length}</span>}
+        {alertsEnabled && unread.length > 0 && <span className="sc-unread">{unread.length}</span>}
       </Button>
       {profileMenu ? (
         <Button
@@ -90,7 +91,9 @@ export function StudentHeaderActions({ profileMenu = false }: { profileMenu?: bo
       {open && (
         <div className="bl-notifications">
           <strong>Notifications</strong>
-          {unread.length ? (
+          {!alertsEnabled ? (
+            <p>Class message alerts are off.</p>
+          ) : unread.length ? (
             <Link
               to="/classroom"
               search={{ tab: "messages", classId: "" }}
