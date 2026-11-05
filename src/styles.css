@@ -2569,7 +2569,7 @@ html.sp-large-text { font-size: 112.5%; }
 .sp-side nav a.is-active { background: var(--bl-blue); font-weight: 500; padding: 14px 30px; }
 .sp-flag-panel { margin: 12px 10px 0; width: calc(100% - 20px); border: 2px solid var(--bl-blue-bright); border-radius: 8px; }
 .sp-main { padding: 0 10px 22px 20px; min-width: 0; }
-.sp-banner { position: relative; height: 192px; border-radius: 0 0 8px 8px; overflow: hidden; background: var(--bl-navy); margin-bottom: 18px; }
+.sp-banner { position: relative; height: 230px; border-radius: 0 0 8px 8px; overflow: hidden; background: var(--bl-navy); margin-bottom: 18px; }
 .sp-banner img { position: absolute; left: 0; top: 0; height: 100%; width: 45%; object-fit: cover; -webkit-mask-image: linear-gradient(90deg,#000 70%,transparent); mask-image: linear-gradient(90deg,#000 70%,transparent); }
 .sp-banner-text { position: absolute; left: 43%; right: 16px; top: 18px; color: var(--bl-on-dark); text-align: center; font-family: "Kalam", "Segoe Script", cursive; }
 .sp-banner-brand { font-size: 2.2rem; margin: 0; font-weight: 700; font-style: italic; }

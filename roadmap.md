@@ -1,7 +1,10 @@
 # BridgeLIB design update
 
-- [ ] Audit all existing feature connections; fix confirmed missing wiring without replacing working features or the external backend.
-- [ ] Check and repair student profile pictures and layout on portrait phones, landscape phones and desktop.
+- [x] Audit all existing feature connections in source; preserve the external backend and working features. Most learning/admin records are connected; live saving and permissions remain unverified without authorized access.
+- [x] Repair student profile pictures and layout on portrait phones, landscape phones and desktop; both pictures load and public profile navigation/dialogs fit at 320, 360, 740 and 1280px.
+- [x] Connect saved class-message notification opt-outs to header alerts; tests passed.
+- [ ] Verify full feature save/readback, storage, roles and MFA sign-in on the existing backend — needs authorized confirmed student/admin access and deployed settings inspection.
+- [ ] Complete support reply delivery and newsletter delivery — needs configured support/mail service details and credentials; current forms save requests/preferences only.
 
 - [x] Add admin news publishing dashboard linked to existing admin sign-in.
 - [x] Replace reference news cards with actual stored BridgeLIB announcements; public empty state verified.
