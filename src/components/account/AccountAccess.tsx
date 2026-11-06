@@ -1,7 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
-import { ArrowRight, Eye, EyeOff, KeyRound, LockKeyhole, Mail } from 'lucide-react';
+import { ArrowRight, KeyRound, LockKeyhole, Mail } from 'lucide-react';
+import { PasswordField } from './PasswordField';
 import { SiteLayout } from '@/components/site/SiteChrome';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
@@ -10,11 +11,6 @@ import shield from '@/assets/bridgelib-shield.png';
 
 type Mode = 'login' | 'forgot' | 'reset' | 'update';
 const recoveryKey = 'bridgelib-password-recovery';
-
-function PasswordField({ label, name, current = false }: { label: string; name: string; current?: boolean }) {
-  const [visible, setVisible] = useState(false);
-  return <label className="grid gap-2 text-sm font-semibold">{label}<span className="relative block"><input className="bl-input w-full pr-12" name={name} type={visible ? 'text' : 'password'} autoComplete={current ? 'current-password' : 'new-password'} required minLength={current ? undefined : 8} /><Button type="button" variant="ghost" size="icon" className="absolute right-1 top-1/2 -translate-y-1/2" aria-label={`${visible ? 'Hide' : 'Show'} ${label.toLowerCase()}`} title={`${visible ? 'Hide' : 'Show'} ${label.toLowerCase()}`} onClick={() => setVisible(!visible)}>{visible ? <EyeOff size={18} /> : <Eye size={18} />}</Button></span></label>;
-}
 
 export function AccountAccess({ mode, next }: { mode: Mode; next?: string }) {
   const navigate = useNavigate();

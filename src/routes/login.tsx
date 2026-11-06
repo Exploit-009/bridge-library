@@ -3,7 +3,7 @@ import { AccountAccess } from '@/components/account/AccountAccess';
 import { signInDestination } from '@/lib/account-access';
 
 export const Route = createFileRoute('/login')({
-  validateSearch: (s: Record<string, unknown>) => ({ next: signInDestination(s.next) }),
+  validateSearch: (s: Record<string, unknown>): { next?: string } => typeof s['next'] === 'string' ? { next: signInDestination(s['next']) } : {},
   head: () => ({ meta: [
     { title: 'Sign In — BridgeLIB' },
     { name: 'description', content: 'Sign in to your BridgeLIB account and continue learning.' },
