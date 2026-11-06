@@ -34,7 +34,7 @@ describe('Account actions', () => {
     render(<AccountAccess mode="login" next="/student-portal" />);
     fireEvent.change(screen.getByLabelText('Email address'), { target: { value: 'learner@example.com' } });
     fireEvent.change(screen.getByLabelText('Password', { exact: true }), { target: { value: 'ExamplePassword9' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Sign in', exact: true }));
+    fireEvent.click(screen.getByRole('button', { name: /^Sign in$/ }));
     await waitFor(() => expect(mocks.signIn).toHaveBeenCalledWith({ email: 'learner@example.com', password: 'ExamplePassword9' }));
     await waitFor(() => expect(mocks.navigate).toHaveBeenCalledWith({ href: '/student-portal', replace: true }));
   });

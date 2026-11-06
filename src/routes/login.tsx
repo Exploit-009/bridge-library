@@ -11,5 +11,5 @@ export const Route = createFileRoute('/login')({
     { property: 'og:description', content: 'Access your BridgeLIB learning account.' },
     { property: 'og:type', content: 'website' }, { name: 'twitter:card', content: 'summary' },
   ] }),
-  component: () => <AccountAccess mode="login" next={Route.useSearch().next} />,
+  component: () => <AccountAccess mode="login" next={Route.useSearch().next ?? '/dashboard'} />,
 });
