@@ -1,6 +1,7 @@
 # BridgeLIB design update
 
 - [ ] Check and repair the existing sign-in, password recovery and signed-in password update pages while preserving accounts and connections.
+- [ ] Add password show/hide controls to sign-in and password update forms, including the profile password dialog.
 - [ ] Update the existing database to match the current app — blocked: management lookup confirms no linked backend; connect the existing project in Settings → General → External Supabase without replacing existing data or connections.
 - [x] Audit all existing feature connections in source; preserve the external backend and working features. Most learning/admin records are connected; live saving and permissions remain unverified without authorized access.
 - [x] Repair student profile pictures and layout on portrait phones, landscape phones and desktop; both pictures load and public profile navigation/dialogs fit at 320, 360, 740 and 1280px.
