@@ -25,6 +25,8 @@ import { Route as DownloadsRouteImport } from './routes/downloads'
 import { Route as EventsRouteImport } from './routes/events'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as FeaturesRouteImport } from './routes/features'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as ManagementRouteImport } from './routes/management'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MyCoursesRouteImport } from './routes/my-courses'
@@ -33,6 +35,7 @@ import { Route as PracticeRouteImport } from './routes/practice'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ProgressRouteImport } from './routes/progress'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SignupRouteImport } from './routes/signup'
 import { Route as SiteContentRouteImport } from './routes/site-content'
@@ -42,6 +45,7 @@ import { Route as StudyToolsRouteImport } from './routes/study-tools'
 import { Route as TeacherRouteImport } from './routes/teacher'
 import { Route as TeacherApprovalsRouteImport } from './routes/teacher-approvals'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as UpdatePasswordRouteImport } from './routes/update-password'
 import { Route as WassceRouteImport } from './routes/wassce'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AdminDashboardCertificatesRouteImport } from './routes/admin-dashboard_.certificates'
@@ -143,6 +147,16 @@ const FeaturesRoute = FeaturesRouteImport.update({
   path: '/features',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ManagementRoute = ManagementRouteImport.update({
   id: '/management',
   path: '/management',
@@ -181,6 +195,11 @@ const ProfileRoute = ProfileRouteImport.update({
 const ProgressRoute = ProgressRouteImport.update({
   id: '/progress',
   path: '/progress',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -226,6 +245,11 @@ const TeacherApprovalsRoute = TeacherApprovalsRouteImport.update({
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpdatePasswordRoute = UpdatePasswordRouteImport.update({
+  id: '/update-password',
+  path: '/update-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const WassceRoute = WassceRouteImport.update({
@@ -349,6 +373,8 @@ export interface FileRoutesByFullPath {
   '/events': typeof EventsRoute
   '/faq': typeof FaqRoute
   '/features': typeof FeaturesRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
   '/management': typeof ManagementRoute
   '/mcp': typeof McpRoute
   '/my-courses': typeof MyCoursesRoute
@@ -357,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
@@ -366,6 +393,7 @@ export interface FileRoutesByFullPath {
   '/teacher': typeof TeacherRoute
   '/teacher-approvals': typeof TeacherApprovalsRoute
   '/terms': typeof TermsRoute
+  '/update-password': typeof UpdatePasswordRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin-dashboard/certificates': typeof AdminDashboardCertificatesRoute
@@ -404,6 +432,8 @@ export interface FileRoutesByTo {
   '/events': typeof EventsRoute
   '/faq': typeof FaqRoute
   '/features': typeof FeaturesRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
   '/management': typeof ManagementRoute
   '/mcp': typeof McpRoute
   '/my-courses': typeof MyCoursesRoute
@@ -412,6 +442,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
@@ -421,6 +452,7 @@ export interface FileRoutesByTo {
   '/teacher': typeof TeacherRoute
   '/teacher-approvals': typeof TeacherApprovalsRoute
   '/terms': typeof TermsRoute
+  '/update-password': typeof UpdatePasswordRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin-dashboard/certificates': typeof AdminDashboardCertificatesRoute
@@ -460,6 +492,8 @@ export interface FileRoutesById {
   '/events': typeof EventsRoute
   '/faq': typeof FaqRoute
   '/features': typeof FeaturesRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
   '/management': typeof ManagementRoute
   '/mcp': typeof McpRoute
   '/my-courses': typeof MyCoursesRoute
@@ -468,6 +502,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/progress': typeof ProgressRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/settings': typeof SettingsRoute
   '/signup': typeof SignupRoute
   '/site-content': typeof SiteContentRoute
@@ -477,6 +512,7 @@ export interface FileRoutesById {
   '/teacher': typeof TeacherRoute
   '/teacher-approvals': typeof TeacherApprovalsRoute
   '/terms': typeof TermsRoute
+  '/update-password': typeof UpdatePasswordRoute
   '/wassce': typeof WassceRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/admin-dashboard_/certificates': typeof AdminDashboardCertificatesRoute
@@ -517,6 +553,8 @@ export interface FileRouteTypes {
     | '/events'
     | '/faq'
     | '/features'
+    | '/forgot-password'
+    | '/login'
     | '/management'
     | '/mcp'
     | '/my-courses'
@@ -525,6 +563,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/progress'
+    | '/reset-password'
     | '/settings'
     | '/signup'
     | '/site-content'
@@ -534,6 +573,7 @@ export interface FileRouteTypes {
     | '/teacher'
     | '/teacher-approvals'
     | '/terms'
+    | '/update-password'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
     | '/admin-dashboard/certificates'
@@ -572,6 +612,8 @@ export interface FileRouteTypes {
     | '/events'
     | '/faq'
     | '/features'
+    | '/forgot-password'
+    | '/login'
     | '/management'
     | '/mcp'
     | '/my-courses'
@@ -580,6 +622,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/progress'
+    | '/reset-password'
     | '/settings'
     | '/signup'
     | '/site-content'
@@ -589,6 +632,7 @@ export interface FileRouteTypes {
     | '/teacher'
     | '/teacher-approvals'
     | '/terms'
+    | '/update-password'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
     | '/admin-dashboard/certificates'
@@ -627,6 +671,8 @@ export interface FileRouteTypes {
     | '/events'
     | '/faq'
     | '/features'
+    | '/forgot-password'
+    | '/login'
     | '/management'
     | '/mcp'
     | '/my-courses'
@@ -635,6 +681,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/profile'
     | '/progress'
+    | '/reset-password'
     | '/settings'
     | '/signup'
     | '/site-content'
@@ -644,6 +691,7 @@ export interface FileRouteTypes {
     | '/teacher'
     | '/teacher-approvals'
     | '/terms'
+    | '/update-password'
     | '/wassce'
     | '/.well-known/oauth-protected-resource'
     | '/admin-dashboard_/certificates'
@@ -683,6 +731,8 @@ export interface RootRouteChildren {
   EventsRoute: typeof EventsRoute
   FaqRoute: typeof FaqRoute
   FeaturesRoute: typeof FeaturesRoute
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
   ManagementRoute: typeof ManagementRoute
   McpRoute: typeof McpRoute
   MyCoursesRoute: typeof MyCoursesRoute
@@ -691,6 +741,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
   ProgressRoute: typeof ProgressRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   SettingsRoute: typeof SettingsRoute
   SignupRoute: typeof SignupRoute
   SiteContentRoute: typeof SiteContentRoute
@@ -700,6 +751,7 @@ export interface RootRouteChildren {
   TeacherRoute: typeof TeacherRoute
   TeacherApprovalsRoute: typeof TeacherApprovalsRoute
   TermsRoute: typeof TermsRoute
+  UpdatePasswordRoute: typeof UpdatePasswordRoute
   WassceRoute: typeof WassceRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   AdminDashboardCertificatesRoute: typeof AdminDashboardCertificatesRoute
@@ -836,6 +888,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FeaturesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/management': {
       id: '/management'
       path: '/management'
@@ -890,6 +956,13 @@ declare module '@tanstack/react-router' {
       path: '/progress'
       fullPath: '/progress'
       preLoaderRoute: typeof ProgressRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -953,6 +1026,13 @@ declare module '@tanstack/react-router' {
       path: '/terms'
       fullPath: '/terms'
       preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/update-password': {
+      id: '/update-password'
+      path: '/update-password'
+      fullPath: '/update-password'
+      preLoaderRoute: typeof UpdatePasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/wassce': {
@@ -1115,6 +1195,8 @@ const rootRouteChildren: RootRouteChildren = {
   EventsRoute: EventsRoute,
   FaqRoute: FaqRoute,
   FeaturesRoute: FeaturesRoute,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
   ManagementRoute: ManagementRoute,
   McpRoute: McpRoute,
   MyCoursesRoute: MyCoursesRoute,
@@ -1123,6 +1205,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
   ProgressRoute: ProgressRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   SettingsRoute: SettingsRoute,
   SignupRoute: SignupRoute,
   SiteContentRoute: SiteContentRoute,
@@ -1132,6 +1215,7 @@ const rootRouteChildren: RootRouteChildren = {
   TeacherRoute: TeacherRoute,
   TeacherApprovalsRoute: TeacherApprovalsRoute,
   TermsRoute: TermsRoute,
+  UpdatePasswordRoute: UpdatePasswordRoute,
   WassceRoute: WassceRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,

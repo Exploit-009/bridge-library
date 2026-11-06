@@ -5,6 +5,7 @@ import { ShieldCheck } from "lucide-react";
 import { SiteLayout } from "@/components/site/SiteChrome";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/lib/supabase";
+import { PasswordField } from '@/components/account/PasswordField';
 
 export const Route = createFileRoute("/admin-login")({
   validateSearch: (search: Record<string, unknown>): { next?: "news" } => search["next"] === "news" ? { next: "news" } : {},
@@ -61,10 +62,10 @@ function AdminLogin() {
           <p className="bl-muted">Use your administrator email and password.</p>
           <form onSubmit={submit} className="bl-mt" style={{ display: "grid", gap: 12 }}>
             <label>Email<input name="email" type="email" required autoComplete="email" className="bl-input" style={{ width: "100%" }} /></label>
-            <label>Password<input name="password" type="password" required autoComplete="current-password" className="bl-input" style={{ width: "100%" }} /></label>
+            <PasswordField name="password" label="Password" current />
             {err && <p role="alert" className="text-destructive">{err}</p>}
             <Button type="submit" disabled={busy}>{busy ? "Signing in…" : "Sign in"}</Button>
-            <Link to="/" search={{ auth: "login" }} className="bl-link">Forgot password? Use the main sign-in</Link>
+            <Link to="/forgot-password" className="bl-link">Forgot password?</Link>
           </form>
         </div>
       </section>
