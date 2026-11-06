@@ -3,6 +3,7 @@ import { INTRO_VIDEO_URL } from "@/config/video";
 import { useSiteContent } from "@/lib/site-content";
 import { resolveVideoSource, withAutoplay } from "@/lib/video";
 import { oauthReturnPath } from "@/lib/oauth-return-path";
+import { passwordResetDestination } from "@/lib/account-access";
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -404,9 +405,16 @@ export function BridgeHome() {
 
   useEffect(() => {
     const requested = new URLSearchParams(window.location.search).get("auth");
-    if (requested === "login" || requested === "signup") {
+    if (requested === "login") {
+      const next = new URLSearchParams(window.location.search).get("next");
+      void navigate({ to: "/login", search: { next: next ?? "/dashboard" }, replace: true });
+      return;
+    }
+    if (requested === "signup") {
       openAuth(requested);
-      window.history.replaceState(null, "", window.location.pathname);
+      const url = new URL(window.location.href);
+      url.searchParams.delete("auth");
+      window.history.replaceState(null, "", url.pathname + url.search + url.hash);
     }
   }, []);
 
@@ -572,7 +580,7 @@ export function BridgeHome() {
 
       if (resetMode) {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${window.location.origin}/`,
+          redirectTo: passwordResetDestination(window.location.origin),
         });
 
         if (error) throw error;
@@ -1647,10 +1655,7 @@ export function BridgeHome() {
                   <button
                     type="button"
                     className="text-button"
-                    onClick={() => {
-                      setResetMode(true);
-                      setAuthMessage(null);
-                    }}
+                    onClick={() => void navigate({ to: "/forgot-password" })}
                   >
                     Forgot password?
                   </button>
@@ -1672,7 +1677,7 @@ export function BridgeHome() {
                 )}
 
                 {authMessage && (
-                  <p className={`status-message ${authMessage.kind}`} role="status">
+                  <p className={`status-message ${authMessage.kind}`} role={authMessage.kind === "error" ? "alert" : "status"}>
                     {authMessage.message}
                   </p>
                 )}

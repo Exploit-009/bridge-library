@@ -218,9 +218,9 @@ export function SiteHeader({
     </Link>
   ) : (
     <>
-      <a href="/?auth=login" className="bl-btn bl-btn-outline bl-btn-sm">
+      <Link to="/login" className="bl-btn bl-btn-outline bl-btn-sm">
         Login
-      </a>
+      </Link>
       <a href="/signup" className="bl-btn bl-btn-primary bl-btn-sm">
         Sign Up
       </a>
@@ -461,7 +461,8 @@ export function SiteFooter({ aiReference = false }: { aiReference?: boolean } = 
           <Link to="/terms">Terms of Service</Link>
           <Link to="/privacy">Privacy Policy</Link>
           <Link to="/contact">Contact Us</Link>
-          <a href="/?auth=login">Sign in / Reset password</a>
+          <Link to="/login">Sign in</Link>
+          <Link to="/forgot-password">Reset password</Link>
         </div>
         <div>
           <h4>Contact Us</h4>
